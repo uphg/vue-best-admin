@@ -1,0 +1,15 @@
+*,
+*::before,
+*::after {
+  @apply box-border m-0 font-normal;
+}
+
+body {
+  @apply min-h-100vh line-height-[1.6];
+  @apply font-sans font-size-4;
+  @apply c-red;
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
