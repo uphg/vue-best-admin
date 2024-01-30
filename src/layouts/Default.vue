@@ -1,11 +1,14 @@
 <template>
-  <header class="p-6 bg-gray-200">
-    颐和园路
-  </header>
-  <div class="p-6 min-h-125 bg-gray-100">
-    <router-view />
+  <div>
+    <Header/>
+    <Content/>
+    <Footer/>
   </div>
-  <footer class="p-6 bg-gray-200">
-    成府路
-  </footer>
+  <Sidebar />
 </template>
+
+<script setup lang="ts">
+import Header from './components/Header.vue'
+import Content from './components/Content.vue'
+import Footer from './components/Footer.vue'
+</script>

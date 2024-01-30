@@ -1,5 +1,5 @@
 <template>
-  <n-spin :show="$loading.visible">
+  <n-spin :show="$loading.visible" class="root">
     <n-message-provider>
       <RouterView />
     </n-message-provider>
