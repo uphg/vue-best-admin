@@ -1,10 +1,10 @@
 <template>
   <main class="home">
-    <HelloWorld/>
+    <HelloWorld />
     <div class="px-3 py-2 mt-2 bg-gray-200">
       <p>{{ counter.count }}</p>
       <n-button type="primary" @click="counter.increment">点我+1</n-button>
-      <Icon name="logo"/>
+      <Icon name="logo" />
     </div>
 
     <div class="w-20 h-20 shadow-medium bg-white c-primary">233</div>
@@ -15,7 +15,6 @@
 
 <script setup lang="ts">
 const counter = useCounterStore()
-
 </script>
 
 <style lang="scss" scoped>

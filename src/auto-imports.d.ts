@@ -86,6 +86,7 @@ declare global {
   const useNotification: typeof import('naive-ui')['useNotification']
   const useRoute: typeof import('vue-router')['useRoute']
   const useRouter: typeof import('vue-router')['useRouter']
+  const useSidebarStore: typeof import('./stores/sidebar')['useSidebarStore']
   const useSlots: typeof import('vue')['useSlots']
   const watch: typeof import('vue')['watch']
   const watchEffect: typeof import('vue')['watchEffect']
