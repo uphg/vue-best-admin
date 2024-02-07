@@ -1,15 +1,17 @@
 <template>
-  <div :class="['layout-default', {
-    'has-sidebar': true,
-    'has-sidebar--collapsed': sidebar.collapsed
-  }]">
-    <Header/>
-    <Content/>
-    <Footer/>
+  <div class="layout">
+    <div :class="['layout-container', {
+      'has-sidebar': true,
+      'has-sidebar--collapsed': sidebar.collapsed
+    }]">
+      <Header/>
+      <Content/>
+      <Footer/>
+    </div>
+    <Sidebar />
   </div>
-  <Sidebar />
 </template>
-
+  
 <script setup lang="ts">
 import Header from './components/Header.vue'
 import Content from './components/Content.vue'
@@ -21,7 +23,7 @@ const sidebar = useSidebarStore()
 </script>
 
 <style lang="scss" scoped>
-.layout-default {
+.layout-container {
 
 }
 .has-sidebar {

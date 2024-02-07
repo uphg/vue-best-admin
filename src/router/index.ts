@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
+import Home from '../views/home/Home.vue'
 import LayoutDefault from '@/layouts/Default.vue'
 
 const router = createRouter({
@@ -7,13 +7,16 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      name: 'home',
       component: LayoutDefault,
       redirect: '/home',
       children: [
         {
           path: 'home',
-          component: Home
+          component: Home,
+          name: 'home',
+          meta: {
+            title: '首页'
+          }
         }
       ]
     },
