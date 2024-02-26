@@ -90,14 +90,9 @@ const menuOptions: MenuOption[] = [
   }
 ]
 
-
 function renderMenuLabel(option: MenuOption) {
   if ('href' in option) {
-    return h(
-      'a',
-      { href: option.href, target: '_blank' },
-      option.label as string
-    )
+    return h('a', { href: option.href, target: '_blank' }, option.label as string)
   }
   return option.label as string
 }
@@ -116,7 +111,9 @@ function expandIcon() {
 <style lang="scss" scoped>
 .sidebar {
   transition: width 0.3s var(--n-bezier);
-  @apply w-60 h-100vh box-border bg-gray-100
+  border-inline-end: 1px solid var(--border-color);
+  writing-mode: horizontal-tb;
+  @apply w-60 h-100vh box-border bg-white
     fixed top-0 left-0 bottom-0;
   &--collapsed {
     @apply w-16;

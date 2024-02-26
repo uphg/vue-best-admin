@@ -38,16 +38,22 @@ export default defineConfig({
     AutoImport({
       include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/],
       imports: [
-        'vue', 'vue-router',
+        'vue',
+        'vue-router',
         {
-          'naive-ui': naiveUIComponentNames.concat(['useDialog', 'useMessage', 'useNotification', 'useLoadingBar'])
+          'naive-ui': naiveUIComponentNames.concat([
+            'useDialog',
+            'useMessage',
+            'useNotification',
+            'useLoadingBar'
+          ])
         }
       ],
       dts: 'src/auto-imports.d.ts',
       dirs: ['src/components', 'src/hooks', 'src/stores', 'src/shared'],
       eslintrc: {
-        enabled: true, // <-- this
-      },
+        enabled: true // <-- this
+      }
     }),
     Components({
       dts: 'src/components.d.ts',
@@ -56,11 +62,14 @@ export default defineConfig({
       extensions: ['vue', 'tsx'],
       resolvers: [NaiveUiResolver()],
       // resolvable file suffixes
-      include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/],
+      include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/]
     }),
     UnoCSS(),
     svgstore()
   ],
+  server: {
+    port: 5174
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
