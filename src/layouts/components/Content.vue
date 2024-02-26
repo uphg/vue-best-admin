@@ -4,7 +4,4 @@
   </div>
 </template>
 
-<style lang="scss" scoped>
-.content {
-}
-</style>
+<style lang="scss" scoped></style>

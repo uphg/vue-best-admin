@@ -1,15 +1,13 @@
 <template>
   <footer class="p-6 bg-gray-200">
-    <div class="ant-pro-global-footer css-1qeeczj"
-      ><div class="ant-pro-global-footer-list css-1qeeczj"
-        ><a
+    <div class="ant-pro-global-footer css-1qeeczj"></div>
+      <div class="ant-pro-global-footer-list css-1qeeczj"><a
           class="ant-pro-global-footer-list-link css-1qeeczj"
           title="Ant Design Pro"
           target="_blank"
           href="https://pro.ant.design"
           rel="noreferrer"
-          >Ant Design Pro</a
-        ><a
+          >Ant Design Pro</a><a
           class="ant-pro-global-footer-list-link css-1qeeczj"
           title="github"
           target="_blank"

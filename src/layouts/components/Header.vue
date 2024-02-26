@@ -1,7 +1,5 @@
 <template>
-  <header class="header" flex="~ col justify-center">
-    颐和园路
-  </header>
+  <header class="header" flex="~ col justify-center"> 颐和园路 </header>
 </template>
 
 <style lang="scss" scoped>
