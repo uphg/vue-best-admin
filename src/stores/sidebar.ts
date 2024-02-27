@@ -6,5 +6,9 @@ export const useSidebarStore = defineStore('counter', () => {
     collapsed.value = value
   }
 
-  return { collapsed, setCollapsed }
+  function toggleCollapsed() {
+    collapsed.value = !collapsed.value
+  }
+
+  return { collapsed, setCollapsed, toggleCollapsed }
 })

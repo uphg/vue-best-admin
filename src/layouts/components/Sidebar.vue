@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar" :class="{ 'sidebar--collapsed': sidebar.collapsed }">
+  <div :class="['sidebar', { 'sidebar--collapsed': sidebar.collapsed }]">
     <n-switch v-model:value="sidebar.collapsed" />
     <n-menu
       :collapsed="sidebar.collapsed"
@@ -9,6 +9,7 @@
       :render-label="renderMenuLabel"
       :render-icon="renderMenuIcon"
       :expand-icon="expandIcon"
+      inverted
     />
   </div>
 </template>
@@ -113,8 +114,8 @@ function expandIcon() {
   transition: width 0.3s var(--n-bezier);
   border-inline-end: 1px solid var(--border-color);
   writing-mode: horizontal-tb;
-  @apply w-60 h-100vh box-border bg-white
-    fixed top-0 left-0 bottom-0;
+  background-color: rgb(0, 20, 40);
+  @apply w-60 h-100vh box-border fixed top-0 left-0 bottom-0;
   &--collapsed {
     @apply w-16;
   }

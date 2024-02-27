@@ -1,7 +1,7 @@
 <template>
   <div class="c-blue">
     <svg class="w-1.2em h-1.2em">
-      <use :xlink:href="`#${name}`"></use>
+      <use :xlink:href="`#icon-${name}`"></use>
     </svg>
   </div>
 </template>

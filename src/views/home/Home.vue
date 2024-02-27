@@ -1,5 +1,5 @@
 <template>
-  <main class="home" border="1 solid [var(--border-color)]"> hi </main>
+  <main class="home shadow-base"> </main>
 </template>
 
 <script setup lang="ts">
@@ -10,6 +10,6 @@ const counter = useCounterStore()
 
 <style lang="scss" scoped>
 .home {
-  @apply p-4 bg-white border-rd-.75;
+  @apply p-5 bg-white border-rd-.75;
 }
 </style>
