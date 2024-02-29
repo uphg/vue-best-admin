@@ -30,9 +30,9 @@ const sidebar = useSidebarStore()
 <style lang="scss" scoped>
 .has-sidebar {
   transition: margin 0.3s var(--n-bezier);
-  @apply ml-60;
+  margin-left: var(--sidebar-width);
   &--collapsed {
-    @apply ml-14;
+    margin-left: var(--sidebar--collapsed-width);
   }
 }
 </style>

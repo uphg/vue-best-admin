@@ -4,9 +4,9 @@
     <div></div>
 
     <!-- Tags nav -->
-    <div>
-      <div class="cursor-pointer" @click="sidebar.toggleCollapsed">
-        <Icon :name="`menu-${sidebar.collapsed ? 'fold' : 'unfold'}`" />
+    <div flex="~ items-center">
+      <div class="flex cursor-pointer" @click="sidebar.toggleCollapsed">
+        <Icon :name="`menu-${sidebar.collapsed ? 'unfold' : 'fold'}`" />
       </div>
     </div>
   </header>
@@ -21,6 +21,8 @@ const sidebar = useSidebarStore()
 <style lang="scss" scoped>
 .header {
   border-block-end: 1px solid var(--border-color);
-  @apply h-14 box-border px-6 bg-white shadow-base;
+  background-color: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(8px);
+  @apply h-14 box-border px-6;
 }
 </style>

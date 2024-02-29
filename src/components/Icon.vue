@@ -1,5 +1,5 @@
 <template>
-  <div class="c-blue">
+  <div class="flex-inline">
     <svg class="w-1.2em h-1.2em">
       <use :xlink:href="`#icon-${name}`"></use>
     </svg>

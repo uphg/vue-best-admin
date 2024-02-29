@@ -9,7 +9,6 @@
       :render-label="renderMenuLabel"
       :render-icon="renderMenuIcon"
       :expand-icon="expandIcon"
-      inverted
     />
   </div>
 </template>
@@ -107,6 +106,8 @@ function renderMenuIcon(option: MenuOption) {
 function expandIcon() {
   return h(NIcon, null, { default: () => h(CaretDownOutline) })
 }
+
+// sidebar item hover：rgba(0, 0, 0, 0.04)
 </script>
 
 <style lang="scss" scoped>
@@ -114,10 +115,12 @@ function expandIcon() {
   transition: width 0.3s var(--n-bezier);
   border-inline-end: 1px solid var(--border-color);
   writing-mode: horizontal-tb;
-  background-color: rgb(0, 20, 40);
-  @apply w-60 h-100vh box-border fixed top-0 left-0 bottom-0;
+  width: var(--sidebar-width);
+  // inverted
+  // background-color: rgb(0, 20, 40);
+  @apply h-100vh box-border fixed top-0 left-0 bottom-0;
   &--collapsed {
-    @apply w-16;
+    width: var(--sidebar--collapsed-width);
   }
 }
 </style>
