@@ -1,10 +1,10 @@
 <template>
   <header class="header" flex="~ col justify-center">
     <!-- Breadcrumbs nav -->
-    <div></div>
+    <div class="h-14"></div>
 
     <!-- Tags nav -->
-    <div flex="~ items-center">
+    <div class="h-14" flex="~ items-center">
       <div class="flex cursor-pointer" @click="sidebar.toggleCollapsed">
         <Icon :name="`menu-${sidebar.collapsed ? 'unfold' : 'fold'}`" />
       </div>
@@ -23,6 +23,6 @@ const sidebar = useSidebarStore()
   border-block-end: 1px solid var(--border-color);
   background-color: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(8px);
-  @apply h-14 box-border px-6;
+  @apply px-6 box-border;
 }
 </style>
