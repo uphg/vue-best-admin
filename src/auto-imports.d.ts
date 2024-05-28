@@ -21,6 +21,7 @@ declare global {
   const NH6: typeof import('naive-ui')['NH6']
   const NIcon: typeof import('naive-ui')['NIcon']
   const NIconWrapper: typeof import('naive-ui')['NIconWrapper']
+  const NModalProvider: typeof import('naive-ui')['NModalProvider']
   const NPerformantEllipsis: typeof import('naive-ui')['NPerformantEllipsis']
   const NThemeEditor: typeof import('naive-ui')['NThemeEditor']
   const NxButton: typeof import('naive-ui')['NxButton']

@@ -23,6 +23,7 @@
     "NH6": true,
     "NIcon": true,
     "NIconWrapper": true,
+    "NModalProvider": true,
     "NPerformantEllipsis": true,
     "NThemeEditor": true,
     "NxButton": true,
@@ -92,11 +93,11 @@
     "useNotification": true,
     "useRoute": true,
     "useRouter": true,
+    "useSidebarStore": true,
     "useSlots": true,
     "watch": true,
     "watchEffect": true,
     "watchPostEffect": true,
-    "watchSyncEffect": true,
-    "useSidebarStore": true
+    "watchSyncEffect": true
   }
 }
