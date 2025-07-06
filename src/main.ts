@@ -1,9 +1,8 @@
-import 'virtual:uno.css'
-import 'virtual:svg-icons-register'
-import './styles/main.scss'
+import './assets/main.css'
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+
 import App from './App.vue'
 import router from './router'
 
