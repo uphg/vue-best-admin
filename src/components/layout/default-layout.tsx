@@ -1,15 +1,16 @@
-import { defineComponent, h, ref, type Component } from "vue"
-import { NLayout, NLayoutHeader, NLayoutContent, NLayoutSider, NMenu, NIcon } from "naive-ui"
-import IconCommunity from "@/components/icons/IconCommunity.vue"
-import IconDocumentation from "@/components/icons/IconDocumentation.vue"
-import IconEcosystem from "@/components/icons/IconEcosystem.vue"
-import { RouterView } from "vue-router"
+import type { Component } from 'vue'
+import { NIcon, NLayout, NLayoutContent, NLayoutHeader, NLayoutSider, NMenu } from 'naive-ui'
+import { defineComponent, h, ref } from 'vue'
+import { RouterView } from 'vue-router'
+import IconCommunity from '@/components/icons/IconCommunity.vue'
+import IconDocumentation from '@/components/icons/IconDocumentation.vue'
+import IconEcosystem from '@/components/icons/IconEcosystem.vue'
 
 const menuOptions = [
   {
     label: '且听风吟',
     key: 'hear-the-wind-sing',
-    icon: renderIcon(IconCommunity)
+    icon: renderIcon(IconCommunity),
   },
   {
     label: '1973年的弹珠玩具',
@@ -19,15 +20,15 @@ const menuOptions = [
     children: [
       {
         label: '鼠',
-        key: 'rat'
-      }
-    ]
+        key: 'rat',
+      },
+    ],
   },
   {
     label: '寻羊冒险记',
     key: 'a-wild-sheep-chase',
     disabled: true,
-    icon: renderIcon(IconCommunity)
+    icon: renderIcon(IconCommunity),
   },
   {
     label: '舞，舞，舞',
@@ -42,14 +43,14 @@ const menuOptions = [
           {
             label: '叙事者',
             key: 'narrator',
-            icon: renderIcon(IconDocumentation)
+            icon: renderIcon(IconDocumentation),
           },
           {
             label: '羊男',
             key: 'sheep-man',
-            icon: renderIcon(IconDocumentation)
-          }
-        ]
+            icon: renderIcon(IconDocumentation),
+          },
+        ],
       },
       {
         label: '饮品',
@@ -58,9 +59,9 @@ const menuOptions = [
         children: [
           {
             label: '威士忌',
-            key: 'whisky'
-          }
-        ]
+            key: 'whisky',
+          },
+        ],
       },
       {
         label: '食物',
@@ -68,23 +69,27 @@ const menuOptions = [
         children: [
           {
             label: '三明治',
-            key: 'sandwich'
-          }
-        ]
+            key: 'sandwich',
+          },
+        ],
       },
       {
         label: '过去增多，未来减少',
-        key: 'the-past-increases-the-future-recedes'
-      }
-    ]
-  }
+        key: 'the-past-increases-the-future-recedes',
+      },
+    ],
+  },
 ]
 
-const DefaultLayout = defineComponent((props, { slots }) => {
+const DefaultLayout = defineComponent(() => {
   const inverted = ref(false)
   return () => (
     <NLayout contentClass="h-100vh flex flex-col" nativeScrollbar={false}>
-      <NLayoutHeader class="h-15" inverted={inverted.value} bordered>
+      <NLayoutHeader
+        class="h-15"
+        inverted={inverted.value}
+        bordered
+      >
         Header Header Header
       </NLayoutHeader>
       <NLayout hasSider class="flex-1">

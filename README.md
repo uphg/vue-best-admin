@@ -1,6 +1,6 @@
 # Vue-Best-Admin
 
-**中文** | [English](README.en.md) 
+**中文** | [English](README.en.md)
 
 使用 Vite 快速创建基于 Vue 的 Web 应用。
 
@@ -33,6 +33,7 @@
 
 - 使用 Composition API 的 tsx 组件
 - 使用 `-` 分割的文件命名风格，例如 `home-page.tsx`、`use-foo.tsx` 等
+- 运行 `pnpm dlx @eslint/config-inspector` 查看已启用 ESLint 规则。
 
 ### 开发工具
 
