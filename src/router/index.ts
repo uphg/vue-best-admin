@@ -23,6 +23,14 @@ const router = createRouter({
           // which is lazy-loaded when the route is visited.
           component: () => import('@/pages/about/about-page'),
         },
+        {
+          path: '/icon',
+          name: 'icon',
+          // route level code-splitting
+          // this generates a separate chunk (About.[hash].js) for this route
+          // which is lazy-loaded when the route is visited.
+          component: () => import('@/pages/icon/icon-page'),
+        },
       ]
     },
   ],
