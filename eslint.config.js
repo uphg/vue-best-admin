@@ -6,6 +6,8 @@ export default antfu({
   vue: true,
   rules: {
     'style/brace-style': 'off', // 代码大括号风格
+    'style/jsx-curly-newline': 'off', // JSX 中大括号内强制换行
+    'style/jsx-one-expression-per-line': 'off', // JSX 中每行只能有一个表达式（会导致字符串拼接bug）
     'import/no-mutable-exports': 'off',
     'antfu/if-newline': 'off', // if 语句结束后强制换行
     'no-console': 'off',

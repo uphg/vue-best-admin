@@ -1,10 +1,14 @@
-import { defineComponent } from "vue"
+import { defineComponent } from 'vue'
 
 const Home = defineComponent(() => {
   return () => (
     <div>
       <h1>Home Page</h1>
-      <p>This is the home page of the Vue Best Admin application.</p>
+      {Array.from({ length: 100 }, (_, i) => (
+        <p key={i}>
+          This is line {i + 1} in the home page.
+        </p>
+      ))}
     </div>
   )
 })

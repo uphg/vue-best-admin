@@ -5,11 +5,23 @@ import { RouterView } from 'vue-router'
 import IconCommunity from '@/components/icons/IconCommunity.vue'
 import IconDocumentation from '@/components/icons/IconDocumentation.vue'
 import IconEcosystem from '@/components/icons/IconEcosystem.vue'
+import { useSidebarStore } from '@/stores/sidebar'
+import SidebarToggle from './components/layout-sidebar/sidebar-toggle'
 
 const menuOptions = [
   {
     label: '且听风吟',
     key: 'hear-the-wind-sing',
+    icon: renderIcon(IconCommunity),
+  },
+  {
+    label: '且听风吟',
+    key: 'hear-the-wind-sing2',
+    icon: renderIcon(IconCommunity),
+  },
+  {
+    label: '且听风吟',
+    key: 'hear-the-wind-sing3',
     icon: renderIcon(IconCommunity),
   },
   {
@@ -83,17 +95,19 @@ const menuOptions = [
 
 const DefaultLayout = defineComponent(() => {
   const inverted = ref(false)
+  const sidebar = useSidebarStore()
   return () => (
     <NLayout contentClass="h-100vh flex flex-col" nativeScrollbar={false}>
-      <NLayoutHeader
+      {/* <NLayoutHeader
         class="h-15"
         inverted={inverted.value}
         bordered
       >
         Header Header Header
-      </NLayoutHeader>
+      </NLayoutHeader> */}
       <NLayout hasSider class="flex-1">
         <NLayoutSider
+          v-model:collapsed={sidebar.collapsed}
           bordered
           showTrigger
           collapseMode="width"
@@ -101,15 +115,30 @@ const DefaultLayout = defineComponent(() => {
           width={240}
           nativeScrollbar={false}
           inverted={inverted.value}
+          contentClass="flex flex-col h-full"
         >
-          <NMenu
-            inverted={inverted.value}
-            collapsedWidth={64}
-            collapsedIconSize={22}
-            options={menuOptions}
-          />
+          <NLayoutHeader class="h-15" bordered>Logo</NLayoutHeader>
+          <NLayoutContent nativeScrollbar={false}>
+            <NMenu
+              class="flex-1"
+              inverted={inverted.value}
+              collapsedWidth={64}
+              collapsedIconSize={22}
+              options={menuOptions}
+            />
+          </NLayoutContent>
+          {/* <NLayoutFooter class="h-15">
+            底部
+          </NLayoutFooter> */}
         </NLayoutSider>
         <NLayout contentClass="flex flex-col">
+          <NLayoutHeader
+            class="h-15"
+            inverted={inverted.value}
+            bordered
+          >
+            <SidebarToggle />
+          </NLayoutHeader>
           <NLayoutContent class="flex-1" native-scrollbar={false}>
             <RouterView />
           </NLayoutContent>
