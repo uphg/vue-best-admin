@@ -10,6 +10,7 @@ export default antfu({
     'style/jsx-one-expression-per-line': 'off', // JSX 中每行只能有一个表达式（会导致字符串拼接bug）
     'import/no-mutable-exports': 'off',
     'antfu/if-newline': 'off', // if 语句结束后强制换行
+    'no-unused-vars': 'off',
     'no-console': 'off',
     'no-restricted-syntax': 'off',
     'no-use-before-define': 'off',
@@ -24,6 +25,7 @@ export default antfu({
     'vue/block-order': ['error', {
       order: ['template', 'script', 'style'],
     }],
+    'eslint-comments/no-unlimited-disable': 'off',
   },
 }, {
   files: ['*.tsx', '*.jsx'],
