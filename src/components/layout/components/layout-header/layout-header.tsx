@@ -1,5 +1,7 @@
 import { NLayoutHeader } from 'naive-ui'
+import LayoutNavTags from '../layout-nav-tags/layout-nav-tags'
 import SidebarToggle from '../layout-sidebar/sidebar-toggle'
+import HeaderBreadcrumb from './header-breadcrumb'
 
 const LayoutHeader = defineComponent(() => {
   return () => (
@@ -7,7 +9,11 @@ const LayoutHeader = defineComponent(() => {
       class="h-15"
       bordered
     >
-      <SidebarToggle />
+      <div>
+        <SidebarToggle />
+        <HeaderBreadcrumb />
+      </div>
+      <LayoutNavTags />
     </NLayoutHeader>
   )
 })

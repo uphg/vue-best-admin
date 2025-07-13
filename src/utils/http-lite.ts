@@ -1,4 +1,5 @@
-// HTTP 请求配置接口
+import type { JSONValue } from '@/types/base'
+
 export interface HTTPConfig {
   baseURL?: string
   timeout?: number
@@ -7,7 +8,6 @@ export interface HTTPConfig {
   responseType?: 'json' | 'text' | 'blob' | 'arrayBuffer'
 }
 
-// 拦截器配置接口
 export interface Interceptor<T = any> {
   onFulfilled?: (value: T) => T | Promise<T>
   onRejected?: (error: any) => any
@@ -18,7 +18,6 @@ export interface Interceptors {
   response?: Interceptor<HTTPResponse>
 }
 
-// HTTP 响应接口
 export interface HTTPResponse<T = any> {
   data: T
   status: number
@@ -27,7 +26,6 @@ export interface HTTPResponse<T = any> {
   config: HTTPConfig
 }
 
-// HTTP 错误接口
 export interface HTTPError {
   message: string
   status?: number
@@ -36,7 +34,6 @@ export interface HTTPError {
   config: HTTPConfig
 }
 
-// HTTPClient 构造函数选项
 export interface HTTPClientOptions {
   baseURL?: string
   timeout?: number
@@ -209,11 +206,11 @@ export class HTTPClient {
     return this.request<T>('GET', url, undefined, { ...config, params })
   }
 
-  async post<T>(url: string, data?: any, config?: HTTPConfig): Promise<HTTPResponse<T>> {
+  async post<T>(url: string, data?: Record<string, JSONValue>, config?: HTTPConfig): Promise<HTTPResponse<T>> {
     return this.request<T>('POST', url, data, config)
   }
 
-  async put<T>(url: string, data?: any, config?: HTTPConfig): Promise<HTTPResponse<T>> {
+  async put<T>(url: string, data?: Record<string, JSONValue>, config?: HTTPConfig): Promise<HTTPResponse<T>> {
     return this.request<T>('PUT', url, data, config)
   }
 
@@ -233,3 +230,39 @@ export class HTTPClient {
     return this.request<T>('PATCH', url, data, config)
   }
 }
+
+export const http = new HTTPClient({
+  baseURL: import.meta.env.VITE_API_BASE_URL || '',
+  timeout: 5000,
+  headers: {
+    Accept: 'application/json',
+  },
+}, {
+  request: {
+    onFulfilled: (config) => {
+      // 添加认证 token
+      const token = localStorage.getItem('auth_token')
+      if (token) {
+        config.headers = {
+          ...config.headers,
+          Authorization: `Bearer ${token}`,
+        }
+      }
+      return config
+    },
+    onRejected: (error) => {
+      console.error('Request error:', error)
+      return Promise.reject(error)
+    },
+  },
+  response: {
+    onFulfilled: (response) => {
+      // 处理全局响应
+      return response
+    },
+    onRejected: (error) => {
+      console.error('Response error:', error)
+      return Promise.reject(error)
+    },
+  },
+})

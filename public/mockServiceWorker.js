@@ -168,7 +168,7 @@ async function handleRequest(event, requestId) {
  * that registered the worker. It's with the latter the worker should
  * communicate with during the response resolving phase.
  * @param {FetchEvent} event
- * @returns {Promise<Client | undefined>}
+ * @returns {Promise<Client | undefined>} promise
  */
 async function resolveMainClient(event) {
   const client = await self.clients.get(event.clientId)
@@ -201,7 +201,7 @@ async function resolveMainClient(event) {
  * @param {FetchEvent} event
  * @param {Client | undefined} client
  * @param {string} requestId
- * @returns {Promise<Response>}
+ * @returns {Promise<Response>} promise
  */
 async function getResponse(event, client, requestId) {
   // Clone the request because it might've been already used
@@ -277,7 +277,7 @@ async function getResponse(event, client, requestId) {
  * @param {Client} client
  * @param {any} message
  * @param {Array<Transferable>} transferrables
- * @returns {Promise<any>}
+ * @returns {Promise<any>} promise
  */
 function sendToClient(client, message, transferrables = []) {
   return new Promise((resolve, reject) => {
@@ -300,7 +300,7 @@ function sendToClient(client, message, transferrables = []) {
 
 /**
  * @param {Response} response
- * @returns {Response}
+ * @returns {Response} response
  */
 function respondWithMock(response) {
   // Setting response status code to 0 is a no-op.

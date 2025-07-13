@@ -91,9 +91,15 @@ const menuOptions = [
 
 const LayoutSidebar = defineComponent(() => {
   const sidebar = useSidebarStore()
+  const expandedKeys = ref<string[]>([])
+  const selectedKey = ref<string | undefined>()
+  console.log('sidebar.menus')
+  console.log(sidebar.menus)
   return () => (
     <NLayoutSider
-      v-model:collapsed={sidebar.collapsed}
+      v-model:value={selectedKey.value}
+      v-model:expanded-keys={expandedKeys.value}
+      collapsed={sidebar.collapsed}
       bordered
       showTrigger
       collapseMode="width"
@@ -108,7 +114,7 @@ const LayoutSidebar = defineComponent(() => {
           class="flex-1"
           collapsedWidth={64}
           collapsedIconSize={22}
-          options={menuOptions}
+          options={sidebar.menus}
         />
       </NLayoutContent>
       {/* <NLayoutFooter class="h-15">

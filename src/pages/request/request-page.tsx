@@ -1,30 +1,31 @@
+import { http } from '@/utils/http-lite'
+
 const RequestPage = defineComponent(() => {
   onMounted(async () => {
-    const response = await fetch('https://api.example.com/user')
-
-    response.json().then((data) => {
-      console.log('Fetched user data:', data)
-    })
+    try {
+      const response = await http.get('https://api.example.com/user')
+      console.log('Fetched user data:', response.data)
+    } catch (error) {
+      console.error('Error fetching user data:', error)
+    }
 
     getData()
   })
 
   async function getData() {
     try {
-      const response = await fetch('products.json')
-      if (!response.ok) {
-        throw new Error(`Response status: ${response.status}`)
-      }
-
-      const json = await response.json()
-      console.log(json)
-    } catch (error) {
+      const response = await http.get('products.json')
+      console.log(response.data)
+    } catch (error: any) {
       console.error(error.message)
     }
   }
   return () => (
     <div>
       <h2>请求测试</h2>
+      <p>查看控制台输出</p>
+      <button onClick={getData}>获取数据</button>
+
     </div>
   )
 })

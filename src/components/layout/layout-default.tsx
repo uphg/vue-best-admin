@@ -4,7 +4,7 @@ import { RouterView } from 'vue-router'
 import LayoutHeader from './components/layout-header/layout-header'
 import LayoutSidebar from './components/layout-sidebar/layout-sidebar'
 
-const DefaultLayout = defineComponent(() => {
+const LayoutDefault = defineComponent(() => {
   return () => (
     <NLayout contentClass="h-100vh flex flex-col" nativeScrollbar={false}>
       <NLayout hasSider class="flex-1">
@@ -20,4 +20,4 @@ const DefaultLayout = defineComponent(() => {
   )
 })
 
-export default DefaultLayout
+export default LayoutDefault
