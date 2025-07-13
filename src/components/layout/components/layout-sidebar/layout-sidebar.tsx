@@ -93,8 +93,7 @@ const LayoutSidebar = defineComponent(() => {
   const sidebar = useSidebarStore()
   const expandedKeys = ref<string[]>([])
   const selectedKey = ref<string | undefined>()
-  console.log('sidebar.menus')
-  console.log(sidebar.menus)
+
   return () => (
     <NLayoutSider
       v-model:value={selectedKey.value}

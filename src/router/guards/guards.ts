@@ -43,8 +43,6 @@ async function loadPermissionInfo(router: Router, { userStore, sidebarStore }: {
   sidebarStore.setMenuMap(menuMap)
   sidebarStore.setMenus(menus)
   userStore.set(userInfoRes.data)
-  console.log('# userStore.id')
-  console.log(userStore.id)
 
   routes.forEach((route) => {
     router.addRoute(route)
