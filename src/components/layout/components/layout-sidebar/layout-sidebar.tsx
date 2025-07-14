@@ -1,7 +1,7 @@
 import type { MenuOption } from 'naive-ui'
 import type { RouteLocationNormalized, RouteLocationRaw, RouteRecordRaw } from 'vue-router'
 import { isNil } from 'lodash-es'
-import { NIcon, NLayoutContent, NLayoutHeader, NLayoutSider, NMenu } from 'naive-ui'
+import { NLayoutContent, NLayoutHeader, NLayoutSider, NMenu } from 'naive-ui'
 import { RouterLink } from 'vue-router'
 import { useSidebarStore } from '@/stores/sidebar'
 
@@ -49,9 +49,6 @@ const LayoutSidebar = defineComponent(() => {
           render-icon={renderMenuIcon}
         />
       </NLayoutContent>
-      {/* <NLayoutFooter class="h-15">
-            底部
-          </NLayoutFooter> */}
     </NLayoutSider>
   )
 })
@@ -77,11 +74,7 @@ function renderMenuIcon(option: MenuOption) {
   // 返回 falsy 值，不再渲染图标及占位符
   if (option.key === 'food') return null
   if (!option.icon) return
-  return (
-    <NIcon>
-      {h(option.icon)}
-    </NIcon>
-  )
+  return h(option.icon)
 }
 
 export default LayoutSidebar

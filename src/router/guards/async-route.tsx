@@ -1,6 +1,7 @@
 import type { Component } from 'vue'
 import type { JSX } from 'vue/jsx-runtime'
 import { NIcon } from 'naive-ui'
+import { h } from 'vue'
 import IconArrowUpRight from '~icons/lucide/arrow-up-right'
 import IconAudioWaveform from '~icons/lucide/audio-waveform'
 import IconGlobe from '~icons/lucide/globe'
@@ -119,18 +120,20 @@ function getOnlyChildMenu(route: any) {
   while (child?.children?.length) {
     const visibleChildren = child.children.filter((item: any) => item.hidden !== true)
     if (visibleChildren.length === 0) break
-    const path = pathJoin([route.path, visibleChildren[0].path])
-    child = { ...visibleChildren[0], path }
+    const firstVisibleChild = visibleChildren[0]
+    const path = pathJoin([route.path, firstVisibleChild.path])
+    child = { ...firstVisibleChild, path }
   }
   return child
 }
 
 function pathJoin(paths: string[]) {
-  return `/${paths.filter(isUnnil).join('/').replace(/^\//, '')}`
+  const validPaths = paths.filter(isUnnil)
+  return validPaths.length > 0 ? `/${validPaths.join('/').replace(/^\//, '')}` : '/'
 }
 
-function isUnnil(value: any) {
-  return value !== undefined && value !== null
+function isUnnil(value: any): value is string {
+  return value !== undefined && value !== null && value !== ''
 }
 
 function cloneJSON<T extends object>(json: T): T {
