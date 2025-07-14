@@ -1,98 +1,29 @@
+import type { MenuOption } from 'naive-ui'
+import type { RouteLocationNormalized, RouteLocationRaw, RouteRecordRaw } from 'vue-router'
+import { isNil } from 'lodash-es'
 import { NIcon, NLayoutContent, NLayoutHeader, NLayoutSider, NMenu } from 'naive-ui'
-import IconCommunity from '@/components/icons/IconCommunity.vue'
-import IconDocumentation from '@/components/icons/IconDocumentation.vue'
-import IconEcosystem from '@/components/icons/IconEcosystem.vue'
+import { RouterLink } from 'vue-router'
 import { useSidebarStore } from '@/stores/sidebar'
-
-const menuOptions = [
-  {
-    label: '且听风吟',
-    key: 'hear-the-wind-sing',
-    icon: renderIcon(IconCommunity),
-  },
-  {
-    label: '且听风吟',
-    key: 'hear-the-wind-sing2',
-    icon: renderIcon(IconCommunity),
-  },
-  {
-    label: '且听风吟',
-    key: 'hear-the-wind-sing3',
-    icon: renderIcon(IconCommunity),
-  },
-  {
-    label: '1973年的弹珠玩具',
-    key: 'pinball-1973',
-    icon: renderIcon(IconCommunity),
-    disabled: true,
-    children: [
-      {
-        label: '鼠',
-        key: 'rat',
-      },
-    ],
-  },
-  {
-    label: '寻羊冒险记',
-    key: 'a-wild-sheep-chase',
-    disabled: true,
-    icon: renderIcon(IconCommunity),
-  },
-  {
-    label: '舞，舞，舞',
-    key: 'dance-dance-dance',
-    icon: renderIcon(IconCommunity),
-    children: [
-      {
-        type: 'group',
-        label: '人物',
-        key: 'people',
-        children: [
-          {
-            label: '叙事者',
-            key: 'narrator',
-            icon: renderIcon(IconDocumentation),
-          },
-          {
-            label: '羊男',
-            key: 'sheep-man',
-            icon: renderIcon(IconDocumentation),
-          },
-        ],
-      },
-      {
-        label: '饮品',
-        key: 'beverage',
-        icon: renderIcon(IconEcosystem),
-        children: [
-          {
-            label: '威士忌',
-            key: 'whisky',
-          },
-        ],
-      },
-      {
-        label: '食物',
-        key: 'food',
-        children: [
-          {
-            label: '三明治',
-            key: 'sandwich',
-          },
-        ],
-      },
-      {
-        label: '过去增多，未来减少',
-        key: 'the-past-increases-the-future-recedes',
-      },
-    ],
-  },
-]
 
 const LayoutSidebar = defineComponent(() => {
   const sidebar = useSidebarStore()
   const expandedKeys = ref<string[]>([])
   const selectedKey = ref<string | undefined>()
+  const route = useRoute()
+  watch(route, handleMenuExpand)
+
+  handleMenuExpand(route)
+
+  function handleMenuExpand(route: RouteLocationNormalized) {
+    const { matched, name } = route ?? {}
+    expandedKeys.value = getExpandedKeys(matched)
+    if (isNil(name)) return
+    selectedKey.value = name as string
+  }
+
+  function getExpandedKeys(matched: RouteRecordRaw[]) {
+    return matched.map(item => item.name as string)
+  }
 
   return () => (
     <NLayoutSider
@@ -114,6 +45,8 @@ const LayoutSidebar = defineComponent(() => {
           collapsedWidth={64}
           collapsedIconSize={22}
           options={sidebar.menus}
+          render-label={renderMenuLabel}
+          render-icon={renderMenuIcon}
         />
       </NLayoutContent>
       {/* <NLayoutFooter class="h-15">
@@ -123,8 +56,32 @@ const LayoutSidebar = defineComponent(() => {
   )
 })
 
-function renderIcon(icon: Component) {
-  return () => h(NIcon, null, { default: () => h(icon) })
+function renderMenuLabel(option: MenuOption) {
+  if ('href' in option) {
+    return h('a', { href: option.href, target: '_blank' }, option.label as string)
+  }
+  return option.type === 'item'
+    ? (
+        <RouterLink to={option.path as RouteLocationRaw}>
+          {option.label}
+        </RouterLink>
+      )
+    : (
+        <div>{option.label}</div>
+      )
+}
+
+function renderMenuIcon(option: MenuOption) {
+  // 渲染图标占位符以保持缩进
+  if (option.key === 'sheep-man') return true
+  // 返回 falsy 值，不再渲染图标及占位符
+  if (option.key === 'food') return null
+  if (!option.icon) return
+  return (
+    <NIcon>
+      {h(option.icon)}
+    </NIcon>
+  )
 }
 
 export default LayoutSidebar

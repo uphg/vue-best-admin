@@ -7,13 +7,13 @@ export const constantRoutes = [
     path: '',
     component: LayoutDefault,
     redirect: '/home',
-    onlyChild: true,
+    mergeSingleChild: true,
     children: [
       {
         path: 'home',
         name: 'Home',
         component: Home,
-        meta: { title: '首页', affix: true },
+        meta: { title: '首页', icon: 'shell', affix: true },
       },
     ],
   },

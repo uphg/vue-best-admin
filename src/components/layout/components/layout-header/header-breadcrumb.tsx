@@ -9,25 +9,23 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
     const sidebar = useSidebarStore()
+    const breadItems = computed(() => {
+      const current = sidebar.menuMap?.get(route?.name as string)
+      const matchs = current?.matchs.filter(item => !!item?.name)
 
-    const breadItems = computed(
-      () => {
-        const current = sidebar.menuMap?.get(route?.name as string)
-        console.log('current')
-        console.log(current)
-        const matchs = current?.matchs.filter(item => !!item?.name)
-        const result = matchs.map(({ meta, path, name, children }: any) => ({
-          label: meta?.title,
-          key: path,
-          name,
-          children,
-        }))
-        return result
-      },
-    )
+      const result = matchs?.map(({ meta, path, name, children }: any) => ({
+        label: meta?.title,
+        key: path,
+        name,
+        children,
+      }))
+      return result
+    })
 
     function getDropOptions(item: any) {
-      return sidebar.menuMap?.get(item.name)?.children || []
+      const result = sidebar.menuMap?.get(item.name)?.children || []
+
+      return result
     }
 
     function handleDropSelect(name: string) {
@@ -36,7 +34,7 @@ export default defineComponent({
 
     return () => (
       <NBreadcrumb>
-        {breadItems.value.map((item, index) => (
+        {breadItems.value?.map((item, index) => (
           <NBreadcrumbItem key={item.key}>
             <NDropdown
               options={index < breadItems.value.length - 1 ? getDropOptions(item) : []}

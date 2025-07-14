@@ -14,8 +14,6 @@ export function loadRouterGuard(router: Router) {
   const userStore = useUserStore()
   const sidebarStore = useSidebarStore()
   router.beforeEach(async (to, from) => {
-    console.log('top - userStore.id')
-    console.log(userStore.id)
     if (userStore.id) {
       return toPermissionRoute(to, from)
     }
@@ -31,12 +29,9 @@ export function loadRouterGuard(router: Router) {
 async function loadPermissionInfo(router: Router, { userStore, sidebarStore }: { userStore: UserStore, sidebarStore: SidebarStore }) {
   const routeDataRes = await apiGetRouteData()
   const userInfoRes = await apiGetUserInfo()
-  console.log('routeDataRes')
-  console.log(routeDataRes)
-  console.log('userInfoRes')
-  console.log({ ...userInfoRes.data })
   const routes = createAsyncRoutes(routeDataRes.data)
-  const menuData = (constantRoutes as any[]).concat(routeDataRes.data)
+  const menuData = (constantRoutes as any[]).concat(routes)
+
   const menus = createSidebarMenus(menuData)
   const menuMap = createSidebarMenuMap(menuData)
 
@@ -50,8 +45,6 @@ async function loadPermissionInfo(router: Router, { userStore, sidebarStore }: {
 }
 
 function toCommonRoute(to: RouteLocationNormalizedLoaded, _from: RouteLocationNormalized) {
-  console.log('to?.name')
-  console.log(to?.name)
   if (to?.name && commonRoutes.includes(to.name)) {
     return true
   } else {
@@ -60,8 +53,6 @@ function toCommonRoute(to: RouteLocationNormalizedLoaded, _from: RouteLocationNo
 }
 
 function toPermissionRoute(to: RouteLocationNormalizedLoaded, _from: RouteLocationNormalized) {
-  console.log('to?.name')
-  console.log(to?.name)
   if (to?.name && commonRoutes.includes(to.name)) {
     return '/home'
   } else {

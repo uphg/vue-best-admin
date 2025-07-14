@@ -5,14 +5,11 @@ import HeaderBreadcrumb from './header-breadcrumb'
 
 const LayoutHeader = defineComponent(() => {
   return () => (
-    <NLayoutHeader
-      class="h-15"
-      bordered
-    >
-      <div>
+    <NLayoutHeader class="flex flex-col h-[calc(var(--header-height)+var(--nav-tag-height))]">
+      <NLayoutHeader class="px-4 flex gap-2 h-[var(--header-height)] items-center" bordered>
         <SidebarToggle />
         <HeaderBreadcrumb />
-      </div>
+      </NLayoutHeader>
       <LayoutNavTags />
     </NLayoutHeader>
   )

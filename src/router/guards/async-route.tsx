@@ -1,3 +1,16 @@
+import type { Component } from 'vue'
+import type { JSX } from 'vue/jsx-runtime'
+import { NIcon } from 'naive-ui'
+import IconArrowUpRight from '~icons/lucide/arrow-up-right'
+import IconAudioWaveform from '~icons/lucide/audio-waveform'
+import IconGlobe from '~icons/lucide/globe'
+import IconLayoutList from '~icons/lucide/layout-list'
+import IconLink from '~icons/lucide/link'
+import IconSettings from '~icons/lucide/settings'
+import IconShell from '~icons/lucide/shell'
+import IconUser from '~icons/lucide/user'
+import IconUserCog from '~icons/lucide/user-cog'
+import IconUserSearch from '~icons/lucide/user-search'
 import LayoutDefault from '@/components/layout/layout-default'
 import LayoutInnerLink from '@/components/layout/layout-inner-link'
 import LayoutParentView from '@/components/layout/layout-parent-view'
@@ -5,25 +18,23 @@ import LayoutParentView from '@/components/layout/layout-parent-view'
 const pagesModule = import.meta.glob('@/pages/**/*-page.tsx')
 
 const layoutsMap: { [key: string]: any } = {
-  Layout: LayoutDefault,
+  Default: LayoutDefault,
   ParentView: LayoutParentView,
   InnerLink: LayoutInnerLink,
 }
 
-/**
- * iconsMap 是根据 @/mocks/common 中的 routeDate 中 meta.icon 生成的图标映射
- */
-const iconsMap: { [key: string]: any } = {
-  'user-search': () => import('~icons/lucide/user-search'),
-  'audio-waveform': () => import('~icons/lucide/audio-waveform'),
-  'arrow-up-right': () => import('~icons/lucide/arrow-up-right'),
-  'settings': () => import('~icons/lucide/settings'),
-  'user': () => import('~icons/lucide/user'),
-  'user-cog': () => import('~icons/lucide/user-cog'),
-  'layout-list': () => import('~icons/lucide/layout-list'),
-  'globe': () => import('~icons/lucide/globe'),
-  'link': () => import('~icons/lucide/link'),
-}
+const iconsMap = createIconsMap({
+  'user-search': IconUserSearch,
+  'audio-waveform': IconAudioWaveform,
+  'arrow-up-right': IconArrowUpRight,
+  'settings': IconSettings,
+  'user': IconUser,
+  'user-cog': IconUserCog,
+  'layout-list': IconLayoutList,
+  'globe': IconGlobe,
+  'link': IconLink,
+  'shell': IconShell,
+})
 
 /**
  * 创建异步路由
@@ -35,18 +46,20 @@ export function createAsyncRoutes(data: any[]) {
   return baseCreateRoutes(routes)
 }
 
-function baseCreateRoutes(routes: any[]) {
+function baseCreateRoutes(routes: any[], paths: any[] = []) {
   const result: any[] = []
   for (const route of routes) {
-    const { component, children, ...rest } = route
+    const { component, children, path, name, ...rest } = route
     const newComponent = getComponent(component)
+    const newPaths = [...paths, path]
     const item: any = {
       component: newComponent,
+      path,
+      name: name ?? convertToPascalCase(newPaths),
       ...rest,
     }
-
     if (children) {
-      item.children = baseCreateRoutes(children)
+      item.children = baseCreateRoutes(children, newPaths)
     }
     result.push(item)
   }
@@ -76,6 +89,7 @@ function baseCreateMenus(routes: any[], parentPaths: string[] = [], matchs: any[
       key: name,
       path: newPath,
       type: 'item',
+      icon: meta?.icon && iconsMap?.[meta.icon],
       show: hidden !== true,
       matchs: [...matchs, { meta, path, name }],
       ...rest,
@@ -114,7 +128,8 @@ function getOnlyChildMenu(route: any) {
   while (child?.children?.length) {
     const visibleChildren = child.children.filter((item: any) => item.hidden !== true)
     if (visibleChildren.length === 0) break
-    child = visibleChildren[0]
+    const path = pathJoin([route.path, visibleChildren[0].path])
+    child = { ...visibleChildren[0], path }
   }
   return child
 }
@@ -129,4 +144,38 @@ function isUnnil(value: any) {
 
 function cloneJSON<T extends object>(json: T): T {
   return JSON.parse(JSON.stringify(json))
+}
+
+/**
+ * 将字符串数组转换为 PascalCase 格式的字符串（首字母大写，无分隔符）
+ * @param arr 输入字符串数组，可能包含路径（/）、连字符（-）或空格
+ * @returns 转换后的 PascalCase 字符串，自动忽略空项
+ */
+function convertToPascalCase(arr: string[]): string {
+  return arr
+    .filter(item => item?.trim().length > 0)
+    .flatMap((item) => {
+      return item.split(/[/\- ]+/)
+        .filter(part => part.trim().length > 0)
+        .map(part => part.charAt(0).toUpperCase() + part.slice(1).toLowerCase())
+    })
+    .join('')
+}
+
+function createIconsMap(iconsMap: Record<string, Component>) {
+  const icons = Object.entries(iconsMap)
+  const result: Record<string, () => JSX.Element> = {}
+  for (const [key, value] of icons) {
+    result[key] = createRenderIcon(value)
+  }
+
+  return result
+}
+
+function createRenderIcon(icon: Component) {
+  return () => (
+    <NIcon>
+      {h(icon)}
+    </NIcon>
+  )
 }

@@ -1,30 +1,49 @@
 export const routeDate = [
   {
     path: '/about',
-    component: 'about/about-page',
+    component: 'Default',
     mergeSingleChild: true,
-    meta: {
-      title: '关于',
-      icon: 'user-search',
-    },
+    children: [
+      {
+        path: 'base',
+        component: 'about/about-page',
+        meta: {
+          title: '关于',
+          icon: 'user-search',
+        },
+      },
+    ],
   },
   {
     path: '/icon',
-    component: 'icon/icon-page',
+    component: 'Default',
     mergeSingleChild: true,
-    meta: {
-      title: '图标',
-      icon: 'audio-waveform',
-    },
+    children: [
+      {
+        path: 'base',
+        component: 'icon/icon-page',
+        meta: {
+          title: '图标',
+          icon: 'audio-waveform',
+        },
+      },
+    ],
   },
+
   {
     path: '/request',
-    component: 'request/request-page',
+    component: 'Default',
     mergeSingleChild: true,
-    meta: {
-      title: '请求示例',
-      icon: 'arrow-up-right',
-    },
+    children: [
+      {
+        path: 'base',
+        component: 'request/request-page',
+        meta: {
+          title: '请求示例',
+          icon: 'arrow-up-right',
+        },
+      },
+    ],
   },
   {
     path: '/system',
@@ -62,8 +81,8 @@ export const routeDate = [
       {
         path: 'embed',
         redirect: 'noRedirect',
-        component: 'Default',
-        mergeSingleChild: true,
+        component: 'ParentView',
+
         meta: {
           title: '内嵌网页',
           icon: 'globe',

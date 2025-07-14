@@ -4,7 +4,6 @@ import { routeDate } from './common'
 
 export const handlers = [
   http.get('https://api.example.com/user', () => {
-    console.log('Mocked: GET https://api.example.com/user')
     return HttpResponse.json({
       id: 'abc-123',
       firstName: 'John',

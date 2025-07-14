@@ -3,6 +3,7 @@ import type { MouseEventHandler } from '@/types/intrinsic'
 import { NIcon } from 'naive-ui'
 import IconX from '~icons/lucide/x'
 import { cn } from '@/utils/class-merge'
+import PureButton from '../pure-button/pure-button'
 
 const Tag = defineComponent({
   props: {
@@ -55,7 +56,7 @@ const Tag = defineComponent({
     const tagClasses = computed(() => {
       return cn(
       // 基础样式
-        'inline-flex items-center px-2 py-1 text-sm font-medium transition-colors duration-200 focus:outline-none',
+        'inline-flex items-center px-1.5 py-1 text-sm font-medium transition-colors duration-200 focus:outline-none',
 
         // 默认样式
         !props.hue && !props.checkable && 'text-gray-700 bg-gray-100 hover:bg-gray-200',
@@ -64,7 +65,7 @@ const Tag = defineComponent({
         props.bordered ? 'border border-gray-300' : 'border-none',
 
         // 圆角样式
-        props.round ? 'rounded-full' : 'rounded-md',
+        props.round ? 'rounded-full' : 'rounded-xs',
 
         // 禁用样式
         props.disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer',
@@ -102,11 +103,11 @@ const Tag = defineComponent({
       >
         {slots.default?.()}
         {props.closable && (
-          <span class="ml-1 cursor-pointer" onClick={handleClose}>
-            <NIcon>
+          <PureButton class="ml-.5 p-.5 inline-flex cursor-pointer items-center" onClick={handleClose}>
+            <NIcon size="14">
               <IconX />
             </NIcon>
-          </span>
+          </PureButton>
         )}
       </div>
     )

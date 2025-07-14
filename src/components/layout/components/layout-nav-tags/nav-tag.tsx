@@ -18,7 +18,7 @@ const NavTag = defineComponent({
     return () => {
       const { active, closable, onClick, onClose } = props
       return (
-        <Tag v-model:checkable={active} closable={closable} onClick={onClick} onClose={onClose}>
+        <Tag hue={active ? 'blue' : ''} closable={closable} onClick={onClick} onClose={onClose}>
           <span>{slots.default?.()}</span>
         </Tag>
       )

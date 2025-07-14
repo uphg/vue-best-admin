@@ -23,10 +23,6 @@ export const useUserStore = defineStore('user', () => {
   })
 
   function set(data: UserState) {
-    console.log('data')
-    console.log(data)
-    console.log('state')
-    console.log(state)
     assign(state, data)
   }
 
