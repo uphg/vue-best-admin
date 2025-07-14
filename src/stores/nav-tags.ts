@@ -36,7 +36,6 @@ export const useNavTagsStore = defineStore('nav-tags', () => {
   function setActive(name: string) {
     const tag = tags.value.find(tag => tag.name === name)
     if (!tag) {
-      console.warn(`NavTags with name "${name}" does not exist.`)
       return
     }
     active.value = name

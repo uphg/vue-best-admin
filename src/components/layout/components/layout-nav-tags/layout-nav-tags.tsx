@@ -14,12 +14,13 @@ const LayoutNavTags = defineComponent(() => {
   watch(
     () => route.name,
     () => {
-      navTagsStore.setActive(route.name as string)
-      navTagsStore.append({
+      const tag = {
         name: route.name as string,
         title: route.meta?.title as string,
         path: route.path,
-      })
+      }
+      navTagsStore.append(tag)
+      navTagsStore.setActive(route.name as string)
     },
     { immediate: true },
   )
