@@ -6,7 +6,7 @@ import { useSidebarStore } from '@/stores/sidebar'
 import { useUserStore } from '@/stores/user'
 import { getToken } from '@/utils/token'
 import { constantRoutes } from '../router'
-import { createAsyncRoutes, createSidebarMenuMap, createSidebarMenus } from './async-route'
+import { createAsyncRoutes, createSidebarMenus } from './async-route'
 
 const commonRoutes: (string | symbol)[] = ['Login', '404']
 
@@ -32,10 +32,10 @@ async function loadPermissionInfo(router: Router, { userStore, sidebarStore }: {
   const routes = createAsyncRoutes(routeDataRes.data)
   const menuData = (constantRoutes as any[]).concat(routes)
 
-  const menus = createSidebarMenus(menuData)
-  const menuMap = createSidebarMenuMap(menuData)
+  const { menus, menusMap } = createSidebarMenus(menuData)
+  // const menusMap = createSidebarMenuMap(menuData)
 
-  sidebarStore.setMenuMap(menuMap)
+  sidebarStore.setMenuMap(menusMap)
   sidebarStore.setMenus(menus)
   userStore.set(userInfoRes.data)
 

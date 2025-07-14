@@ -73,17 +73,19 @@ function baseCreateRoutes(routes: any[], paths: any[] = []) {
  */
 export function createSidebarMenus(data: any[]) {
   const routes = cloneJSON(data)
-  return baseCreateMenus(routes)
+  const menusMap = new Map()
+  const menus = baseCreateMenus(routes, menusMap)
+  return { menus, menusMap }
 }
 
-function baseCreateMenus(routes: any[], parentPaths: string[] = [], matchs: any[] = []) {
+function baseCreateMenus(routes: any[], menusMap: Map<string, any>, options?: { paths: string[], matchs: any[] }) {
+  const { paths = [], matchs = [] } = options ?? {}
   const menus: any[] = []
   for (const route of routes) {
     const { path, name, meta, children, hidden, ...rest } = (route?.mergeSingleChild ? getOnlyChildMenu(route) : route) ?? {}
     if (hidden === true) continue
-    const pathList = [...parentPaths, path]
-
-    const newPath = pathJoin(pathList)
+    const newPaths = [...paths, path]
+    const newPath = pathJoin(newPaths)
     const item: any = {
       label: meta?.title,
       key: name,
@@ -94,25 +96,14 @@ function baseCreateMenus(routes: any[], parentPaths: string[] = [], matchs: any[
       matchs: [...matchs, { meta, path, name }],
       ...rest,
     }
+    menusMap.set(item.key, item)
     if (children) {
       item.type = 'submenu'
-      item.children = baseCreateMenus(children, pathList, item.matchs)
+      item.children = baseCreateMenus(children, menusMap, { paths: newPaths, matchs: item.matchs })
     }
     menus.push(item)
   }
   return menus
-}
-
-export function createSidebarMenuMap(data: any[], map: Map<string, any> = new Map()) {
-  // menus to map
-  const menus = createSidebarMenus(data)
-  for (const menu of menus) {
-    map.set(menu.key, menu)
-    if (menu.children) {
-      createSidebarMenuMap(menu.children, map)
-    }
-  }
-  return map
 }
 
 function getComponent(componentPath: string) {

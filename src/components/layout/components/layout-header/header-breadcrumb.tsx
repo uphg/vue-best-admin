@@ -10,7 +10,7 @@ export default defineComponent({
     const router = useRouter()
     const sidebar = useSidebarStore()
     const breadItems = computed(() => {
-      const current = sidebar.menuMap?.get(route?.name as string)
+      const current = sidebar.menusMap?.get(route?.name as string)
       const matchs = current?.matchs.filter(item => !!item?.name)
 
       const result = matchs?.map(({ meta, path, name, children }: any) => ({
@@ -23,7 +23,7 @@ export default defineComponent({
     })
 
     function getDropOptions(item: any) {
-      const result = sidebar.menuMap?.get(item.name)?.children || []
+      const result = sidebar.menusMap?.get(item.name)?.children || []
 
       return result
     }

@@ -5,7 +5,7 @@ export type SidebarStore = ReturnType<typeof useSidebarStore>
 export const useSidebarStore = defineStore('sidebar', () => {
   const inverted = ref(false)
   const collapsed = ref(false)
-  const menuMap = ref(new Map<string, any>())
+  const menusMap = ref(new Map<string, any>())
 
   // Example menu options, replace with your actual menu data
   const menus = ref([
@@ -31,14 +31,14 @@ export const useSidebarStore = defineStore('sidebar', () => {
   }
 
   function setMenuMap(map: Map<string, any>) {
-    menuMap.value = map
+    menusMap.value = map
   }
 
   return {
     inverted,
     collapsed,
     menus,
-    menuMap,
+    menusMap,
     toggleSidebar,
     setInverted,
     setCollapsed,
