@@ -1,18 +1,23 @@
 import { defineStore } from 'pinia'
 
+interface MenuItem {
+  label: string
+  key: string
+  icon?: string
+  path?: string
+  type?: 'item' | 'group' | 'divider'
+  children?: MenuItem[]
+}
+
 export type SidebarStore = ReturnType<typeof useSidebarStore>
 
 export const useSidebarStore = defineStore('sidebar', () => {
   const inverted = ref(false)
   const collapsed = ref(false)
-  const menusMap = ref(new Map<string, any>())
+  const menusMap = ref(new Map<string, MenuItem>())
 
   // Example menu options, replace with your actual menu data
-  const menus = ref([
-    { label: 'Home', key: '/home', icon: 'home' },
-    { label: 'About', key: '/about', icon: 'info' },
-    { label: 'Contact', key: '/contact', icon: 'phone' },
-  ])
+  const menus = ref<MenuItem[]>([])
 
   function toggleSidebar() {
     collapsed.value = !collapsed.value
@@ -26,11 +31,11 @@ export const useSidebarStore = defineStore('sidebar', () => {
     collapsed.value = value
   }
 
-  function setMenus(value: Array<any>) {
+  function setMenus(value: MenuItem[]) {
     menus.value = value
   }
 
-  function setMenuMap(map: Map<string, any>) {
+  function setMenuMap(map: Map<string, MenuItem>) {
     menusMap.value = map
   }
 

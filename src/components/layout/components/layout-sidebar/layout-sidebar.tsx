@@ -1,52 +1,59 @@
 import type { MenuOption } from 'naive-ui'
-import type { RouteLocationNormalized, RouteLocationRaw } from 'vue-router'
+import type { RouteLocationRaw } from 'vue-router'
 import { NLayoutContent, NLayoutHeader, NLayoutSider, NMenu } from 'naive-ui'
 import { RouterLink } from 'vue-router'
 import { useSidebarStore } from '@/stores/sidebar'
+
+interface MenuItem {
+  label: string
+  key: string
+  icon?: string
+  path?: string
+  type?: 'item' | 'group' | 'divider'
+  children?: MenuItem[]
+}
 
 const LayoutSidebar = defineComponent(() => {
   const sidebar = useSidebarStore()
   const expandedKeys = ref<string[]>([])
   const selectedKey = ref<string | undefined>()
   const route = useRoute()
-  watch(route, handleMenuExpand)
-  watch(() => sidebar.menus, handleMenuExpand, { immediate: true, deep: true })
+  watch(() => route.fullPath, handleMenuExpand)
+  watch(() => sidebar.menus, () => handleMenuExpand(), { immediate: true, deep: true })
 
-  handleMenuExpand(route)
+  handleMenuExpand()
 
-  function handleMenuExpand(route: RouteLocationNormalized) {
-    const { matched, path } = route ?? {}
+  function handleMenuExpand() {
+    const { path } = route
 
-    // 根据当前路由路径查找对应的菜单项
     const matchedMenuItem = findMenuItemByPath(sidebar.menus, path)
     if (matchedMenuItem) {
       selectedKey.value = matchedMenuItem.key as string
 
-      // 设置展开状态：包含当前选中项的所有父级菜单
       const expandKeys = getParentKeys(sidebar.menus, matchedMenuItem.key as string)
       expandedKeys.value = expandKeys
     }
   }
 
-  function getParentKeys(menus: any[], targetKey: string, parents: string[] = []): string[] {
+  function getParentKeys(menus: MenuItem[], targetKey: string, parents: string[] = []): string[] {
     for (const menu of menus) {
-      const currentPath = [...parents, menu.key]
+      const newKeys = [...parents, menu.key]
 
       if (menu.key === targetKey) {
         return parents
       }
 
       if (menu.children) {
-        const result = getParentKeys(menu.children, targetKey, currentPath)
-        if (result.length > 0 || menu.children.some((child: any) => child.key === targetKey)) {
-          return currentPath
+        const result = getParentKeys(menu.children, targetKey, newKeys)
+        if (result.length > 0 || menu.children.some((child: MenuItem) => child.key === targetKey)) {
+          return newKeys
         }
       }
     }
     return []
   }
 
-  function findMenuItemByPath(menus: any[], path: string): any {
+  function findMenuItemByPath(menus: MenuItem[], path: string): MenuItem | null {
     for (const menu of menus) {
       if (menu.path === path) {
         return menu
@@ -78,7 +85,7 @@ const LayoutSidebar = defineComponent(() => {
           class="flex-1"
           collapsedWidth={64}
           collapsedIconSize={22}
-          options={sidebar.menus}
+          options={sidebar.menus as MenuOption[]}
           value={selectedKey.value}
           default-value={selectedKey.value}
           render-label={renderMenuLabel}
