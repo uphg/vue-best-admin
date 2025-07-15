@@ -24,3 +24,7 @@
 - [x] createSidebarMenus 方法没有生成 key，因为 key 是根据路由 name 生成的，而接口获取的路由默认没有 name
 - [x] 需要先根据 JSON 路由生成实际路由，再根据实际路由生成对应 menus，这样就有 name，也就有 key 了
 - [ ] createSidebarMenus 与 createSidebarMenuMap 方法可以合并
+
+## 导航栏右侧
+
+- 右侧添加功能：搜索、通知、语言设置、个人信息（头像）、用户设置
