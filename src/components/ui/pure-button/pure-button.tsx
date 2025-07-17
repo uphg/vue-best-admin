@@ -1,7 +1,7 @@
 import type { PropType } from 'vue'
 import { cn } from '@/utils/class-merge'
 
-const options = {
+const PureButton = defineComponent({
   props: {
     class: {
       type: [String, Array, Object] as PropType<string | (string | Array<string> | Record<string, boolean>)[] | Record<string, boolean>>,
@@ -11,17 +11,16 @@ const options = {
       default: undefined,
     },
   },
-}
-
-const PureButton = defineComponent((props, { slots }) => {
-  return () => (
-    <button
-      {...props}
-      class={cn('text-black rounded-3px border-none bg-transparent cursor-pointer transition-colors duration-300 focus:outline-none active:bg-neutral-800/13 focus:bg-neutral-800/9 hover:bg-neutral-800/9', props.class)}
-    >
-      {slots.default?.()}
-    </button>
-  )
-}, options)
+  setup(props, { slots }) {
+    return () => (
+      <button
+        {...props}
+        class={cn('text-black rounded-3px border-none bg-transparent cursor-pointer transition-colors duration-300 focus:outline-none active:bg-neutral-800/13 focus:bg-neutral-800/9 hover:bg-neutral-800/9', props.class)}
+      >
+        {slots.default?.()}
+      </button>
+    )
+  },
+})
 
 export default PureButton

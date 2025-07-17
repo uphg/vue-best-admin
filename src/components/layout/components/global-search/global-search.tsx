@@ -1,8 +1,10 @@
-import { NEmpty, NIcon, NInput, NList, NModal } from 'naive-ui'
+import type { NInput } from 'naive-ui'
+import { NEmpty, NIcon, NList, NModal } from 'naive-ui'
 import { computed, defineComponent, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import IconFileText from '~icons/lucide/file-text'
 import IconSearch from '~icons/lucide/search'
+import PureInput from '@/components/ui/pure-input/pure-input'
 import { useSidebarStore } from '@/stores/sidebar'
 
 interface SearchResult {
@@ -154,7 +156,6 @@ export default defineComponent({
   render() {
     return (
       <>
-        {/* Search trigger */}
         <div
           class="px-3 py-2 rounded-lg flex gap-2 cursor-pointer transition-colors items-center hover:bg-gray-100"
           onClick={this.openModal}
@@ -168,28 +169,26 @@ export default defineComponent({
           </kbd>
         </div>
 
-        {/* Search modal */}
         <NModal
           v-model:show={this.showModal}
-          preset="card"
           class="max-h-[500px] w-[600px]"
-          title="全局搜索"
-          onClose={this.closeModal}
-          maskClosable={true}
         >
-          <div class="space-y-4" onKeydown={this.handleKeyDown}>
-            <NInput
-              ref="inputRef"
-              v-model:value={this.searchQuery}
-              placeholder="输入菜单名称或路径搜索..."
-              v-slots={{
-                prefix: () => (
-                  <NIcon size={16}>
-                    <IconSearch />
-                  </NIcon>
-                ),
-              }}
-            />
+          <div class="bg-white space-y-4" onKeydown={this.handleKeyDown}>
+            <div class="px-3 pt-3">
+              <PureInput
+                class="font-size-5 h-14 w-full"
+                ref="inputRef"
+                v-model:value={this.searchQuery}
+                placeholder="输入菜单名称或路径搜索..."
+                v-slots={{
+                  prefix: () => (
+                    <NIcon size={16}>
+                      <IconSearch />
+                    </NIcon>
+                  ),
+                }}
+              />
+            </div>
 
             <div class="max-h-[350px] overflow-y-auto">
               {this.searchResults.length > 0
