@@ -6,6 +6,7 @@ interface MenuItem {
   icon?: string
   path?: string
   type?: 'item' | 'group' | 'divider'
+  matchs?: any[]
   children?: MenuItem[]
 }
 
