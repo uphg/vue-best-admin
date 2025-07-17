@@ -3,6 +3,7 @@ import GlobalSearch from '../global-search/global-search'
 import LayoutNavTags from '../layout-nav-tags/layout-nav-tags'
 import SidebarToggle from '../layout-sidebar/sidebar-toggle'
 import HeaderBreadcrumb from './header-breadcrumb'
+import NotificationButton from './notification-button'
 
 const LayoutHeader = defineComponent(() => {
   return () => (
@@ -10,8 +11,9 @@ const LayoutHeader = defineComponent(() => {
       <NLayoutHeader class="px-4 flex gap-2 h-[var(--header-height)] items-center" bordered>
         <SidebarToggle />
         <HeaderBreadcrumb />
-        <div class="w-50">
-          <GlobalSearch />
+        <div class="ml-auto flex items-center">
+          <GlobalSearch class="w-50" />
+          <NotificationButton />
         </div>
       </NLayoutHeader>
       <LayoutNavTags />
