@@ -1,5 +1,3 @@
-import type { UserConfig } from 'vite'
-
 import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
@@ -9,9 +7,14 @@ import { FileSystemIconLoader } from 'unplugin-icons/loaders'
 import Icons from 'unplugin-icons/vite'
 import { defineConfig } from 'vite'
 import vueDevTools from 'vite-plugin-vue-devtools'
-import vitePluginClean from './plugins/vite-plugin-clean'
+import vitePluginClean from './plugins/vite-plugin-clean.js'
 
-// https://vite.dev/config/
+/**
+ * Vite 配置
+ * @param {object} context - Vite 上下文
+ * @param {string} context.mode - 构建模式
+ * @returns {import('vite').UserConfig} Vite 配置对象
+ */
 export default defineConfig(({ mode }) => {
   return {
     plugins: [
@@ -41,5 +44,5 @@ export default defineConfig(({ mode }) => {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
       },
     },
-  } satisfies UserConfig
+  }
 })

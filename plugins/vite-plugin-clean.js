@@ -1,21 +1,34 @@
-import type { Plugin, ResolvedConfig } from 'vite'
 import fs from 'node:fs'
 import path from 'node:path'
 import fg from 'fast-glob'
 
-export interface CleanOptions {
-  includes: string[]
-  silent?: boolean
-  timing?: 'before' | 'after' | 'both'
-}
+/**
+ * @typedef {object} CleanOptions
+ * @property {string[]} includes - 要清理的文件模式数组
+ * @property {boolean} [silent=false] - 是否静默模式
+ * @property {'before' | 'after' | 'both'} [timing='after'] - 清理时机
+ */
 
-export type GlobPattern = string | string[]
+/**
+ * @typedef {string | string[]} GlobPattern
+ */
 
-export default function vitePluginClean(options: CleanOptions): Plugin {
+/**
+ * Vite 插件：用于清理指定文件
+ * @param {CleanOptions} options - 插件配置选项
+ * @returns {import('vite').Plugin} Vite 插件对象
+ */
+export default function vitePluginClean(options) {
   const { silent = false, timing = 'after' } = options
-  let config: ResolvedConfig | null = null
+  /** @type {import('vite').ResolvedConfig | null} */
+  let config = null
 
-  const cleanFiles = async (config: ResolvedConfig) => {
+  /**
+   * 清理文件的异步函数
+   * @param {import('vite').ResolvedConfig} config - Vite 解析后的配置
+   * @returns {Promise<void>}
+   */
+  const cleanFiles = async (config) => {
     const { includes } = options
     if (!includes?.length) return
 
@@ -39,23 +52,25 @@ export default function vitePluginClean(options: CleanOptions): Plugin {
     },
     buildStart() {
       if (!(timing === 'before' || timing === 'both')) return
-      cleanFiles(config!)
+      cleanFiles(config)
     },
     closeBundle: () => {
       if (!(timing === 'after' || timing === 'both')) return
-      cleanFiles(config!)
+      cleanFiles(config)
     },
   }
 }
 
 /**
  * 解析 Glob 模式为绝对路径列表（基于项目根目录）
- * @param patterns - 文件匹配模式（支持 Glob）
- * @returns 匹配到的绝对路径数组
+ * @param {string[]} patterns - 文件匹配模式（支持 Glob）
+ * @param {string} rootDir - 项目根目录
+ * @returns {Promise<string[]>} 匹配到的绝对路径数组
  */
-export async function resolveGlobPatterns(patterns: string[], rootDir: ResolvedConfig['root']): Promise<string[]> {
+export async function resolveGlobPatterns(patterns, rootDir) {
   // 2. 串行处理每个模式
-  const results: string[] = []
+  /** @type {string[]} */
+  const results = []
 
   for (const pattern of patterns) {
     try {

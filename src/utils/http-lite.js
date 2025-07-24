@@ -1,62 +1,80 @@
-import type { JSONValue } from '@/types/base'
+/**
+ * @typedef {string | number | null | boolean | JSONValue[] | {[key: string]: JSONValue}} JSONValue
+ */
 
-export interface HTTPConfig {
-  baseURL?: string
-  timeout?: number
-  headers?: Record<string, string>
-  params?: Record<string, any>
-  responseType?: 'json' | 'text' | 'blob' | 'arrayBuffer'
-}
+/**
+ * @typedef {object} HTTPConfig
+ * @property {string} [baseURL]
+ * @property {number} [timeout]
+ * @property {Record<string, string>} [headers]
+ * @property {Record<string, any>} [params]
+ * @property {'json' | 'text' | 'blob' | 'arrayBuffer'} [responseType]
+ */
 
-export interface Interceptor<T = any> {
-  onFulfilled?: (value: T) => T | Promise<T>
-  onRejected?: (error: any) => any
-}
+/**
+ * @template T
+ * @typedef {object} Interceptor
+ * @property {function(T): T | Promise<T>} [onFulfilled]
+ * @property {function(any): any} [onRejected]
+ */
 
-export interface Interceptors {
-  request?: Interceptor<HTTPConfig>
-  response?: Interceptor<HTTPResponse>
-}
+/**
+ * @typedef {object} Interceptors
+ * @property {Interceptor<HTTPConfig>} [request]
+ * @property {Interceptor<HTTPResponse>} [response]
+ */
 
-export interface HTTPResponse<T = any> {
-  data: T
-  status: number
-  statusText: string
-  headers: Record<string, string>
-  config: HTTPConfig
-}
+/**
+ * @template T
+ * @typedef {object} HTTPResponse
+ * @property {T} data
+ * @property {number} status
+ * @property {string} statusText
+ * @property {Record<string, string>} headers
+ * @property {HTTPConfig} config
+ */
 
-export interface HTTPError {
-  message: string
-  status?: number
-  statusText?: string
-  response?: HTTPResponse
-  config: HTTPConfig
-}
+/**
+ * @typedef {object} HTTPError
+ * @property {string} message
+ * @property {number} [status]
+ * @property {string} [statusText]
+ * @property {HTTPResponse} [response]
+ * @property {HTTPConfig} config
+ */
 
-export interface HTTPClientOptions {
-  baseURL?: string
-  timeout?: number
-  headers?: Record<string, string>
-}
+/**
+ * @typedef {object} HTTPClientOptions
+ * @property {string} [baseURL]
+ * @property {number} [timeout]
+ * @property {Record<string, string>} [headers]
+ */
 
 export class HTTPClient {
-  private baseURL: string
-  private timeout: number
-  private defaultHeaders: Record<string, string>
-  private interceptors: Interceptors
-
+  /**
+   * @param {HTTPClientOptions} options
+   * @param {Interceptors} interceptors
+   */
   constructor(
-    { baseURL = '', timeout = 2500, headers = {} }: HTTPClientOptions = {},
-    interceptors: Interceptors = {},
+    { baseURL = '', timeout = 2500, headers = {} } = {},
+    interceptors = {},
   ) {
+    /** @type {string} */
     this.baseURL = baseURL
+    /** @type {number} */
     this.timeout = timeout
+    /** @type {Record<string, string>} */
     this.defaultHeaders = headers
+    /** @type {Interceptors} */
     this.interceptors = interceptors
   }
 
-  private buildURL(url: string, params?: Record<string, any>): string {
+  /**
+   * @param {string} url
+   * @param {Record<string, any>} [params]
+   * @returns {string}
+   */
+  buildURL(url, params) {
     const fullURL = url.startsWith('http') ? url : `${this.baseURL}${url}`
     if (!params) return fullURL
 
@@ -71,14 +89,23 @@ export class HTTPClient {
     return queryString ? `${fullURL}?${queryString}` : fullURL
   }
 
-  private async request<T>(
-    method: string,
-    url: string,
-    data?: any,
-    config: HTTPConfig = {},
-  ): Promise<HTTPResponse<T>> {
+  /**
+   * @template T
+   * @param {string} method
+   * @param {string} url
+   * @param {any} [data]
+   * @param {HTTPConfig} [config]
+   * @returns {Promise<HTTPResponse<T>>}
+   */
+  async request(
+    method,
+    url,
+    data,
+    config = {},
+  ) {
     // 合并配置
-    const finalConfig: HTTPConfig = {
+    /** @type {HTTPConfig} */
+    const finalConfig = {
       ...config,
       headers: { ...this.defaultHeaders, ...config.headers },
       timeout: config.timeout || this.timeout,
@@ -102,7 +129,8 @@ export class HTTPClient {
     const timeoutId = setTimeout(() => controller.abort(), finalConfig.timeout)
 
     try {
-      const fetchOptions: RequestInit = {
+      /** @type {RequestInit} */
+      const fetchOptions = {
         method,
         headers: finalConfig.headers,
         signal: controller.signal,
@@ -124,13 +152,14 @@ export class HTTPClient {
       clearTimeout(timeoutId)
 
       // 解析响应头
-      const headers: Record<string, string> = {}
+      /** @type {Record<string, string>} */
+      const headers = {}
       response.headers.forEach((value, key) => {
         headers[key] = value
       })
 
       // 解析响应数据
-      let responseData: any
+      let responseData
       const responseType = finalConfig.responseType || 'json'
 
       switch (responseType) {
@@ -150,7 +179,8 @@ export class HTTPClient {
           responseData = await response.json()
       }
 
-      const httpResponse: HTTPResponse<T> = {
+      /** @type {HTTPResponse<T>} */
+      const httpResponse = {
         data: responseData,
         status: response.status,
         statusText: response.statusText,
@@ -160,7 +190,8 @@ export class HTTPClient {
 
       // 检查响应状态
       if (!response.ok) {
-        const error: HTTPError = {
+        /** @type {HTTPError} */
+        const error = {
           message: `HTTP Error: ${response.status} ${response.statusText}`,
           status: response.status,
           statusText: response.statusText,
@@ -183,11 +214,12 @@ export class HTTPClient {
       }
 
       return httpResponse
-    } catch (error: any) {
+    } catch (error) {
       clearTimeout(timeoutId)
 
       if (error.name === 'AbortError') {
-        const timeoutError: HTTPError = {
+        /** @type {HTTPError} */
+        const timeoutError = {
           message: `Request timeout after ${finalConfig.timeout}ms`,
           config: finalConfig,
         }
@@ -202,32 +234,78 @@ export class HTTPClient {
     }
   }
 
-  async get<T>(url: string, params?: Record<string, any>, config?: HTTPConfig): Promise<HTTPResponse<T>> {
-    return this.request<T>('GET', url, undefined, { ...config, params })
+  /**
+   * @template T
+   * @param {string} url
+   * @param {Record<string, any>} [params]
+   * @param {HTTPConfig} [config]
+   * @returns {Promise<HTTPResponse<T>>}
+   */
+  async get(url, params, config) {
+    return this.request('GET', url, undefined, { ...config, params })
   }
 
-  async post<T>(url: string, data?: Record<string, JSONValue>, config?: HTTPConfig): Promise<HTTPResponse<T>> {
-    return this.request<T>('POST', url, data, config)
+  /**
+   * @template T
+   * @param {string} url
+   * @param {Record<string, JSONValue>} [data]
+   * @param {HTTPConfig} [config]
+   * @returns {Promise<HTTPResponse<T>>}
+   */
+  async post(url, data, config) {
+    return this.request('POST', url, data, config)
   }
 
-  async put<T>(url: string, data?: Record<string, JSONValue>, config?: HTTPConfig): Promise<HTTPResponse<T>> {
-    return this.request<T>('PUT', url, data, config)
+  /**
+   * @template T
+   * @param {string} url
+   * @param {Record<string, JSONValue>} [data]
+   * @param {HTTPConfig} [config]
+   * @returns {Promise<HTTPResponse<T>>}
+   */
+  async put(url, data, config) {
+    return this.request('PUT', url, data, config)
   }
 
-  async delete<T>(url: string, config?: HTTPConfig): Promise<HTTPResponse<T>> {
-    return this.request<T>('DELETE', url, undefined, config)
+  /**
+   * @template T
+   * @param {string} url
+   * @param {HTTPConfig} [config]
+   * @returns {Promise<HTTPResponse<T>>}
+   */
+  async delete(url, config) {
+    return this.request('DELETE', url, undefined, config)
   }
 
-  async head<T>(url: string, config?: HTTPConfig): Promise<HTTPResponse<T>> {
-    return this.request<T>('HEAD', url, undefined, config)
+  /**
+   * @template T
+   * @param {string} url
+   * @param {HTTPConfig} [config]
+   * @returns {Promise<HTTPResponse<T>>}
+   */
+  async head(url, config) {
+    return this.request('HEAD', url, undefined, config)
   }
 
-  async options<T>(url: string, config?: HTTPConfig): Promise<HTTPResponse<T>> {
-    return this.request<T>('OPTIONS', url, undefined, config)
+  /**
+   * @template T
+   * @param {string} url
+   * @param {HTTPConfig} [config]
+   * @returns {Promise<HTTPResponse<T>>}
+   */
+  async options(url, config) {
+    return this.request('OPTIONS', url, undefined, config)
   }
 
-  async patch<T>(url: string, data?: any, config?: HTTPConfig): Promise<HTTPResponse<T>> {
-    return this.request<T>('PATCH', url, data, config)
+  /**
+   * @template T
+   * @param {string} url
+   * @param {any} [data]
+   * @param {HTTPConfig} [config]
+   * @returns {Promise<HTTPResponse<T>>}
+   */
+  async patch(url, data, config) {
+    return this.request('PATCH', url, data, config)
   }
 }
 

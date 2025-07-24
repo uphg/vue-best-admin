@@ -1,3 +1,25 @@
+/**
+ * @typedef {object} RouteMeta
+ * @property {string} title - 路由标题
+ * @property {string} icon - 路由图标
+ * @property {string} [link] - 外部链接地址
+ */
+
+/**
+ * @typedef {object} RouteItem
+ * @property {string} path - 路由路径
+ * @property {string} [redirect] - 重定向路径
+ * @property {string} component - 组件名称
+ * @property {boolean} [mergeSingleChild] - 是否合并单个子项
+ * @property {RouteMeta} [meta] - 路由元信息
+ * @property {RouteItem[]} [children] - 子路由数组
+ */
+
+/**
+ * 路由数据配置
+ * 定义了系统的路由结构和导航菜单
+ * @type {RouteItem[]}
+ */
 export const routeDate = [
   {
     path: '/about',
