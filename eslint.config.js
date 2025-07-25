@@ -4,6 +4,7 @@ export default antfu({
   formatters: true,
   unocss: true,
   vue: true,
+  typescript: false, // 禁用 TypeScript 相关规则
   rules: {
     'style/brace-style': 'off', // 代码大括号风格
     'style/jsx-curly-newline': 'off', // JSX 中大括号内强制换行
@@ -18,9 +19,9 @@ export default antfu({
     'regexp/no-unused-capturing-group': 'off',
     'no-restricted-globals': 'off',
     'unused-imports/no-unused-vars': 'off',
+    'unused-imports/no-unused-imports': 'off',
     // 'nonblock-statement-body-position': 'error', // 关闭 if 语句结束后强制换行
-    'ts/no-unused-expressions': ['error', { allowShortCircuit: true }],
-    'ts/no-use-before-define': 'off',
+    'no-unused-expressions': ['error', { allowShortCircuit: true }],
     // vue 文件各模块顺序
     'vue/block-order': ['error', {
       order: ['template', 'script', 'style'],

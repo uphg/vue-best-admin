@@ -33,92 +33,92 @@
 
 - [x] `src/api/user.ts` → `src/api/user.js`
 
-### 4. Mocks 目录 [3/5]
+### 4. Mocks 目录 [5/5]
 
 - [x] `src/mocks/browser.ts` → `src/mocks/browser.js`
 - [x] `src/mocks/common.ts` → `src/mocks/common.js`
 - [x] `src/mocks/handlers.ts` → `src/mocks/handlers.js`
-- [ ] `src/mocks/mocks.ts` → `src/mocks/mocks.js`
-- [ ] `src/mocks/node.ts` → `src/mocks/node.js`
+- [x] `src/mocks/mocks.ts` → `src/mocks/mocks.js`
+- [x] `src/mocks/node.ts` → `src/mocks/node.js`
 
-### 5. Router 目录 [0/3]
+### 5. Router 目录 [3/3]
 
-- [ ] `src/router/router.ts` → `src/router/router.js`
-- [ ] `src/router/guards/guards.ts` → `src/router/guards/guards.js`
-- [ ] `src/router/guards/async-route.tsx` → `src/router/guards/async-route.jsx`
+- [x] `src/router/router.ts` → `src/router/router.js`
+- [x] `src/router/guards/guards.ts` → `src/router/guards/guards.js`
+- [x] `src/router/guards/async-route.tsx` → `src/router/guards/async-route.jsx`
 
-### 6. Stores 目录 [0/3]
+### 6. Stores 目录 [3/3]
 
-- [ ] `src/stores/nav-tags.ts` → `src/stores/nav-tags.js`
-- [ ] `src/stores/sidebar.ts` → `src/stores/sidebar.js`
-- [ ] `src/stores/user.ts` → `src/stores/user.js`
+- [x] `src/stores/nav-tags.ts` → `src/stores/nav-tags.js`
+- [x] `src/stores/sidebar.ts` → `src/stores/sidebar.js`
+- [x] `src/stores/user.ts` → `src/stores/user.js`
 
-### 7. Types 目录 [0/2]
+### 7. Types 目录 [2/2]
 
-- [ ] `src/types/intrinsic.ts` → `src/types/intrinsic.js`
-- [ ] `src/types/menu.ts` → `src/types/menu.js`
+- [x] `src/types/intrinsic.ts` → `src/types/intrinsic.js`
+- [x] `src/types/menu.ts` → `src/types/menu.js`
 
-### 8. Utils 目录 [0/2]
+### 8. Utils 目录 [2/2]
 
-- [ ] `src/utils/class-merge.ts` → `src/utils/class-merge.js`
-- [ ] `src/utils/token.ts` → `src/utils/token.js` (已存在 .js 版本，需要合并)
+- [x] `src/utils/class-merge.ts` → `src/utils/class-merge.js`
+- [x] `src/utils/token.ts` → `src/utils/token.js` (已存在 .js 版本，已合并)
 
-### 9. App 根组件 [0/1]
+### 9. App 根组件 [1/1]
 
-- [ ] `src/app.tsx` → `src/app.jsx`
+- [x] `src/app.tsx` → `src/app.jsx`
 
-### 10. Pages 目录 [0/12]
+### 10. Pages 目录 [12/12]
 
-- [ ] `src/pages/about/about-page.tsx` → `src/pages/about/about-page.jsx`
-- [ ] `src/pages/error/401.tsx` → `src/pages/error/401.jsx`
-- [ ] `src/pages/error/404.tsx` → `src/pages/error/404.jsx`
-- [ ] `src/pages/home/home-page.tsx` → `src/pages/home/home-page.jsx`
-- [ ] `src/pages/icon/icon-page.tsx` → `src/pages/icon/icon-page.jsx`
-- [ ] `src/pages/login/login-page.tsx` → `src/pages/login/login-page.jsx`
-- [ ] `src/pages/register/register-page.tsx` → `src/pages/register/register-page.jsx`
-- [ ] `src/pages/request/request-page.tsx` → `src/pages/request/request-page.jsx`
-- [ ] `src/pages/system/system-page.tsx` → `src/pages/system/system-page.jsx`
-- [ ] `src/pages/system/menu/menu-page.tsx` → `src/pages/system/menu/menu-page.jsx`
-- [ ] `src/pages/system/role/role-page.tsx` → `src/pages/system/role/role-page.jsx`
-- [ ] `src/pages/system/user/user-page.tsx` → `src/pages/system/user/user-page.jsx`
-- [ ] `src/pages/user/user-page.tsx` → `src/pages/user/user-page.jsx`
+- [x] `src/pages/about/about-page.tsx` → `src/pages/about/about-page.jsx`
+- [x] `src/pages/error/401.tsx` → `src/pages/error/401.jsx`
+- [x] `src/pages/error/404.tsx` → `src/pages/error/404.jsx`
+- [x] `src/pages/home/home-page.tsx` → `src/pages/home/home-page.jsx`
+- [x] `src/pages/icon/icon-page.tsx` → `src/pages/icon/icon-page.jsx`
+- [x] `src/pages/login/login-page.tsx` → `src/pages/login/login-page.jsx`
+- [x] `src/pages/register/register-page.tsx` → `src/pages/register/register-page.jsx`
+- [x] `src/pages/request/request-page.tsx` → `src/pages/request/request-page.jsx`
+- [x] `src/pages/system/system-page.tsx` → `src/pages/system/system-page.jsx`
+- [x] `src/pages/system/menu/menu-page.tsx` → `src/pages/system/menu/menu-page.jsx`
+- [x] `src/pages/system/role/role-page.tsx` → `src/pages/system/role/role-page.jsx`
+- [x] `src/pages/system/user/user-page.tsx` → `src/pages/system/user/user-page.jsx`
+- [x] `src/pages/user/user-page.tsx` → `src/pages/user/user-page.jsx`
 
-### 11. Layout 组件 [0/11]
+### 11. Layout 组件 [11/11]
 
-- [ ] `src/components/layout/layout-default.tsx` → `src/components/layout/layout-default.jsx`
-- [ ] `src/components/layout/layout-inner-link.tsx` → `src/components/layout/layout-inner-link.jsx`
-- [ ] `src/components/layout/layout-parent-view.tsx` → `src/components/layout/layout-parent-view.jsx`
-- [ ] `src/components/layout/components/global-search/global-search.tsx` → `src/components/layout/components/global-search/global-search.jsx`
-- [ ] `src/components/layout/components/layout-header/header-breadcrumb.tsx` → `src/components/layout/components/layout-header/header-breadcrumb.jsx`
-- [ ] `src/components/layout/components/layout-header/layout-header.tsx` → `src/components/layout/components/layout-header/layout-header.jsx`
-- [ ] `src/components/layout/components/layout-header/notification-button.tsx` → `src/components/layout/components/layout-header/notification-button.jsx`
-- [ ] `src/components/layout/components/layout-nav-tags/layout-nav-tags.tsx` → `src/components/layout/components/layout-nav-tags/layout-nav-tags.jsx`
-- [ ] `src/components/layout/components/layout-nav-tags/nav-tag.tsx` → `src/components/layout/components/layout-nav-tags/nav-tag.jsx`
-- [ ] `src/components/layout/components/layout-sidebar/layout-sidebar.tsx` → `src/components/layout/components/layout-sidebar/layout-sidebar.jsx`
-- [ ] `src/components/layout/components/layout-sidebar/sidebar-toggle.tsx` → `src/components/layout/components/layout-sidebar/sidebar-toggle.jsx`
+- [x] `src/components/layout/layout-default.tsx` → `src/components/layout/layout-default.jsx`
+- [x] `src/components/layout/layout-inner-link.tsx` → `src/components/layout/layout-inner-link.jsx`
+- [x] `src/components/layout/layout-parent-view.tsx` → `src/components/layout/layout-parent-view.jsx`
+- [x] `src/components/layout/components/global-search/global-search.tsx` → `src/components/layout/components/global-search/global-search.jsx`
+- [x] `src/components/layout/components/layout-header/header-breadcrumb.tsx` → `src/components/layout/components/layout-header/header-breadcrumb.jsx`
+- [x] `src/components/layout/components/layout-header/layout-header.tsx` → `src/components/layout/components/layout-header/layout-header.jsx`
+- [x] `src/components/layout/components/layout-header/notification-button.tsx` → `src/components/layout/components/layout-header/notification-button.jsx`
+- [x] `src/components/layout/components/layout-nav-tags/layout-nav-tags.tsx` → `src/components/layout/components/layout-nav-tags/layout-nav-tags.jsx`
+- [x] `src/components/layout/components/layout-nav-tags/nav-tag.tsx` → `src/components/layout/components/layout-nav-tags/nav-tag.jsx`
+- [x] `src/components/layout/components/layout-sidebar/layout-sidebar.tsx` → `src/components/layout/components/layout-sidebar/layout-sidebar.jsx`
+- [x] `src/components/layout/components/layout-sidebar/sidebar-toggle.tsx` → `src/components/layout/components/layout-sidebar/sidebar-toggle.jsx`
 
-### 12. UI 组件 [0/3]
+### 12. UI 组件 [3/3]
 
-- [ ] `src/components/ui/pure-button/pure-button.tsx` → `src/components/ui/pure-button/pure-button.jsx`
-- [ ] `src/components/ui/pure-input/pure-input.tsx` → `src/components/ui/pure-input/pure-input.jsx`
-- [ ] `src/components/ui/tag/tag.tsx` → `src/components/ui/tag/tag.jsx`
+- [x] `src/components/ui/pure-button/pure-button.tsx` → `src/components/ui/pure-button/pure-button.jsx`
+- [x] `src/components/ui/pure-input/pure-input.tsx` → `src/components/ui/pure-input/pure-input.jsx`
+- [x] `src/components/ui/tag/tag.tsx` → `src/components/ui/tag/tag.jsx`
 
-### 13. 类型定义文件处理 [0/1]
+### 13. 类型定义文件处理 [1/1]
 
-- [ ] `src/auto-imports.d.ts` → 更新为 JSDoc 兼容格式或删除
+- [x] `src/auto-imports.d.ts` → 删除
 
-### 14. 配置文件更新 [0/4]
+### 14. 配置文件更新 [4/4]
 
-- [ ] 更新 `package.json` 中的脚本和依赖
-- [ ] 更新 `vite.config.js` 配置
-- [ ] 删除 TypeScript 相关配置文件
-- [ ] 更新 eslint 配置以支持 JSDoc
+- [x] 更新 `package.json` 中的脚本和依赖
+- [x] 更新 `vite.config.js` 配置
+- [x] 删除 TypeScript 相关配置文件
+- [x] 更新 eslint 配置以支持 JSDoc
 
 ## 当前进度
 
-- **总进度**: 9/48 (16.7%)
-- **配置文件**: 5/9 (55.6%)
-- **源代码文件**: 4/39 (7.7%)
+- **总进度**: 48/48 (100%)
+- **配置文件**: 9/9 (100%)
+- **源代码文件**: 39/39 (100%)
 
 ## 注意事项
 
