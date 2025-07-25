@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
       AutoImport({
         include: [/\.[tj]sx?$/, /\.vue$/, /\.vue\?vue/],
         imports: ['vue', 'vue-router'],
-        dts: false,
+        dts: 'src/auto-imports.d.ts',
         eslintrc: {
           enabled: true, // <-- this
         },
