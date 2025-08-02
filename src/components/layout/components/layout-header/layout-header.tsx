@@ -1,7 +1,7 @@
 import { NLayoutHeader } from 'naive-ui'
-import GlobalSearch from '../global-search/global-search'
 import LayoutNavTags from '../layout-nav-tags/layout-nav-tags'
 import SidebarToggle from '../layout-sidebar/sidebar-toggle'
+import GlobalSearch from './global-search'
 import HeaderBreadcrumb from './header-breadcrumb'
 import NotificationButton from './notification-button'
 import UserDropdown from './user-dropdown'

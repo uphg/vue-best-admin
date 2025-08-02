@@ -1,17 +1,11 @@
 import type { MenuOption } from 'naive-ui'
 import type { RouteLocationRaw } from 'vue-router'
+import type { MenuItem } from '@/types/menu'
 import { NLayoutContent, NLayoutHeader, NLayoutSider, NMenu } from 'naive-ui'
+import { Transition } from 'vue'
 import { RouterLink } from 'vue-router'
+import IconLogo from '~icons/local/logo'
 import { useSidebarStore } from '@/stores/sidebar'
-
-interface MenuItem {
-  label: string
-  key: string
-  icon?: string
-  path?: string
-  type?: 'item' | 'group' | 'divider'
-  children?: MenuItem[]
-}
 
 const LayoutSidebar = defineComponent(() => {
   const sidebar = useSidebarStore()
@@ -79,7 +73,14 @@ const LayoutSidebar = defineComponent(() => {
       nativeScrollbar={false}
       contentClass="flex flex-col h-full"
     >
-      <NLayoutHeader class="h-15" bordered>Logo</NLayoutHeader>
+      <NLayoutHeader bordered class={['h-15', sidebar.collapsed ? 'w-16' : 'w-60']}>
+        <div class={['flex gap-2 h-15 w-60 items-center transition-spacing duration-300', sidebar.collapsed ? 'px-4' : 'px-3']}>
+          <IconLogo />
+          <Transition name="fade">
+            {sidebar.collapsed ? null : <span class="font-size-4.5">Vue Best</span>}
+          </Transition>
+        </div>
+      </NLayoutHeader>
       <NLayoutContent nativeScrollbar={false}>
         <NMenu
           class="flex-1"

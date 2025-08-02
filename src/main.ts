@@ -7,12 +7,13 @@ import router from './router/router'
 import './assets/styles/main.scss'
 import 'virtual:uno.css'
 
-enableMocking().then(() => {
+loadApp()
+
+async function loadApp() {
+  await enableMocking()
   const app = createApp(App)
   app.use(createPinia())
   app.use(router)
-
   app.mount('#app')
-
   loadRouterGuard(router)
-})
+}

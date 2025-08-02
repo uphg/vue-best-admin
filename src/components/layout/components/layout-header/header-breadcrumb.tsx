@@ -1,3 +1,4 @@
+import type { MenuMatch } from '@/types/menu'
 import { NBreadcrumb, NBreadcrumbItem, NDropdown } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -10,15 +11,8 @@ interface BreadcrumbItem {
   children?: any[]
 }
 
-interface MenuMatch {
-  meta?: { title?: string }
-  path: string
-  name: string
-  children?: any[]
-}
-
 export default defineComponent({
-  name: 'BreadcrumbComponent',
+  name: 'HeaderBreadcrumb',
   setup() {
     const route = useRoute()
     const router = useRouter()

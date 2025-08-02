@@ -1,27 +1,5 @@
+import type { MenuItem } from '@/types/menu'
 import { defineStore } from 'pinia'
-
-interface MenuMatch {
-  meta?: {
-    title?: string
-    icon?: string
-    hidden?: boolean
-    [key: string]: any
-  }
-  path: string
-  name: string
-  children?: any[]
-}
-
-interface MenuItem {
-  label: string
-  key: string
-  icon?: string
-  path?: string
-  type?: 'item' | 'group' | 'divider' | 'submenu'
-  show?: boolean
-  matchs?: MenuMatch[]
-  children?: MenuItem[]
-}
 
 export type SidebarStore = ReturnType<typeof useSidebarStore>
 
