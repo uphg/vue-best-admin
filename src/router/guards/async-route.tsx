@@ -9,6 +9,7 @@ import IconLayoutList from '~icons/lucide/layout-list'
 import IconLink from '~icons/lucide/link'
 import IconSettings from '~icons/lucide/settings'
 import IconShell from '~icons/lucide/shell'
+import IconTable from '~icons/lucide/table'
 import IconUser from '~icons/lucide/user'
 import IconUserCog from '~icons/lucide/user-cog'
 import IconUserSearch from '~icons/lucide/user-search'
@@ -35,6 +36,7 @@ const iconsMap = createIconsMap({
   'globe': IconGlobe,
   'link': IconLink,
   'shell': IconShell,
+  'table': IconTable,
 })
 
 /**

@@ -32,7 +32,7 @@ export default defineComponent({
       }))
     })
 
-    function getDropOptions(item: BreadcrumbItem) {
+    function getDropOptions(item: BreadcrumbItem): any[] {
       return sidebar.menusMap?.get(item.name)?.children || []
     }
 

@@ -29,6 +29,21 @@ export const routeDate = [
       },
     ],
   },
+  {
+    path: '/table',
+    component: 'Default',
+    mergeSingleChild: true,
+    children: [
+      {
+        path: 'base',
+        component: 'table/table-page',
+        meta: {
+          title: '表格示例',
+          icon: 'table',
+        },
+      },
+    ],
+  },
 
   {
     path: '/request',
