@@ -44,6 +44,21 @@ export const routeDate = [
       },
     ],
   },
+  {
+    path: '/form',
+    component: 'Default',
+    mergeSingleChild: true,
+    children: [
+      {
+        path: 'base',
+        component: 'form/form-page',
+        meta: {
+          title: '表单示例',
+          icon: 'table',
+        },
+      },
+    ],
+  },
 
   {
     path: '/request',

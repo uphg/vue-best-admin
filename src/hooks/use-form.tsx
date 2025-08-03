@@ -42,7 +42,7 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   const tips = shallowRef<Record<string, any>>({})
 
   // 初始化表单数据
-  fields.forEach(([key, label, config]) => {
+  fields.forEach(([label, key, config]) => {
     tips.value[key] = `请输入${label}`
     const type = config?.type || 'input'
 
@@ -73,7 +73,7 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   const formRules = computed<FormRules>(() => {
     const rules: FormRules = {}
 
-    fields.forEach(([key, label, config]) => {
+    fields.forEach(([label, key, config]) => {
       if (config?.rules === true || options.rules?.includes(key)) {
         rules[key] = [{ required: true, message: `请输入${label}`, trigger: 'blur' }]
       } else if (Array.isArray(config?.rules)) {
@@ -86,7 +86,7 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
 
   // 渲染表单项
   const renderFormItem = (field: FieldDefinition) => {
-    const [key, label, config = {}] = field
+    const [label, key, config = {}] = field
     const { type = 'input', placeholder, options, min, max, step, disabled } = config
 
     const commonProps = {
@@ -292,7 +292,7 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   function createDefaultField() {
     const defaultField: Record<string, any> = {}
 
-    fields.forEach(([key, , config]) => {
+    fields.forEach(([, key, config]) => {
       const type = config?.type || 'input'
 
       switch (type) {
