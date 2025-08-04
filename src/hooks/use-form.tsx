@@ -1,26 +1,10 @@
 import type { FormItemRule, FormRules, SelectOption } from 'naive-ui'
-import {
-  NCheckbox,
-  NCheckboxGroup,
-  NDatePicker,
-  NForm,
-  NFormItem,
-  NInput,
-  NInputNumber,
-  NRadio,
-  NRadioButton,
-  NRadioGroup,
-  NSelect,
-  NSlider,
-  NSwitch,
-  NTimePicker,
-  NTransfer,
-} from 'naive-ui'
+import { NDatePicker, NForm, NFormItem, NInput, NInputNumber, NSelect, NSlider, NSwitch, NTimePicker, NTransfer } from 'naive-ui'
 
 interface FieldConfig {
-  type?: 'input' | 'select' | 'date' | 'datetime' | 'checkbox' | 'checkbox-group'
-    | 'radio' | 'radio-group' | 'radio-button-group' | 'switch' | 'textarea'
-    | 'input-number' | 'time-picker' | 'slider' | 'transfer'
+  as?: 'input' | 'select' | 'date' | 'date-picker' | 'time' | 'time-picker'
+    | 'radio' | 'radio-group' | 'radio-button-group' | 'switch'
+    | 'input-number' | 'time-picker' | 'slider' | 'transfer' | 'checkbox' | 'checkbox'
   placeholder?: string
   options?: SelectOption[]
   rules?: boolean | FormItemRule[]
@@ -28,12 +12,13 @@ interface FieldConfig {
   max?: number
   step?: number
   disabled?: boolean
+  [key: string]: any
 }
 
 type FieldDefinition = [string, string, FieldConfig?]
 
 interface UseFormOptions {
-  rules?: string[]
+  hasRules?: string[]
 }
 
 export function useForm(fields: FieldDefinition[], options: UseFormOptions = {}) {
@@ -44,11 +29,10 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   // 初始化表单数据
   fields.forEach(([label, key, config]) => {
     tips.value[key] = `请输入${label}`
-    const type = config?.type || 'input'
+    const tag = config?.as || 'input'
 
-    switch (type) {
+    switch (tag) {
       case 'checkbox':
-      case 'checkbox-group':
       case 'transfer':
         form.value[key] = []
         break
@@ -60,7 +44,6 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
         form.value[key] = config?.min || 0
         break
       case 'date':
-      case 'datetime':
       case 'time-picker':
         form.value[key] = null
         break
@@ -87,32 +70,22 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   // 渲染表单项
   const renderFormItem = (field: FieldDefinition) => {
     const [label, key, config = {}] = field
-    const { type = 'input', placeholder, options, min, max, step, disabled } = config
+    const { as: tag = 'input', placeholder, ...restProps } = config
 
     const commonProps = {
       'value': form.value[key],
       'onUpdate:value': (value: any) => {
         form.value[key] = value
       },
-      disabled,
     }
 
     let InputElement
-    switch (type) {
+    switch (tag) {
       case 'input':
         InputElement = (
           <NInput
             {...commonProps}
-            placeholder={placeholder ?? `请输入${label}`}
-          />
-        )
-        break
-
-      case 'textarea':
-        InputElement = (
-          <NInput
-            {...commonProps}
-            type="textarea"
+            {...restProps}
             placeholder={placeholder ?? `请输入${label}`}
           />
         )
@@ -122,10 +95,8 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
         InputElement = (
           <NInputNumber
             {...commonProps}
+            {...restProps}
             placeholder={placeholder ?? `请输入${label}`}
-            min={min}
-            max={max}
-            step={step}
           />
         )
         break
@@ -134,36 +105,28 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
         InputElement = (
           <NSelect
             {...commonProps}
+            {...restProps}
             placeholder={placeholder ?? `请选择${label}`}
-            options={options}
           />
         )
         break
 
       case 'date':
+      case 'date-picker':
         InputElement = (
           <NDatePicker
             {...commonProps}
+            {...restProps}
             placeholder={placeholder ?? `请选择${label}`}
-            type="date"
           />
         )
         break
-
-      case 'datetime':
-        InputElement = (
-          <NDatePicker
-            {...commonProps}
-            placeholder={placeholder ?? `请选择${label}`}
-            type="datetime"
-          />
-        )
-        break
-
+      case 'time':
       case 'time-picker':
         InputElement = (
           <NTimePicker
             {...commonProps}
+            {...restProps}
             placeholder={placeholder ?? `请选择${label}`}
           />
         )
@@ -171,72 +134,52 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
 
       case 'switch':
         InputElement = (
-          <NSwitch {...commonProps} />
+          <NSwitch {...commonProps} {...restProps} />
         )
         break
 
       case 'slider':
         InputElement = (
-          <NSlider
-            {...commonProps}
-            min={min}
-            max={max}
-            step={step}
-          />
+          <NSlider {...commonProps} {...restProps} />
         )
         break
 
-      case 'checkbox':
-        InputElement = (
-          <NCheckbox {...commonProps}>
-            {label}
-          </NCheckbox>
-        )
-        break
+        // case 'checkbox':
+        //   const { options, ...rest } = restProps
+        //   InputElement = (
+        //     <NCheckboxGroup {...commonProps} {...rest}>
+        //       {options?.map(option => (
+        //         <NCheckbox key={option.value} value={option.value}>
+        //           {option.label}
+        //         </NCheckbox>
+        //       ))}
+        //     </NCheckboxGroup>
+        //   )
+        //   break
 
-      case 'checkbox-group':
-        InputElement = (
-          <NCheckboxGroup {...commonProps}>
-            {options?.map(option => (
-              <NCheckbox key={option.value} value={option.value}>
-                {option.label}
-              </NCheckbox>
-            ))}
-          </NCheckboxGroup>
-        )
-        break
+        // case 'radio':
+        //   InputElement = (
+        //     <NRadioGroup {...commonProps}>
+        //       {options?.map(option => (
+        //         <NRadio key={option.value} value={option.value}>
+        //           {option.label}
+        //         </NRadio>
+        //       ))}
+        //     </NRadioGroup>
+        //   )
+        //   break
 
-      case 'radio':
-        InputElement = (
-          <NRadio {...commonProps}>
-            {label}
-          </NRadio>
-        )
-        break
-
-      case 'radio-group':
-        InputElement = (
-          <NRadioGroup {...commonProps}>
-            {options?.map(option => (
-              <NRadio key={option.value} value={option.value}>
-                {option.label}
-              </NRadio>
-            ))}
-          </NRadioGroup>
-        )
-        break
-
-      case 'radio-button-group':
-        InputElement = (
-          <NRadioGroup {...commonProps}>
-            {options?.map(option => (
-              <NRadioButton key={option.value} value={option.value}>
-                {option.label}
-              </NRadioButton>
-            ))}
-          </NRadioGroup>
-        )
-        break
+        // case 'radio-button-group':
+        //   InputElement = (
+        //     <NRadioGroup {...commonProps}>
+        //       {options?.map(option => (
+        //         <NRadioButton key={option.value} value={option.value}>
+        //           {option.label}
+        //         </NRadioButton>
+        //       ))}
+        //     </NRadioGroup>
+        //   )
+        //   break
 
       case 'transfer':
         InputElement = (
@@ -251,6 +194,7 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
         InputElement = (
           <NInput
             {...commonProps}
+            {...restProps}
             placeholder={placeholder ?? `请输入${label}`}
           />
         )

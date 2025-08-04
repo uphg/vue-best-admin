@@ -13,7 +13,7 @@ const FormPage = defineComponent(() => {
   const [Form, formData, { resetForm, validate }] = useForm([
     ['活动名称', 'name', { rules: true }],
     ['活动区域', 'region', {
-      type: 'select',
+      as: 'select',
       options: [
         { label: '区域一', value: 0 },
         { label: '区域二', value: 1 },
@@ -21,12 +21,12 @@ const FormPage = defineComponent(() => {
       ],
     }],
     ['活动日期', 'date', {
-      type: 'date',
+      as: 'date',
       placeholder: '选择日期',
       rules: [{ type: 'date', required: true, message: '请选择日期', trigger: 'change' }],
     }],
     ['活动性质', 'type', {
-      type: 'checkbox',
+      as: 'checkbox',
       options: [
         { label: '美食/餐厅线上活动', value: 0, name: 'type' },
         { label: '地推活动', value: 1, name: 'type' },
@@ -35,7 +35,7 @@ const FormPage = defineComponent(() => {
       ],
     }],
     ['活动形式', 'desc', { type: 'textarea' }],
-  ], { rules: ['name', 'region', 'date'] })
+  ], { hasRules: ['name', 'region', 'date'] })
 
   // 处理表单提交
   const handleSubmit = async () => {

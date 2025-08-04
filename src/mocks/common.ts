@@ -112,7 +112,6 @@ export const routeDate = [
         path: 'embed',
         redirect: 'noRedirect',
         component: 'ParentView',
-
         meta: {
           title: '内嵌网页',
           icon: 'globe',
@@ -127,11 +126,6 @@ export const routeDate = [
             path: 'vite',
             component: 'InnerLink',
             meta: { title: 'Vite.js', icon: 'link', link: 'https://vite.dev/' },
-          },
-          {
-            path: 'vue',
-            component: 'InnerLink',
-            meta: { title: 'Vue.js', icon: 'link', link: 'https://vuejs.org/' },
           },
         ],
       },
