@@ -1,20 +1,7 @@
 import { NLayoutContent, NLayoutHeader, NLayoutSider, NMenu } from 'naive-ui'
+import { Transition } from 'vue'
+import IconLogo from '~icons/local/logo'
 import { useSidebarStore } from '@/stores/sidebar'
-
-/**
- * @typedef {object} MenuItem
- * @property {string} label 标签
- * @property {string} key 唯一标识
- * @property {string} [icon] 图标
- * @property {string} [path] 路径
- * @property {'item'|'group'|'divider'} [type] 类型
- * @property {MenuItem[]} [children] 子项
- */
-
-/**
- * 侧边栏布局组件
- * @returns {import('vue').VNode} 组件渲染结果
- */
 
 const LayoutSidebar = defineComponent(() => {
   const sidebar = useSidebarStore()
@@ -90,14 +77,20 @@ const LayoutSidebar = defineComponent(() => {
       v-model:expanded-keys={expandedKeys.value}
       collapsed={sidebar.collapsed}
       bordered
-      showTrigger
       collapseMode="width"
       collapsedWidth={64}
       width={240}
       nativeScrollbar={false}
       contentClass="flex flex-col h-full"
     >
-      <NLayoutHeader class="h-15" bordered>Logo</NLayoutHeader>
+      <NLayoutHeader class="h-15" bordered>
+        <div class={['flex gap-2 h-15 w-60 items-center transition-spacing duration-300', sidebar.collapsed ? 'px-4' : 'px-3']}>
+          <IconLogo />
+          <Transition name="fade">
+            {sidebar.collapsed ? null : <span class="font-size-4.5">Vue Best Admin</span>}
+          </Transition>
+        </div>
+      </NLayoutHeader>
       <NLayoutContent nativeScrollbar={false}>
         <NMenu
           class="flex-1"

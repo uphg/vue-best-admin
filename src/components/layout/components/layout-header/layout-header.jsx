@@ -1,9 +1,8 @@
 import { NLayoutHeader } from 'naive-ui'
-import GlobalSearch from '../global-search/global-search.jsx'
-import LayoutNavTags from '../layout-nav-tags/layout-nav-tags.jsx'
-import SidebarToggle from '../layout-sidebar/sidebar-toggle.jsx'
-import HeaderBreadcrumb from './header-breadcrumb.jsx'
-import NotificationButton from './notification-button.jsx'
+import LayoutNavTags from '../layout-nav-tags/layout-nav-tags'
+import SidebarToggle from '../layout-sidebar/sidebar-toggle'
+import HeaderBreadcrumb from './header-breadcrumb'
+import UserDropdown from './user-dropdown'
 
 /**
  * 页面头部布局组件
@@ -16,9 +15,8 @@ const LayoutHeader = defineComponent(() => {
       <NLayoutHeader class="px-4 flex gap-2 h-[var(--header-height)] items-center" bordered>
         <SidebarToggle />
         <HeaderBreadcrumb />
-        <div class="ml-auto flex items-center">
-          <GlobalSearch class="w-50" />
-          <NotificationButton />
+        <div class="ml-auto flex gap-4 items-center">
+          <UserDropdown />
         </div>
       </NLayoutHeader>
       <LayoutNavTags />

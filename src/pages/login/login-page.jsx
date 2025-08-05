@@ -1,4 +1,4 @@
-import { NCard, NForm, NFormItem, NInput } from 'naive-ui'
+import { NButton, NCard, NForm, NFormItem, NInput } from 'naive-ui'
 import { apiLogin } from '@/api/user'
 import { setToken } from '@/utils/token'
 
@@ -10,15 +10,9 @@ import { setToken } from '@/utils/token'
 
 const LoginPage = defineComponent({
   setup() {
-    /** @type {import('vue').Ref<LoginForm>} */
     const loginForm = ref({ username: 'admin', password: '123456' })
-
-    /** @type {import('vue').Ref<import('naive-ui').FormInst|null>} */
     const formRef = ref(null)
-
-    /** @type {import('vue').Ref<boolean>} */
     const loading = ref(false)
-
     const router = useRouter()
 
     const rules = {
