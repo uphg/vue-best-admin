@@ -1,9 +1,7 @@
 import { NLayoutHeader } from 'naive-ui'
 import LayoutNavTags from '../layout-nav-tags/layout-nav-tags'
 import SidebarToggle from '../layout-sidebar/sidebar-toggle'
-import GlobalSearch from './global-search'
 import HeaderBreadcrumb from './header-breadcrumb'
-import NotificationButton from './notification-button'
 import UserDropdown from './user-dropdown'
 
 const LayoutHeader = defineComponent(() => {
@@ -13,8 +11,6 @@ const LayoutHeader = defineComponent(() => {
         <SidebarToggle />
         <HeaderBreadcrumb />
         <div class="ml-auto flex gap-4 items-center">
-          <GlobalSearch class="w-50" />
-          <NotificationButton />
           <UserDropdown />
         </div>
       </NLayoutHeader>

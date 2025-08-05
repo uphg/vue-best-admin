@@ -20,6 +20,15 @@ const FormPage = defineComponent(() => {
         { label: '区域三', value: 2 },
       ],
     }],
+    ['活动区域（多选）', 'region2', {
+      as: 'select',
+      multiple: true,
+      options: [
+        { label: '区域一', value: 0 },
+        { label: '区域二', value: 1 },
+        { label: '区域三', value: 2 },
+      ],
+    }],
     ['活动日期', 'date', {
       as: 'date',
       placeholder: '选择日期',
@@ -35,7 +44,7 @@ const FormPage = defineComponent(() => {
       ],
     }],
     ['活动形式', 'desc', { type: 'textarea' }],
-  ], { hasRules: ['name', 'region', 'date'] })
+  ], { autoRules: ['name', 'region', 'date'] })
 
   // 处理表单提交
   const handleSubmit = async () => {

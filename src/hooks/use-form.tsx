@@ -1,9 +1,10 @@
 import type { FormItemRule, FormRules, SelectOption } from 'naive-ui'
-import { NDatePicker, NForm, NFormItem, NInput, NInputNumber, NSelect, NSlider, NSwitch, NTimePicker, NTransfer } from 'naive-ui'
+import { NCheckbox, NCheckboxGroup, NDatePicker, NForm, NFormItem, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NSelect, NSlider, NSwitch, NTimePicker, NTransfer } from 'naive-ui'
+import { omit } from 'naive-ui/es/_utils'
 
 interface FieldConfig {
-  as?: 'input' | 'select' | 'date' | 'date-picker' | 'time' | 'time-picker'
-    | 'radio' | 'radio-group' | 'radio-button-group' | 'switch'
+  as?: 'input' | 'select' | 'date' | 'date-picker' | 'time' | 'time-picker' | 'checkbox-group' | 'checkbox'
+    | 'radio' | 'radio-group' | 'radio-button' | 'radio-button-group' | 'switch'
     | 'input-number' | 'time-picker' | 'slider' | 'transfer' | 'checkbox' | 'checkbox'
   placeholder?: string
   options?: SelectOption[]
@@ -12,13 +13,14 @@ interface FieldConfig {
   max?: number
   step?: number
   disabled?: boolean
+  multiple?: boolean
   [key: string]: any
 }
 
 type FieldDefinition = [string, string, FieldConfig?]
 
 interface UseFormOptions {
-  hasRules?: string[]
+  autoRules?: string[]
 }
 
 export function useForm(fields: FieldDefinition[], options: UseFormOptions = {}) {
@@ -35,6 +37,9 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
       case 'checkbox':
       case 'transfer':
         form.value[key] = []
+        break
+      case 'select':
+        form.value[key] = config?.multiple ? [] : null
         break
       case 'switch':
         form.value[key] = false
@@ -55,9 +60,8 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   // 生成表单规则
   const formRules = computed<FormRules>(() => {
     const rules: FormRules = {}
-
     fields.forEach(([label, key, config]) => {
-      if (config?.rules === true || options.rules?.includes(key)) {
+      if (config?.rules === true || options.autoRules?.includes(key)) {
         rules[key] = [{ required: true, message: `请输入${label}`, trigger: 'blur' }]
       } else if (Array.isArray(config?.rules)) {
         rules[key] = config.rules
@@ -144,48 +148,56 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
         )
         break
 
-        // case 'checkbox':
-        //   const { options, ...rest } = restProps
-        //   InputElement = (
-        //     <NCheckboxGroup {...commonProps} {...rest}>
-        //       {options?.map(option => (
-        //         <NCheckbox key={option.value} value={option.value}>
-        //           {option.label}
-        //         </NCheckbox>
-        //       ))}
-        //     </NCheckboxGroup>
-        //   )
-        //   break
+      case 'checkbox':
+      case 'checkbox-group': {
+        const props = omit(restProps, ['options'])
+        InputElement = (
+          <NCheckboxGroup {...commonProps} {...props}>
+            {restProps.options?.map(option => (
+              <NCheckbox key={option.value} value={option.value}>
+                {option.label}
+              </NCheckbox>
+            ))}
+          </NCheckboxGroup>
+        )
+        break
+      }
 
-        // case 'radio':
-        //   InputElement = (
-        //     <NRadioGroup {...commonProps}>
-        //       {options?.map(option => (
-        //         <NRadio key={option.value} value={option.value}>
-        //           {option.label}
-        //         </NRadio>
-        //       ))}
-        //     </NRadioGroup>
-        //   )
-        //   break
+      case 'radio':
+      case 'radio-group':{
+        const props = omit(restProps, ['options'])
+        InputElement = (
+          <NRadioGroup {...commonProps} {...props}>
+            {restProps.options?.map(option => (
+              <NRadio key={option.value} value={option.value}>
+                {option.label}
+              </NRadio>
+            ))}
+          </NRadioGroup>
+        )
+        break
+      }
 
-        // case 'radio-button-group':
-        //   InputElement = (
-        //     <NRadioGroup {...commonProps}>
-        //       {options?.map(option => (
-        //         <NRadioButton key={option.value} value={option.value}>
-        //           {option.label}
-        //         </NRadioButton>
-        //       ))}
-        //     </NRadioGroup>
-        //   )
-        //   break
+      case 'radio-button':
+      case 'radio-button-group': {
+        const props = omit(restProps, ['options'])
+        InputElement = (
+          <NRadioGroup {...commonProps} {...props}>
+            {restProps.options?.map(option => (
+              <NRadioButton key={option.value} value={option.value}>
+                {option.label}
+              </NRadioButton>
+            ))}
+          </NRadioGroup>
+        )
+        break
+      }
 
       case 'transfer':
         InputElement = (
           <NTransfer
             {...commonProps}
-            options={options as any}
+            {...restProps}
           />
         )
         break
@@ -242,6 +254,8 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
       switch (type) {
         case 'checkbox':
         case 'checkbox-group':
+        case 'checkbox-button':
+        case 'checkbox-button-group':
         case 'transfer':
           defaultField[key] = []
           break
@@ -253,7 +267,8 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
           defaultField[key] = config?.min || 0
           break
         case 'date':
-        case 'datetime':
+        case 'date-picker':
+        case 'time':
         case 'time-picker':
           defaultField[key] = null
           break

@@ -1,4 +1,4 @@
-import { NButton, NCard, NCheckbox, NDataTable, NDropdown, NForm, NFormItemRow, NIcon, NInput, NPagination, NSelect, NSpace, NTag } from 'naive-ui'
+import { NButton, NCard, NCheckbox, NDataTable, NDropdown, NForm, NFormItemGi, NGrid, NIcon, NInput, NPagination, NSelect, NSpace, NTag } from 'naive-ui'
 import { computed, defineComponent, h, ref } from 'vue'
 import IconColumns from '~icons/lucide/columns'
 import IconDownload from '~icons/lucide/download'
@@ -256,55 +256,57 @@ const TablePage = defineComponent({
         <NSpace vertical size="large">
           {/* 查询表单区域 */}
           <NCard size="small">
-            <NForm inline label-placement="left">
-              <NFormItemRow label="关键词">
-                <NInput
-                  v-model:value={searchQuery.value}
-                  placeholder="搜索姓名或邮箱"
-                  clearable
-                  style={{ width: '200px' }}
-                  v-slots={{
-                    prefix: () => h(NIcon, null, () => h(IconSearch)),
-                  }}
-                />
-              </NFormItemRow>
-              <NFormItemRow label="角色">
-                <NSelect
-                  v-model:value={selectedRole.value}
-                  placeholder="选择角色"
-                  clearable
-                  options={[
-                    { label: '管理员', value: 'admin' },
-                    { label: '编辑者', value: 'editor' },
-                    { label: '普通用户', value: 'user' },
-                  ]}
-                  style={{ width: '120px' }}
-                />
-              </NFormItemRow>
-              <NFormItemRow label="状态">
-                <NSelect
-                  v-model:value={selectedStatus.value}
-                  placeholder="选择状态"
-                  clearable
-                  options={[
-                    { label: '激活', value: 'active' },
-                    { label: '未激活', value: 'inactive' },
-                    { label: '待审核', value: 'pending' },
-                  ]}
-                  style={{ width: '120px' }}
-                />
-              </NFormItemRow>
-              <NFormItemRow>
-                <NSpace>
-                  <NButton type="primary" onClick={handleSearch}>
-                    <NIcon class="mr-1">
-                      <IconSearch />
-                    </NIcon>
-                    查询
-                  </NButton>
-                  <NButton onClick={handleReset}>重置</NButton>
-                </NSpace>
-              </NFormItemRow>
+            <NForm inline label-placement="left" show-feedback={false}>
+              <NGrid x-gap={12}>
+                <NFormItemGi label="关键词" span={6}>
+                  <NInput
+                    v-model:value={searchQuery.value}
+                    placeholder="搜索姓名或邮箱"
+                    clearable
+                    style={{ width: '200px' }}
+                    v-slots={{
+                      prefix: () => h(NIcon, null, () => h(IconSearch)),
+                    }}
+                  />
+                </NFormItemGi>
+                <NFormItemGi label="角色" span={6}>
+                  <NSelect
+                    v-model:value={selectedRole.value}
+                    placeholder="选择角色"
+                    class="w-full"
+                    clearable
+                    options={[
+                      { label: '管理员', value: 'admin' },
+                      { label: '编辑者', value: 'editor' },
+                      { label: '普通用户', value: 'user' },
+                    ]}
+                  />
+                </NFormItemGi>
+                <NFormItemGi label="状态" span={6}>
+                  <NSelect
+                    v-model:value={selectedStatus.value}
+                    placeholder="选择状态"
+                    class="w-full"
+                    clearable
+                    options={[
+                      { label: '激活', value: 'active' },
+                      { label: '未激活', value: 'inactive' },
+                      { label: '待审核', value: 'pending' },
+                    ]}
+                  />
+                </NFormItemGi>
+                <NFormItemGi span={6}>
+                  <NSpace>
+                    <NButton type="primary" onClick={handleSearch}>
+                      <NIcon class="mr-1">
+                        <IconSearch />
+                      </NIcon>
+                      查询
+                    </NButton>
+                    <NButton onClick={handleReset}>重置</NButton>
+                  </NSpace>
+                </NFormItemGi>
+              </NGrid>
             </NForm>
           </NCard>
 

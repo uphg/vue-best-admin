@@ -27,11 +27,10 @@ coverage
 *.sln
 *.sw?
 .kiro
+.claude
 
 *.tsbuildinfo
 
 .eslintrc-auto-import.json
 src/auto-imports.d.ts
-
-
 setup_env.sh
