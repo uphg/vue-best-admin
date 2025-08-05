@@ -1,23 +1,39 @@
 import type { FormItemRule, FormRules, SelectOption } from 'naive-ui'
-import { NCheckbox, NCheckboxGroup, NDatePicker, NForm, NFormItem, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NSelect, NSlider, NSwitch, NTimePicker, NTransfer } from 'naive-ui'
+import { NAutoComplete, NCascader, NCheckbox, NCheckboxGroup, NColorPicker, NDatePicker, NDynamicInput, NDynamicTags, NForm, NFormItem, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSwitch, NTimePicker, NTransfer, NTreeSelect, NUpload } from 'naive-ui'
 import { omit } from 'naive-ui/es/_utils'
 
-interface FieldConfig {
-  as?: 'input' | 'select' | 'date' | 'date-picker' | 'time' | 'time-picker' | 'checkbox-group' | 'checkbox'
-    | 'radio' | 'radio-group' | 'radio-button' | 'radio-button-group' | 'switch'
-    | 'input-number' | 'time-picker' | 'slider' | 'transfer' | 'checkbox' | 'checkbox'
+type FieldAs = 'auto-complete'
+  | 'cascader'
+  | 'color-picker'
+  | 'checkbox' | 'checkbox-button' | 'checkbox-group' | 'checkbox-button-group'
+  | 'date' | 'date-picker'
+  | 'dynamic-input'
+  | 'dynamic-tags'
+  | 'input'
+  | 'input-number'
+  | 'radio' | 'radio-group' | 'radio-button' | 'radio-button-group'
+  | 'switch'
+  | 'rate'
+  | 'select'
+  | 'slider'
+  | 'switch'
+  | 'time' | 'time-picker'
+  | 'transfer'
+  | 'tree-select'
+  | 'upload'
+
+interface FieldProps {
+  as?: FieldAs
+  rules?: boolean | FormItemRule[]
   placeholder?: string
   options?: SelectOption[]
-  rules?: boolean | FormItemRule[]
+  multiple?: boolean
   min?: number
   max?: number
-  step?: number
-  disabled?: boolean
-  multiple?: boolean
   [key: string]: any
 }
 
-type FieldDefinition = [string, string, FieldConfig?]
+type FieldDefinition = [string, string, FieldProps]
 
 interface UseFormOptions {
   autoRules?: string[]
@@ -29,28 +45,44 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   const tips = shallowRef<Record<string, any>>({})
 
   // 初始化表单数据
-  fields.forEach(([label, key, config]) => {
+  fields.forEach(([label, key, props]) => {
     tips.value[key] = `请输入${label}`
-    const tag = config?.as || 'input'
+    const tag = props?.as || 'input'
 
     switch (tag) {
       case 'checkbox':
+      case 'checkbox-group':
+      case 'checkbox-button':
+      case 'checkbox-button-group':
       case 'transfer':
+      case 'dynamic-tags':
         form.value[key] = []
         break
       case 'select':
-        form.value[key] = config?.multiple ? [] : null
+      case 'tree-select':
+      case 'cascader':
+        form.value[key] = props?.multiple ? [] : null
         break
       case 'switch':
         form.value[key] = false
         break
       case 'input-number':
       case 'slider':
-        form.value[key] = config?.min || 0
+      case 'rate':
+        form.value[key] = props?.min || 0
         break
       case 'date':
+      case 'date-picker':
+      case 'time':
       case 'time-picker':
+      case 'color-picker':
         form.value[key] = null
+        break
+      case 'upload':
+        form.value[key] = []
+        break
+      case 'dynamic-input':
+        form.value[key] = []
         break
       default:
         form.value[key] = ''
@@ -60,11 +92,11 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   // 生成表单规则
   const formRules = computed<FormRules>(() => {
     const rules: FormRules = {}
-    fields.forEach(([label, key, config]) => {
-      if (config?.rules === true || options.autoRules?.includes(key)) {
+    fields.forEach(([label, key, props]) => {
+      if (props?.rules === true || options.autoRules?.includes(key)) {
         rules[key] = [{ required: true, message: `请输入${label}`, trigger: 'blur' }]
-      } else if (Array.isArray(config?.rules)) {
-        rules[key] = config.rules
+      } else if (Array.isArray(props?.rules)) {
+        rules[key] = props.rules
       }
     })
 
@@ -73,8 +105,9 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
 
   // 渲染表单项
   const renderFormItem = (field: FieldDefinition) => {
-    const [label, key, config = {}] = field
-    const { as: tag = 'input', placeholder, ...restProps } = config
+    const [label, key, props] = field
+    const propsData = props || {}
+    const { as: tag = 'input', placeholder, options, ...restProps } = propsData
 
     const commonProps = {
       'value': form.value[key],
@@ -150,10 +183,10 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
 
       case 'checkbox':
       case 'checkbox-group': {
-        const props = omit(restProps, ['options'])
+        const otherProps = omit(restProps, ['options'])
         InputElement = (
-          <NCheckboxGroup {...commonProps} {...props}>
-            {restProps.options?.map(option => (
+          <NCheckboxGroup {...commonProps} {...otherProps}>
+            {options?.map((option: SelectOption) => (
               <NCheckbox key={option.value} value={option.value}>
                 {option.label}
               </NCheckbox>
@@ -165,10 +198,10 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
 
       case 'radio':
       case 'radio-group':{
-        const props = omit(restProps, ['options'])
+        const otherProps = omit(restProps, ['options'])
         InputElement = (
-          <NRadioGroup {...commonProps} {...props}>
-            {restProps.options?.map(option => (
+          <NRadioGroup {...commonProps} {...otherProps}>
+            {options?.map((option: SelectOption) => (
               <NRadio key={option.value} value={option.value}>
                 {option.label}
               </NRadio>
@@ -180,10 +213,10 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
 
       case 'radio-button':
       case 'radio-button-group': {
-        const props = omit(restProps, ['options'])
+        const otherProps = omit(restProps, ['options'])
         InputElement = (
-          <NRadioGroup {...commonProps} {...props}>
-            {restProps.options?.map(option => (
+          <NRadioGroup {...commonProps} {...otherProps}>
+            {options?.map((option: SelectOption) => (
               <NRadioButton key={option.value} value={option.value}>
                 {option.label}
               </NRadioButton>
@@ -192,6 +225,97 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
         )
         break
       }
+
+      case 'auto-complete':
+        InputElement = (
+          <NAutoComplete
+            {...commonProps}
+            {...restProps}
+            placeholder={placeholder ?? `请输入${label}`}
+          />
+        )
+        break
+
+      case 'cascader':
+        InputElement = (
+          <NCascader
+            {...commonProps}
+            {...restProps}
+            placeholder={placeholder ?? `请选择${label}`}
+          />
+        )
+        break
+
+      case 'color-picker':
+        InputElement = (
+          <NColorPicker
+            {...commonProps}
+            {...restProps}
+          />
+        )
+        break
+
+      case 'dynamic-input':
+        InputElement = (
+          <NDynamicInput
+            {...commonProps}
+            {...restProps}
+            placeholder={placeholder ?? `请输入${label}`}
+          />
+        )
+        break
+
+      case 'dynamic-tags':
+        InputElement = (
+          <NDynamicTags
+            {...commonProps}
+            {...restProps}
+          />
+        )
+        break
+
+      case 'checkbox-button':
+      case 'checkbox-button-group': {
+        const otherProps = omit(restProps, ['options'])
+        InputElement = (
+          <NCheckboxGroup {...commonProps} {...otherProps}>
+            {options?.map((option: SelectOption) => (
+              <NCheckbox key={option.value} value={option.value}>
+                {option.label}
+              </NCheckbox>
+            ))}
+          </NCheckboxGroup>
+        )
+        break
+      }
+
+      case 'rate':
+        InputElement = (
+          <NRate
+            {...commonProps}
+            {...restProps}
+          />
+        )
+        break
+
+      case 'tree-select':
+        InputElement = (
+          <NTreeSelect
+            {...commonProps}
+            {...restProps}
+            placeholder={placeholder ?? `请选择${label}`}
+          />
+        )
+        break
+
+      case 'upload':
+        InputElement = (
+          <NUpload
+            {...commonProps}
+            {...restProps}
+          />
+        )
+        break
 
       case 'transfer':
         InputElement = (
@@ -248,29 +372,43 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   function createDefaultField() {
     const defaultField: Record<string, any> = {}
 
-    fields.forEach(([, key, config]) => {
-      const type = config?.type || 'input'
+    fields.forEach(([, key, props]) => {
+      const tag = props?.as || 'input'
 
-      switch (type) {
+      switch (tag) {
         case 'checkbox':
         case 'checkbox-group':
         case 'checkbox-button':
         case 'checkbox-button-group':
         case 'transfer':
+        case 'dynamic-tags':
           defaultField[key] = []
           break
         case 'switch':
           defaultField[key] = false
           break
+        case 'select':
+        case 'tree-select':
+        case 'cascader':
+          defaultField[key] = props?.multiple ? [] : null
+          break
         case 'input-number':
         case 'slider':
-          defaultField[key] = config?.min || 0
+        case 'rate':
+          defaultField[key] = props?.min || 0
           break
         case 'date':
         case 'date-picker':
         case 'time':
         case 'time-picker':
+        case 'color-picker':
           defaultField[key] = null
+          break
+        case 'upload':
+          defaultField[key] = []
+          break
+        case 'dynamic-input':
+          defaultField[key] = []
           break
         default:
           defaultField[key] = ''

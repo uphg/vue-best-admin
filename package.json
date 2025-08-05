@@ -25,6 +25,7 @@
   "devDependencies": {
     "@antfu/eslint-config": "^4.16.2",
     "@iconify-json/lucide": "^1.2.55",
+    "@testing-library/vue": "^8.1.0",
     "@tsconfig/node22": "^22.0.2",
     "@types/jsdom": "^21.1.7",
     "@types/node": "^22.15.32",
