@@ -1,4 +1,5 @@
-import type { FormItemRule, FormRules, SelectOption } from 'naive-ui'
+import type { FormRules, SelectOption } from 'naive-ui'
+import { isObject } from '@vueuse/core'
 import { NAutoComplete, NCascader, NCheckbox, NCheckboxGroup, NColorPicker, NDatePicker, NDynamicInput, NDynamicTags, NForm, NFormItem, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSwitch, NTimePicker, NTransfer, NTreeSelect, NUpload } from 'naive-ui'
 import { omit } from 'naive-ui/es/_utils'
 
@@ -24,12 +25,6 @@ type FieldAs = 'auto-complete'
 
 interface FieldProps {
   as?: FieldAs
-  rules?: boolean | FormItemRule[]
-  placeholder?: string
-  options?: SelectOption[]
-  multiple?: boolean
-  min?: number
-  max?: number
   [key: string]: any
 }
 
@@ -40,62 +35,23 @@ interface UseFormOptions {
 }
 
 export function useForm(fields: FieldDefinition[], options: UseFormOptions = {}) {
-  const form = ref<Record<string, any>>({})
+  const form = ref<Record<FieldDefinition[0], any>>({})
   const formRef = ref()
   const tips = shallowRef<Record<string, any>>({})
-
   // 初始化表单数据
-  fields.forEach(([label, key, props]) => {
+  const defaultField = createDefaultField()
+  fields.forEach(([label, key]) => {
     tips.value[key] = `请输入${label}`
-    const tag = props?.as || 'input'
-
-    switch (tag) {
-      case 'checkbox':
-      case 'checkbox-group':
-      case 'checkbox-button':
-      case 'checkbox-button-group':
-      case 'transfer':
-      case 'dynamic-tags':
-        form.value[key] = []
-        break
-      case 'select':
-      case 'tree-select':
-      case 'cascader':
-        form.value[key] = props?.multiple ? [] : null
-        break
-      case 'switch':
-        form.value[key] = false
-        break
-      case 'input-number':
-      case 'slider':
-      case 'rate':
-        form.value[key] = props?.min || 0
-        break
-      case 'date':
-      case 'date-picker':
-      case 'time':
-      case 'time-picker':
-      case 'color-picker':
-        form.value[key] = null
-        break
-      case 'upload':
-        form.value[key] = []
-        break
-      case 'dynamic-input':
-        form.value[key] = []
-        break
-      default:
-        form.value[key] = ''
-    }
+    form.value[key] = defaultField[key]
   })
 
   // 生成表单规则
   const formRules = computed<FormRules>(() => {
     const rules: FormRules = {}
     fields.forEach(([label, key, props]) => {
-      if (props?.rules === true || options.autoRules?.includes(key)) {
+      if (options.autoRules?.includes(key)) {
         rules[key] = [{ required: true, message: `请输入${label}`, trigger: 'blur' }]
-      } else if (Array.isArray(props?.rules)) {
+      } else if (isObject(props?.rules)) {
         rules[key] = props.rules
       }
     })
@@ -108,10 +64,10 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
     const [label, key, props] = field
     const propsData = props || {}
     const { as: tag = 'input', placeholder, options, ...restProps } = propsData
-
+    const modelKey = tag === 'upload' ? 'fileList' : 'value'
     const commonProps = {
-      'value': form.value[key],
-      'onUpdate:value': (value: any) => {
+      [modelKey]: form.value[key],
+      [`onUpdate:${modelKey}`]: (value: any) => {
         form.value[key] = value
       },
     }
@@ -371,10 +327,8 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   // 创建默认字段
   function createDefaultField() {
     const defaultField: Record<string, any> = {}
-
     fields.forEach(([, key, props]) => {
       const tag = props?.as || 'input'
-
       switch (tag) {
         case 'checkbox':
         case 'checkbox-group':
@@ -382,6 +336,8 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
         case 'checkbox-button-group':
         case 'transfer':
         case 'dynamic-tags':
+        case 'upload':
+        case 'dynamic-input':
           defaultField[key] = []
           break
         case 'switch':
@@ -404,17 +360,10 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
         case 'color-picker':
           defaultField[key] = null
           break
-        case 'upload':
-          defaultField[key] = []
-          break
-        case 'dynamic-input':
-          defaultField[key] = []
-          break
         default:
-          defaultField[key] = ''
+          defaultField[key] = null
       }
     })
-
     return defaultField
   }
 

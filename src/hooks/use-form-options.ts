@@ -16,8 +16,7 @@ export function useFormOptions<T extends FormFieldConfig>(defaultField: T | (() 
     if (typeof defaultField === 'function') {
       return defaultField()
     }
-    const defaultCp = JSON.parse(JSON.stringify(defaultField))
-    return defaultCp
+    return JSON.parse(JSON.stringify(defaultField))
   }
 
   // 重置字段
