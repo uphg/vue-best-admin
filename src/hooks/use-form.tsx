@@ -35,9 +35,10 @@ interface UseFormOptions {
 }
 
 export function useForm(fields: FieldDefinition[], options: UseFormOptions = {}) {
-  const form = ref<Record<FieldDefinition[0], any>>({})
+  const form = ref<Record<string, any>>({})
   const formRef = ref()
   const tips = shallowRef<Record<string, any>>({})
+  const itemsNodeMap = new Map<string, any>(createItemNodeMap(fields, form))
   // 初始化表单数据
   const defaultField = createDefaultField()
   fields.forEach(([label, key]) => {
@@ -60,244 +61,244 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   })
 
   // 渲染表单项
-  const renderFormItem = (field: FieldDefinition) => {
-    const [label, key, props] = field
-    const propsData = props || {}
-    const { as: tag = 'input', placeholder, options, ...restProps } = propsData
-    const modelKey = tag === 'upload' ? 'fileList' : 'value'
-    const commonProps = {
-      [modelKey]: form.value[key],
-      [`onUpdate:${modelKey}`]: (value: any) => {
-        form.value[key] = value
-      },
-    }
+  // const renderFormItem = (field: FieldDefinition) => {
+  //   const [label, key, props] = field
+  //   const propsData = props || {}
+  //   const { as: tag = 'input', placeholder, options, ...restProps } = propsData
+  //   const modelKey = tag === 'upload' ? 'fileList' : 'value'
+  //   const commonProps = {
+  //     [modelKey]: form.value[key],
+  //     [`onUpdate:${modelKey}`]: (value: any) => {
+  //       form.value[key] = value
+  //     },
+  //   }
 
-    let InputElement
-    switch (tag) {
-      case 'input':
-        InputElement = (
-          <NInput
-            {...commonProps}
-            {...restProps}
-            placeholder={placeholder ?? `请输入${label}`}
-          />
-        )
-        break
+  //   let InputElement
+  //   switch (tag) {
+  //     case 'input':
+  //       InputElement = (
+  //         <NInput
+  //           {...commonProps}
+  //           {...restProps}
+  //           placeholder={placeholder ?? `请输入${label}`}
+  //         />
+  //       )
+  //       break
 
-      case 'input-number':
-        InputElement = (
-          <NInputNumber
-            {...commonProps}
-            {...restProps}
-            placeholder={placeholder ?? `请输入${label}`}
-          />
-        )
-        break
+  //     case 'input-number':
+  //       InputElement = (
+  //         <NInputNumber
+  //           {...commonProps}
+  //           {...restProps}
+  //           placeholder={placeholder ?? `请输入${label}`}
+  //         />
+  //       )
+  //       break
 
-      case 'select':
-        InputElement = (
-          <NSelect
-            {...commonProps}
-            {...restProps}
-            placeholder={placeholder ?? `请选择${label}`}
-          />
-        )
-        break
+  //     case 'select':
+  //       InputElement = (
+  //         <NSelect
+  //           {...commonProps}
+  //           {...restProps}
+  //           placeholder={placeholder ?? `请选择${label}`}
+  //         />
+  //       )
+  //       break
 
-      case 'date':
-      case 'date-picker':
-        InputElement = (
-          <NDatePicker
-            {...commonProps}
-            {...restProps}
-            placeholder={placeholder ?? `请选择${label}`}
-          />
-        )
-        break
-      case 'time':
-      case 'time-picker':
-        InputElement = (
-          <NTimePicker
-            {...commonProps}
-            {...restProps}
-            placeholder={placeholder ?? `请选择${label}`}
-          />
-        )
-        break
+  //     case 'date':
+  //     case 'date-picker':
+  //       InputElement = (
+  //         <NDatePicker
+  //           {...commonProps}
+  //           {...restProps}
+  //           placeholder={placeholder ?? `请选择${label}`}
+  //         />
+  //       )
+  //       break
+  //     case 'time':
+  //     case 'time-picker':
+  //       InputElement = (
+  //         <NTimePicker
+  //           {...commonProps}
+  //           {...restProps}
+  //           placeholder={placeholder ?? `请选择${label}`}
+  //         />
+  //       )
+  //       break
 
-      case 'switch':
-        InputElement = (
-          <NSwitch {...commonProps} {...restProps} />
-        )
-        break
+  //     case 'switch':
+  //       InputElement = (
+  //         <NSwitch {...commonProps} {...restProps} />
+  //       )
+  //       break
 
-      case 'slider':
-        InputElement = (
-          <NSlider {...commonProps} {...restProps} />
-        )
-        break
+  //     case 'slider':
+  //       InputElement = (
+  //         <NSlider {...commonProps} {...restProps} />
+  //       )
+  //       break
 
-      case 'checkbox':
-      case 'checkbox-group': {
-        const otherProps = omit(restProps, ['options'])
-        InputElement = (
-          <NCheckboxGroup {...commonProps} {...otherProps}>
-            {options?.map((option: SelectOption) => (
-              <NCheckbox key={option.value} value={option.value}>
-                {option.label}
-              </NCheckbox>
-            ))}
-          </NCheckboxGroup>
-        )
-        break
-      }
+  //     case 'checkbox':
+  //     case 'checkbox-group': {
+  //       const otherProps = omit(restProps, ['options'])
+  //       InputElement = (
+  //         <NCheckboxGroup {...commonProps} {...otherProps}>
+  //           {options?.map((option: SelectOption) => (
+  //             <NCheckbox key={option.value} value={option.value}>
+  //               {option.label}
+  //             </NCheckbox>
+  //           ))}
+  //         </NCheckboxGroup>
+  //       )
+  //       break
+  //     }
 
-      case 'radio':
-      case 'radio-group':{
-        const otherProps = omit(restProps, ['options'])
-        InputElement = (
-          <NRadioGroup {...commonProps} {...otherProps}>
-            {options?.map((option: SelectOption) => (
-              <NRadio key={option.value} value={option.value}>
-                {option.label}
-              </NRadio>
-            ))}
-          </NRadioGroup>
-        )
-        break
-      }
+  //     case 'radio':
+  //     case 'radio-group':{
+  //       const otherProps = omit(restProps, ['options'])
+  //       InputElement = (
+  //         <NRadioGroup {...commonProps} {...otherProps}>
+  //           {options?.map((option: SelectOption) => (
+  //             <NRadio key={option.value} value={option.value}>
+  //               {option.label}
+  //             </NRadio>
+  //           ))}
+  //         </NRadioGroup>
+  //       )
+  //       break
+  //     }
 
-      case 'radio-button':
-      case 'radio-button-group': {
-        const otherProps = omit(restProps, ['options'])
-        InputElement = (
-          <NRadioGroup {...commonProps} {...otherProps}>
-            {options?.map((option: SelectOption) => (
-              <NRadioButton key={option.value} value={option.value}>
-                {option.label}
-              </NRadioButton>
-            ))}
-          </NRadioGroup>
-        )
-        break
-      }
+  //     case 'radio-button':
+  //     case 'radio-button-group': {
+  //       const otherProps = omit(restProps, ['options'])
+  //       InputElement = (
+  //         <NRadioGroup {...commonProps} {...otherProps}>
+  //           {options?.map((option: SelectOption) => (
+  //             <NRadioButton key={option.value} value={option.value}>
+  //               {option.label}
+  //             </NRadioButton>
+  //           ))}
+  //         </NRadioGroup>
+  //       )
+  //       break
+  //     }
 
-      case 'auto-complete':
-        InputElement = (
-          <NAutoComplete
-            {...commonProps}
-            {...restProps}
-            placeholder={placeholder ?? `请输入${label}`}
-          />
-        )
-        break
+  //     case 'auto-complete':
+  //       InputElement = (
+  //         <NAutoComplete
+  //           {...commonProps}
+  //           {...restProps}
+  //           placeholder={placeholder ?? `请输入${label}`}
+  //         />
+  //       )
+  //       break
 
-      case 'cascader':
-        InputElement = (
-          <NCascader
-            {...commonProps}
-            {...restProps}
-            placeholder={placeholder ?? `请选择${label}`}
-          />
-        )
-        break
+  //     case 'cascader':
+  //       InputElement = (
+  //         <NCascader
+  //           {...commonProps}
+  //           {...restProps}
+  //           placeholder={placeholder ?? `请选择${label}`}
+  //         />
+  //       )
+  //       break
 
-      case 'color-picker':
-        InputElement = (
-          <NColorPicker
-            {...commonProps}
-            {...restProps}
-          />
-        )
-        break
+  //     case 'color-picker':
+  //       InputElement = (
+  //         <NColorPicker
+  //           {...commonProps}
+  //           {...restProps}
+  //         />
+  //       )
+  //       break
 
-      case 'dynamic-input':
-        InputElement = (
-          <NDynamicInput
-            {...commonProps}
-            {...restProps}
-            placeholder={placeholder ?? `请输入${label}`}
-          />
-        )
-        break
+  //     case 'dynamic-input':
+  //       InputElement = (
+  //         <NDynamicInput
+  //           {...commonProps}
+  //           {...restProps}
+  //           placeholder={placeholder ?? `请输入${label}`}
+  //         />
+  //       )
+  //       break
 
-      case 'dynamic-tags':
-        InputElement = (
-          <NDynamicTags
-            {...commonProps}
-            {...restProps}
-          />
-        )
-        break
+  //     case 'dynamic-tags':
+  //       InputElement = (
+  //         <NDynamicTags
+  //           {...commonProps}
+  //           {...restProps}
+  //         />
+  //       )
+  //       break
 
-      case 'checkbox-button':
-      case 'checkbox-button-group': {
-        const otherProps = omit(restProps, ['options'])
-        InputElement = (
-          <NCheckboxGroup {...commonProps} {...otherProps}>
-            {options?.map((option: SelectOption) => (
-              <NCheckbox key={option.value} value={option.value}>
-                {option.label}
-              </NCheckbox>
-            ))}
-          </NCheckboxGroup>
-        )
-        break
-      }
+  //     case 'checkbox-button':
+  //     case 'checkbox-button-group': {
+  //       const otherProps = omit(restProps, ['options'])
+  //       InputElement = (
+  //         <NCheckboxGroup {...commonProps} {...otherProps}>
+  //           {options?.map((option: SelectOption) => (
+  //             <NCheckbox key={option.value} value={option.value}>
+  //               {option.label}
+  //             </NCheckbox>
+  //           ))}
+  //         </NCheckboxGroup>
+  //       )
+  //       break
+  //     }
 
-      case 'rate':
-        InputElement = (
-          <NRate
-            {...commonProps}
-            {...restProps}
-          />
-        )
-        break
+  //     case 'rate':
+  //       InputElement = (
+  //         <NRate
+  //           {...commonProps}
+  //           {...restProps}
+  //         />
+  //       )
+  //       break
 
-      case 'tree-select':
-        InputElement = (
-          <NTreeSelect
-            {...commonProps}
-            {...restProps}
-            placeholder={placeholder ?? `请选择${label}`}
-          />
-        )
-        break
+  //     case 'tree-select':
+  //       InputElement = (
+  //         <NTreeSelect
+  //           {...commonProps}
+  //           {...restProps}
+  //           placeholder={placeholder ?? `请选择${label}`}
+  //         />
+  //       )
+  //       break
 
-      case 'upload':
-        InputElement = (
-          <NUpload
-            {...commonProps}
-            {...restProps}
-          />
-        )
-        break
+  //     case 'upload':
+  //       InputElement = (
+  //         <NUpload
+  //           {...commonProps}
+  //           {...restProps}
+  //         />
+  //       )
+  //       break
 
-      case 'transfer':
-        InputElement = (
-          <NTransfer
-            {...commonProps}
-            {...restProps}
-          />
-        )
-        break
+  //     case 'transfer':
+  //       InputElement = (
+  //         <NTransfer
+  //           {...commonProps}
+  //           {...restProps}
+  //         />
+  //       )
+  //       break
 
-      default:
-        InputElement = (
-          <NInput
-            {...commonProps}
-            {...restProps}
-            placeholder={placeholder ?? `请输入${label}`}
-          />
-        )
-    }
+  //     default:
+  //       InputElement = (
+  //         <NInput
+  //           {...commonProps}
+  //           {...restProps}
+  //           placeholder={placeholder ?? `请输入${label}`}
+  //         />
+  //       )
+  //   }
 
-    return (
-      <NFormItem key={key} path={key} label={label}>
-        {InputElement}
-      </NFormItem>
-    )
-  }
+  //   return (
+  //     <NFormItem key={key} path={key} label={label}>
+  //       {InputElement}
+  //     </NFormItem>
+  //   )
+  // }
 
   // 表单组件
   const Form = defineComponent(() => {
@@ -311,7 +312,8 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
         requireMarkPlacement="right-hanging"
         size="medium"
       >
-        {fields.map(renderFormItem)}
+        {/* {fields.map(renderFormItem)} */}
+        {fields.map(([_, key]) => itemsNodeMap.get(key))}
       </NForm>
     )
   })
@@ -398,4 +400,254 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   }
 
   return [Form, form, { formRef, resetForm, setFields, resetField, validate, clearValidation }] as const
+}
+
+function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<string, any>>) {
+  const map = new Map()
+
+  fields.forEach((field) => {
+    const [_, key] = field
+    const node = createItemNode(field, form)
+    map.set(key, node)
+  })
+
+  return map
+}
+
+function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition[0], any>>) {
+  const [label, key, _props] = field
+  const propsData = _props || {}
+  const { as: tag = 'input', placeholder, options, ...restProps } = propsData
+  const modelKey = tag === 'upload' ? 'fileList' : 'value'
+  const commonProps = {
+    [modelKey]: form.value[key],
+    [`onUpdate:${modelKey}`]: (value: any) => {
+      form.value[key] = value
+    },
+  }
+
+  let InputElement
+  switch (tag) {
+    case 'input':
+      InputElement = (
+        <NInput
+          {...commonProps}
+          {...restProps}
+          placeholder={placeholder ?? `请输入${label}`}
+        />
+      )
+      break
+
+    case 'input-number':
+      InputElement = (
+        <NInputNumber
+          {...commonProps}
+          {...restProps}
+          placeholder={placeholder ?? `请输入${label}`}
+        />
+      )
+      break
+
+    case 'select':
+      InputElement = (
+        <NSelect
+          {...commonProps}
+          {...restProps}
+          placeholder={placeholder ?? `请选择${label}`}
+        />
+      )
+      break
+
+    case 'date':
+    case 'date-picker':
+      InputElement = (
+        <NDatePicker
+          {...commonProps}
+          {...restProps}
+          placeholder={placeholder ?? `请选择${label}`}
+        />
+      )
+      break
+    case 'time':
+    case 'time-picker':
+      InputElement = (
+        <NTimePicker
+          {...commonProps}
+          {...restProps}
+          placeholder={placeholder ?? `请选择${label}`}
+        />
+      )
+      break
+
+    case 'switch':
+      InputElement = (
+        <NSwitch {...commonProps} {...restProps} />
+      )
+      break
+
+    case 'slider':
+      InputElement = (
+        <NSlider {...commonProps} {...restProps} />
+      )
+      break
+
+    case 'checkbox':
+    case 'checkbox-group': {
+      const otherProps = omit(restProps, ['options'])
+      InputElement = (
+        <NCheckboxGroup {...commonProps} {...otherProps}>
+          {options?.map((option: SelectOption) => (
+            <NCheckbox key={option.value} value={option.value}>
+              {option.label}
+            </NCheckbox>
+          ))}
+        </NCheckboxGroup>
+      )
+      break
+    }
+
+    case 'radio':
+    case 'radio-group':{
+      const otherProps = omit(restProps, ['options'])
+      InputElement = (
+        <NRadioGroup {...commonProps} {...otherProps}>
+          {options?.map((option: SelectOption) => (
+            <NRadio key={option.value} value={option.value}>
+              {option.label}
+            </NRadio>
+          ))}
+        </NRadioGroup>
+      )
+      break
+    }
+
+    case 'radio-button':
+    case 'radio-button-group': {
+      const otherProps = omit(restProps, ['options'])
+      InputElement = (
+        <NRadioGroup {...commonProps} {...otherProps}>
+          {options?.map((option: SelectOption) => (
+            <NRadioButton key={option.value} value={option.value}>
+              {option.label}
+            </NRadioButton>
+          ))}
+        </NRadioGroup>
+      )
+      break
+    }
+
+    case 'auto-complete':
+      InputElement = (
+        <NAutoComplete
+          {...commonProps}
+          {...restProps}
+          placeholder={placeholder ?? `请输入${label}`}
+        />
+      )
+      break
+
+    case 'cascader':
+      InputElement = (
+        <NCascader
+          {...commonProps}
+          {...restProps}
+          placeholder={placeholder ?? `请选择${label}`}
+        />
+      )
+      break
+
+    case 'color-picker':
+      InputElement = (
+        <NColorPicker
+          {...commonProps}
+          {...restProps}
+        />
+      )
+      break
+
+    case 'dynamic-input':
+      InputElement = (
+        <NDynamicInput
+          {...commonProps}
+          {...restProps}
+          placeholder={placeholder ?? `请输入${label}`}
+        />
+      )
+      break
+
+    case 'dynamic-tags':
+      InputElement = (
+        <NDynamicTags
+          {...commonProps}
+          {...restProps}
+        />
+      )
+      break
+
+    case 'checkbox-button':
+    case 'checkbox-button-group': {
+      const otherProps = omit(restProps, ['options'])
+      InputElement = (
+        <NCheckboxGroup {...commonProps} {...otherProps}>
+          {options?.map((option: SelectOption) => (
+            <NCheckbox key={option.value} value={option.value}>
+              {option.label}
+            </NCheckbox>
+          ))}
+        </NCheckboxGroup>
+      )
+      break
+    }
+
+    case 'rate':
+      InputElement = (
+        <NRate
+          {...commonProps}
+          {...restProps}
+        />
+      )
+      break
+
+    case 'tree-select':
+      InputElement = (
+        <NTreeSelect
+          {...commonProps}
+          {...restProps}
+          placeholder={placeholder ?? `请选择${label}`}
+        />
+      )
+      break
+
+    case 'upload':
+      InputElement = (
+        <NUpload
+          {...commonProps}
+          {...restProps}
+        />
+      )
+      break
+
+    case 'transfer':
+      InputElement = (
+        <NTransfer
+          {...commonProps}
+          {...restProps}
+        />
+      )
+      break
+
+    default:
+      InputElement = (
+        <NInput
+          {...commonProps}
+          {...restProps}
+          placeholder={placeholder ?? `请输入${label}`}
+        />
+      )
+  }
+  return () => (
+    <NFormItem key={key} path={key} label={label}>
+      {InputElement}
+    </NFormItem>
+  )
 }
