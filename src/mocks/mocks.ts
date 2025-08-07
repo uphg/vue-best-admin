@@ -6,5 +6,6 @@ export async function enableMocking() {
     serviceWorker: {
       url: '/mockServiceWorker.js',
     },
+    onUnhandledRequest: 'bypass', // 对未处理的请求保持静默
   })
 }

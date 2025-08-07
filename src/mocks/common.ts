@@ -45,6 +45,21 @@ export const routeDate = [
     ],
   },
   {
+    path: '/data-table',
+    component: 'Default',
+    mergeSingleChild: true,
+    children: [
+      {
+        path: 'base',
+        component: 'data-table/data-table-page',
+        meta: {
+          title: '数据表格示例',
+          icon: 'table',
+        },
+      },
+    ],
+  },
+  {
     path: '/form',
     component: 'Default',
     mergeSingleChild: true,
