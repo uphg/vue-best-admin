@@ -11,7 +11,7 @@ interface FormData {
 
 const FormPage = defineComponent(() => {
   const [Form, formData, { resetForm, validate }] = useForm([
-    ['活动名称', 'name', { rules: true }],
+    ['活动名称', 'name', {}],
     ['活动区域', 'region', {
       as: 'select',
       options: [
@@ -32,7 +32,6 @@ const FormPage = defineComponent(() => {
     ['活动日期', 'date', {
       as: 'date',
       placeholder: '选择日期',
-      rules: [{ type: 'date', required: true, message: '请选择日期', trigger: 'change' }],
     }],
     ['活动性质', 'type', {
       as: 'checkbox',
@@ -50,7 +49,9 @@ const FormPage = defineComponent(() => {
   const handleSubmit = async () => {
     try {
       const result = await validate()
-      console.log('表单提交数据:', result)
+      // console.log('表单提交数据:', result)
+      console.log('formData')
+      console.log(formData.value)
       // 这里可以调用 API 提交数据
     } catch (error) {
       console.error('表单验证失败:', error)

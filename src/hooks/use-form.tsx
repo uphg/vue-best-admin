@@ -34,6 +34,8 @@ interface UseFormOptions {
   autoRules?: string[]
 }
 
+const selectTypes = ['select', 'tree-select', 'cascader', 'date', 'date-picker', 'time', 'time-picker', 'radio', 'radio-group', 'radio-button', 'radio-button-group', 'checkbox', 'checkbox-group', 'checkbox-button', 'checkbox-button-group', 'color-picker']
+
 export function useForm(fields: FieldDefinition[], options: UseFormOptions = {}) {
   const form = ref<Record<string, any>>({})
   const formRef = ref()
@@ -47,18 +49,9 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   })
 
   // 生成表单规则
-  const formRules = computed<FormRules>(() => {
-    const rules: FormRules = {}
-    fields.forEach(([label, key, props]) => {
-      if (options.autoRules?.includes(key)) {
-        rules[key] = [{ required: true, message: `请输入${label}`, trigger: 'blur' }]
-      } else if (isObject(props?.rules)) {
-        rules[key] = props.rules
-      }
-    })
-
-    return rules
-  })
+  const formRules = createFormRules(fields, options)
+  console.log('formRules')
+  console.log(formRules)
 
   // 表单组件
   const Form = defineComponent(() => {
@@ -66,7 +59,7 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
       <NForm
         ref={formRef}
         model={form.value}
-        rules={formRules.value}
+        rules={formRules}
         labelPlacement="left"
         labelWidth="auto"
         requireMarkPlacement="right-hanging"
@@ -169,15 +162,146 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   return [Form, form, { formRef, resetForm, setFields, resetField, validate, clearValidation }] as const
 }
 
+function createFormRules(fields: FieldDefinition[], options: UseFormOptions = {}) {
+  const rules: FormRules = {}
+
+  fields.forEach(([label, key, props]) => {
+    // 优先使用手动传入的规则
+    if (isObject(props?.rules)) {
+      rules[key] = props.rules
+      return
+    }
+
+    // 只有在 autoRules 中包含该字段时才生成规则
+    if (!options.autoRules?.includes(key)) {
+      return
+    }
+
+    const tag = props?.as || 'input'
+    const ruleConfig = getFieldRuleConfig(tag, label, key, props)
+
+    if (ruleConfig) {
+      // 处理嵌套字段
+      if (key.includes('.')) {
+        setNestedRule(rules, key, ruleConfig)
+      } else {
+        rules[key] = ruleConfig
+      }
+    }
+  })
+
+  return rules
+}
+
+function getFieldRuleConfig(tag: FieldAs, label: string, key: string, props?: FieldProps) {
+  const baseRule = {
+    required: true,
+    message: selectTypes.includes(tag) ? `请选择${label}` : `请输入${label}`,
+  }
+
+  switch (tag) {
+    case 'input':
+    case 'auto-complete':
+    case 'dynamic-input':
+      return {
+        ...baseRule,
+        trigger: ['blur', 'input'],
+      }
+
+    case 'select':
+    case 'tree-select':
+    case 'cascader':
+    case 'date':
+    case 'date-picker':
+    case 'time':
+    case 'time-picker':
+    case 'radio':
+    case 'radio-group':
+    case 'radio-button':
+    case 'radio-button-group':
+      return {
+        ...baseRule,
+        trigger: ['blur', 'change'],
+        validator: (_rule: any, value: any) => {
+          if (value === null || value === undefined || value === '') {
+            return new Error(baseRule.message)
+          }
+          return true
+        },
+      }
+
+    case 'checkbox':
+    case 'checkbox-group':
+    case 'checkbox-button':
+    case 'checkbox-button-group':
+    case 'dynamic-tags':
+    case 'transfer':
+    case 'upload':
+      return {
+        type: 'array' as const,
+        ...baseRule,
+        trigger: 'change',
+      }
+
+    case 'input-number':
+      return {
+        type: 'number' as const,
+        ...baseRule,
+        trigger: ['blur', 'change'],
+      }
+
+    case 'switch':
+      return {
+        type: 'boolean' as const,
+        ...baseRule,
+        trigger: 'change',
+      }
+
+    case 'slider':
+    case 'rate':
+      return {
+        type: 'number' as const,
+        ...baseRule,
+        trigger: ['blur', 'change'],
+      }
+
+    case 'color-picker':
+      return {
+        ...baseRule,
+        trigger: 'change',
+      }
+
+    default:
+      return {
+        ...baseRule,
+        trigger: ['blur', 'input'],
+      }
+  }
+}
+
+function setNestedRule(rules: FormRules, path: string, ruleConfig: any) {
+  const keys = path.split('.')
+  let current: any = rules
+
+  for (let i = 0; i < keys.length - 1; i++) {
+    const key = keys[i]
+    if (!current[key]) {
+      current[key] = {}
+    }
+    current = current[key]
+  }
+
+  const lastKey = keys[keys.length - 1]
+  current[lastKey] = ruleConfig
+}
+
 function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<string, any>>) {
   const map = new Map()
-
   fields.forEach((field) => {
     const [_, key] = field
     const node = createItemNode(field, form)
     map.set(key, node)
   })
-
   return map
 }
 
