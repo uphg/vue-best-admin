@@ -60,246 +60,6 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
     return rules
   })
 
-  // 渲染表单项
-  // const renderFormItem = (field: FieldDefinition) => {
-  //   const [label, key, props] = field
-  //   const propsData = props || {}
-  //   const { as: tag = 'input', placeholder, options, ...restProps } = propsData
-  //   const modelKey = tag === 'upload' ? 'fileList' : 'value'
-  //   const commonProps = {
-  //     [modelKey]: form.value[key],
-  //     [`onUpdate:${modelKey}`]: (value: any) => {
-  //       form.value[key] = value
-  //     },
-  //   }
-
-  //   let InputElement
-  //   switch (tag) {
-  //     case 'input':
-  //       InputElement = (
-  //         <NInput
-  //           {...commonProps}
-  //           {...restProps}
-  //           placeholder={placeholder ?? `请输入${label}`}
-  //         />
-  //       )
-  //       break
-
-  //     case 'input-number':
-  //       InputElement = (
-  //         <NInputNumber
-  //           {...commonProps}
-  //           {...restProps}
-  //           placeholder={placeholder ?? `请输入${label}`}
-  //         />
-  //       )
-  //       break
-
-  //     case 'select':
-  //       InputElement = (
-  //         <NSelect
-  //           {...commonProps}
-  //           {...restProps}
-  //           placeholder={placeholder ?? `请选择${label}`}
-  //         />
-  //       )
-  //       break
-
-  //     case 'date':
-  //     case 'date-picker':
-  //       InputElement = (
-  //         <NDatePicker
-  //           {...commonProps}
-  //           {...restProps}
-  //           placeholder={placeholder ?? `请选择${label}`}
-  //         />
-  //       )
-  //       break
-  //     case 'time':
-  //     case 'time-picker':
-  //       InputElement = (
-  //         <NTimePicker
-  //           {...commonProps}
-  //           {...restProps}
-  //           placeholder={placeholder ?? `请选择${label}`}
-  //         />
-  //       )
-  //       break
-
-  //     case 'switch':
-  //       InputElement = (
-  //         <NSwitch {...commonProps} {...restProps} />
-  //       )
-  //       break
-
-  //     case 'slider':
-  //       InputElement = (
-  //         <NSlider {...commonProps} {...restProps} />
-  //       )
-  //       break
-
-  //     case 'checkbox':
-  //     case 'checkbox-group': {
-  //       const otherProps = omit(restProps, ['options'])
-  //       InputElement = (
-  //         <NCheckboxGroup {...commonProps} {...otherProps}>
-  //           {options?.map((option: SelectOption) => (
-  //             <NCheckbox key={option.value} value={option.value}>
-  //               {option.label}
-  //             </NCheckbox>
-  //           ))}
-  //         </NCheckboxGroup>
-  //       )
-  //       break
-  //     }
-
-  //     case 'radio':
-  //     case 'radio-group':{
-  //       const otherProps = omit(restProps, ['options'])
-  //       InputElement = (
-  //         <NRadioGroup {...commonProps} {...otherProps}>
-  //           {options?.map((option: SelectOption) => (
-  //             <NRadio key={option.value} value={option.value}>
-  //               {option.label}
-  //             </NRadio>
-  //           ))}
-  //         </NRadioGroup>
-  //       )
-  //       break
-  //     }
-
-  //     case 'radio-button':
-  //     case 'radio-button-group': {
-  //       const otherProps = omit(restProps, ['options'])
-  //       InputElement = (
-  //         <NRadioGroup {...commonProps} {...otherProps}>
-  //           {options?.map((option: SelectOption) => (
-  //             <NRadioButton key={option.value} value={option.value}>
-  //               {option.label}
-  //             </NRadioButton>
-  //           ))}
-  //         </NRadioGroup>
-  //       )
-  //       break
-  //     }
-
-  //     case 'auto-complete':
-  //       InputElement = (
-  //         <NAutoComplete
-  //           {...commonProps}
-  //           {...restProps}
-  //           placeholder={placeholder ?? `请输入${label}`}
-  //         />
-  //       )
-  //       break
-
-  //     case 'cascader':
-  //       InputElement = (
-  //         <NCascader
-  //           {...commonProps}
-  //           {...restProps}
-  //           placeholder={placeholder ?? `请选择${label}`}
-  //         />
-  //       )
-  //       break
-
-  //     case 'color-picker':
-  //       InputElement = (
-  //         <NColorPicker
-  //           {...commonProps}
-  //           {...restProps}
-  //         />
-  //       )
-  //       break
-
-  //     case 'dynamic-input':
-  //       InputElement = (
-  //         <NDynamicInput
-  //           {...commonProps}
-  //           {...restProps}
-  //           placeholder={placeholder ?? `请输入${label}`}
-  //         />
-  //       )
-  //       break
-
-  //     case 'dynamic-tags':
-  //       InputElement = (
-  //         <NDynamicTags
-  //           {...commonProps}
-  //           {...restProps}
-  //         />
-  //       )
-  //       break
-
-  //     case 'checkbox-button':
-  //     case 'checkbox-button-group': {
-  //       const otherProps = omit(restProps, ['options'])
-  //       InputElement = (
-  //         <NCheckboxGroup {...commonProps} {...otherProps}>
-  //           {options?.map((option: SelectOption) => (
-  //             <NCheckbox key={option.value} value={option.value}>
-  //               {option.label}
-  //             </NCheckbox>
-  //           ))}
-  //         </NCheckboxGroup>
-  //       )
-  //       break
-  //     }
-
-  //     case 'rate':
-  //       InputElement = (
-  //         <NRate
-  //           {...commonProps}
-  //           {...restProps}
-  //         />
-  //       )
-  //       break
-
-  //     case 'tree-select':
-  //       InputElement = (
-  //         <NTreeSelect
-  //           {...commonProps}
-  //           {...restProps}
-  //           placeholder={placeholder ?? `请选择${label}`}
-  //         />
-  //       )
-  //       break
-
-  //     case 'upload':
-  //       InputElement = (
-  //         <NUpload
-  //           {...commonProps}
-  //           {...restProps}
-  //         />
-  //       )
-  //       break
-
-  //     case 'transfer':
-  //       InputElement = (
-  //         <NTransfer
-  //           {...commonProps}
-  //           {...restProps}
-  //         />
-  //       )
-  //       break
-
-  //     default:
-  //       InputElement = (
-  //         <NInput
-  //           {...commonProps}
-  //           {...restProps}
-  //           placeholder={placeholder ?? `请输入${label}`}
-  //         />
-  //       )
-  //   }
-
-  //   return (
-  //     <NFormItem key={key} path={key} label={label}>
-  //       {InputElement}
-  //     </NFormItem>
-  //   )
-  // }
-
   // 表单组件
   const Form = defineComponent(() => {
     return () => (
@@ -313,7 +73,14 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
         size="medium"
       >
         {/* {fields.map(renderFormItem)} */}
-        {fields.map(([_, key]) => itemsNodeMap.get(key))}
+        {fields.map(([label, key]) => {
+          const Input = itemsNodeMap.get(key)
+          return (
+            <NFormItem key={key} path={key} label={label}>
+              {Input}
+            </NFormItem>
+          )
+        })}
       </NForm>
     )
   })
@@ -417,7 +184,7 @@ function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<string, a
 function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition[0], any>>) {
   const [label, key, _props] = field
   const propsData = _props || {}
-  const { as: tag = 'input', placeholder, options, ...restProps } = propsData
+  const { as: tag = 'input', placeholder, ...restProps } = propsData
   const modelKey = tag === 'upload' ? 'fileList' : 'value'
   const commonProps = {
     [modelKey]: form.value[key],
@@ -429,7 +196,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
   let InputElement
   switch (tag) {
     case 'input':
-      InputElement = (
+      InputElement = () => (
         <NInput
           {...commonProps}
           {...restProps}
@@ -439,7 +206,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       break
 
     case 'input-number':
-      InputElement = (
+      InputElement = () => (
         <NInputNumber
           {...commonProps}
           {...restProps}
@@ -449,7 +216,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       break
 
     case 'select':
-      InputElement = (
+      InputElement = () => (
         <NSelect
           {...commonProps}
           {...restProps}
@@ -457,10 +224,9 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
         />
       )
       break
-
     case 'date':
     case 'date-picker':
-      InputElement = (
+      InputElement = () => (
         <NDatePicker
           {...commonProps}
           {...restProps}
@@ -470,7 +236,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       break
     case 'time':
     case 'time-picker':
-      InputElement = (
+      InputElement = () => (
         <NTimePicker
           {...commonProps}
           {...restProps}
@@ -480,21 +246,22 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       break
 
     case 'switch':
-      InputElement = (
+      InputElement = () => (
         <NSwitch {...commonProps} {...restProps} />
       )
       break
 
     case 'slider':
-      InputElement = (
+      InputElement = () => (
         <NSlider {...commonProps} {...restProps} />
       )
       break
 
     case 'checkbox':
     case 'checkbox-group': {
+      const { options } = restProps
       const otherProps = omit(restProps, ['options'])
-      InputElement = (
+      InputElement = () => (
         <NCheckboxGroup {...commonProps} {...otherProps}>
           {options?.map((option: SelectOption) => (
             <NCheckbox key={option.value} value={option.value}>
@@ -508,8 +275,9 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
 
     case 'radio':
     case 'radio-group':{
+      const { options } = restProps
       const otherProps = omit(restProps, ['options'])
-      InputElement = (
+      InputElement = () => (
         <NRadioGroup {...commonProps} {...otherProps}>
           {options?.map((option: SelectOption) => (
             <NRadio key={option.value} value={option.value}>
@@ -523,8 +291,9 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
 
     case 'radio-button':
     case 'radio-button-group': {
+      const { options } = restProps
       const otherProps = omit(restProps, ['options'])
-      InputElement = (
+      InputElement = () => (
         <NRadioGroup {...commonProps} {...otherProps}>
           {options?.map((option: SelectOption) => (
             <NRadioButton key={option.value} value={option.value}>
@@ -537,7 +306,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     }
 
     case 'auto-complete':
-      InputElement = (
+      InputElement = () => (
         <NAutoComplete
           {...commonProps}
           {...restProps}
@@ -547,7 +316,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       break
 
     case 'cascader':
-      InputElement = (
+      InputElement = () => (
         <NCascader
           {...commonProps}
           {...restProps}
@@ -557,7 +326,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       break
 
     case 'color-picker':
-      InputElement = (
+      InputElement = () => (
         <NColorPicker
           {...commonProps}
           {...restProps}
@@ -566,7 +335,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       break
 
     case 'dynamic-input':
-      InputElement = (
+      InputElement = () => (
         <NDynamicInput
           {...commonProps}
           {...restProps}
@@ -576,7 +345,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       break
 
     case 'dynamic-tags':
-      InputElement = (
+      InputElement = () => (
         <NDynamicTags
           {...commonProps}
           {...restProps}
@@ -586,8 +355,9 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
 
     case 'checkbox-button':
     case 'checkbox-button-group': {
+      const { options } = restProps
       const otherProps = omit(restProps, ['options'])
-      InputElement = (
+      InputElement = () => (
         <NCheckboxGroup {...commonProps} {...otherProps}>
           {options?.map((option: SelectOption) => (
             <NCheckbox key={option.value} value={option.value}>
@@ -600,7 +370,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     }
 
     case 'rate':
-      InputElement = (
+      InputElement = () => (
         <NRate
           {...commonProps}
           {...restProps}
@@ -609,7 +379,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       break
 
     case 'tree-select':
-      InputElement = (
+      InputElement = () => (
         <NTreeSelect
           {...commonProps}
           {...restProps}
@@ -619,7 +389,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       break
 
     case 'upload':
-      InputElement = (
+      InputElement = () => (
         <NUpload
           {...commonProps}
           {...restProps}
@@ -628,7 +398,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       break
 
     case 'transfer':
-      InputElement = (
+      InputElement = () => (
         <NTransfer
           {...commonProps}
           {...restProps}
@@ -637,7 +407,7 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       break
 
     default:
-      InputElement = (
+      InputElement = () => (
         <NInput
           {...commonProps}
           {...restProps}
@@ -645,9 +415,5 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
         />
       )
   }
-  return () => (
-    <NFormItem key={key} path={key} label={label}>
-      {InputElement}
-    </NFormItem>
-  )
+  return InputElement
 }
