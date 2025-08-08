@@ -34,7 +34,7 @@ interface UseFormOptions {
   autoRules?: string[]
 }
 
-const selectTypes = ['select', 'tree-select', 'cascader', 'date', 'date-picker', 'time', 'time-picker', 'radio', 'radio-group', 'radio-button', 'radio-button-group', 'checkbox', 'checkbox-group', 'checkbox-button', 'checkbox-button-group', 'color-picker']
+const selectTypes = ['select', 'tree-select', 'cascader', 'date', 'date-picker', 'time', 'time-picker', 'radio', 'radio-group', 'radio-button', 'radio-button-group', 'checkbox', 'checkbox-group', 'checkbox-button', 'checkbox-button-group', 'color-picker', 'switch', 'slider', 'rate', 'transfer', 'upload']
 
 export function useForm(fields: FieldDefinition[], options: UseFormOptions = {}) {
   const form = ref<Record<string, any>>({})
@@ -251,7 +251,7 @@ function getFieldRuleConfig(tag: FieldAs, label: string, key: string, props?: Fi
     case 'switch':
       return {
         type: 'boolean' as const,
-        ...baseRule,
+        ...(baseRule),
         trigger: 'change',
       }
 
