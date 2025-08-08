@@ -1,12 +1,16 @@
+import type { ClassValue } from 'clsx'
 import type { DataTableColumn, DataTableProps } from 'naive-ui'
 import type { ShallowRef } from 'vue'
 import { isNil, omit } from 'lodash-es'
 import { NDataTable, NPagination } from 'naive-ui'
+import { mergeClass } from '@/utils/merge-class'
 
 interface UseTableProps extends DataTableProps {
   dataSource: (options: { page: number, pageSize: number }) => Promise<any>
   initDataSource: boolean
   hasLoading: boolean
+  tableClass: ClassValue
+  pagingWrapClass: ClassValue
   onBeforeUpdateData: () => void
   onAfterUpdateData: () => void
 }
@@ -26,7 +30,7 @@ const defaultProps = {
   },
 }
 
-const customPropsNames = ['pagination', 'dataSource', 'initDataSource', 'hasLoading', 'onBeforeUpdateData', 'onAfterUpdateData']
+const customPropsNames = ['pagination', 'dataSource', 'initDataSource', 'hasLoading', 'onBeforeUpdateData', 'onAfterUpdateData', 'pagingWrapClass']
 
 export function useDataTable(
   columns: ShallowRef<Array<DataTableColumn>>,
@@ -86,10 +90,10 @@ export function useDataTable(
   return [
     () => (
       <div>
-        <NDataTable data={data.value} columns={columns.value} loading={loading.value} {...nTableProps}>
+        <NDataTable class={rawProps.tableClass} data={data.value} columns={columns.value} loading={loading.value} {...nTableProps}>
           {slots}
         </NDataTable>
-        <div class="mt-3 flex justify-end">
+        <div class={mergeClass('mt-3 flex justify-end', rawProps.pagingWrapClass)}>
           <NPagination {...rawProps.pagination} item-count={total.value} page={page.value} pageSize={pageSize.value} onUpdate:page={onPageChange} onUpdate:pageSize={onPageSizeChange} />
         </div>
       </div>

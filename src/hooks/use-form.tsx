@@ -49,9 +49,7 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
   })
 
   // 生成表单规则
-  const formRules = createFormRules(fields, options)
-  console.log('formRules')
-  console.log(formRules)
+  const formRules = ref(createFormRules(fields, options))
 
   // 表单组件
   const Form = defineComponent(() => {
@@ -59,7 +57,7 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
       <NForm
         ref={formRef}
         model={form.value}
-        rules={formRules}
+        rules={formRules.value}
         labelPlacement="left"
         labelWidth="auto"
         requireMarkPlacement="right-hanging"
@@ -159,7 +157,7 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
     formRef.value?.restoreValidation()
   }
 
-  return [Form, form, { formRef, resetForm, setFields, resetField, validate, clearValidation }] as const
+  return [Form, form, { formRef, rules: formRules, resetForm, setFields, resetField, validate, clearValidation }] as const
 }
 
 function createFormRules(fields: FieldDefinition[], options: UseFormOptions = {}) {
