@@ -34,3 +34,6 @@ coverage
 .eslintrc-auto-import.json
 src/auto-imports.d.ts
 setup_env.sh
+
+.vitepress/cache
+.vitepress/dist
