@@ -1,48 +1,52 @@
 <template>
   <div class="demo-container">
     <h3>useDataTable 演示</h3>
-    <n-card>
+    <NCard>
       <Table />
       <div style="margin-top: 16px">
-        <n-button @click="handleRefresh" type="primary">刷新数据</n-button>
-        <n-button @click="handleAddData" style="margin-left: 8px">添加数据</n-button>
+        <NButton type="primary" @click="handleRefresh">
+          刷新数据
+        </NButton>
+        <NButton style="margin-left: 8px" @click="handleAddData">
+          添加数据
+        </NButton>
       </div>
-    </n-card>
+    </NCard>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineComponent, shallowRef } from 'vue'
-import { useDataTable } from '@/hooks/use-data-table'
 import type { DataTableColumn } from 'naive-ui'
 import { NButton, NCard } from 'naive-ui'
+import { shallowRef } from 'vue'
+import { useDataTable } from '@/hooks/use-data-table'
 
 // 设置演示数据
 const columns = shallowRef<DataTableColumn[]>([
   {
     title: 'ID',
     key: 'id',
-    width: 80
+    width: 80,
   },
   {
     title: '姓名',
     key: 'name',
-    width: 120
+    width: 120,
   },
   {
     title: '年龄',
     key: 'age',
     width: 80,
-    sorter: true
+    sorter: true,
   },
   {
     title: '邮箱',
     key: 'email',
-    width: 200
+    width: 200,
   },
   {
     title: '地址',
-    key: 'address'
+    key: 'address',
   },
   {
     title: '状态',
@@ -50,16 +54,16 @@ const columns = shallowRef<DataTableColumn[]>([
     width: 100,
     render: (row: any) => {
       return row.status === 'active' ? '活跃' : '未激活'
-    }
-  }
+    },
+  },
 ])
 
 let counter = 1
 
-const fetchData = async ({ page, pageSize }: { page: number, pageSize: number }) => {
+async function fetchData({ page, pageSize }: { page: number, pageSize: number }) {
   // 模拟API延迟
   await new Promise(resolve => setTimeout(resolve, 800))
-  
+
   const total = 28
   const data = Array.from({ length: Math.min(pageSize, total - (page - 1) * pageSize) }, (_, i) => {
     const id = (page - 1) * pageSize + i + 1
@@ -69,13 +73,13 @@ const fetchData = async ({ page, pageSize }: { page: number, pageSize: number })
       age: Math.floor(Math.random() * 30) + 20,
       email: `user${id}@example.com`,
       address: `北京市朝阳区${id}号`,
-      status: Math.random() > 0.5 ? 'active' : 'inactive'
+      status: Math.random() > 0.5 ? 'active' : 'inactive',
     }
   })
-  
+
   return {
     data,
-    total
+    total,
   }
 }
 
@@ -83,23 +87,23 @@ const [Table, { refresh, data }] = useDataTable(columns, {
   dataSource: fetchData,
   hasLoading: true,
   tableClass: 'demo-table',
-  pagingWrapClass: 'demo-pagination'
+  pagingWrapClass: 'demo-pagination',
 })
 
-const handleRefresh = () => {
+function handleRefresh() {
   refresh()
 }
 
-const handleAddData = () => {
+function handleAddData() {
   const newItem = {
     id: counter++,
     name: `新用户${counter}`,
     age: 25,
     email: `new${counter}@example.com`,
     address: `新地址${counter}`,
-    status: 'active'
+    status: 'active',
   }
-  
+
   // 这里只是演示，实际应该调用API添加数据后刷新
   console.log('添加数据:', newItem)
   refresh()
