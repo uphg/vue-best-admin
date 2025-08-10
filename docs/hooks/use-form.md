@@ -70,9 +70,9 @@ interface UseFormOptions {
    - `rules`: 表单验证规则
    - `resetForm`: 重置整个表单
    - `setFields`: 批量设置字段值
-   - `resetField`: 重置单个字段
+   - `resetFields`: 重置表单字段
    - `validate`: 验证表单
-   - `clearValidation`: 清除验证状态
+   - `resetValidation`: 清除验证状态
 
 ## 使用示例
 
@@ -283,16 +283,16 @@ const [Form, form, {
   rules,
   resetForm,
   setFields,
-  resetField,
+  resetFields,
   validate,
-  clearValidation
+  resetValidation
 }] = useForm(fields)
 
 // 重置整个表单
 resetForm()
 
-// 重置单个字段
-resetField('username')
+// 重置表单字段
+resetFields('username')
 
 // 设置字段值
 setFields({
@@ -311,7 +311,7 @@ async function handleSubmit() {
 }
 
 // 清除验证状态
-clearValidation()
+resetValidation()
 ```
 
 ## 注意事项

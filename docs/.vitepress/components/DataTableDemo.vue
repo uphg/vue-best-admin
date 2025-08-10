@@ -19,7 +19,7 @@
 import type { DataTableColumn } from 'naive-ui'
 import { NButton, NCard } from 'naive-ui'
 import { shallowRef } from 'vue'
-import { useDataTable } from '@/hooks/use-data-table'
+import { useDataTable } from '../../../src/hooks/use-data-table'
 
 // 设置演示数据
 const columns = shallowRef<DataTableColumn[]>([

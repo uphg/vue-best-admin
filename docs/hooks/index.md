@@ -1,4 +1,4 @@
-# Hooks 文档
+# 快速开始
 
 本章节介绍了项目中可用的自定义组合式函数（Hooks）。
 
@@ -9,6 +9,7 @@
 基于 Naive UI 的数据表格封装，提供分页、数据加载、刷新等功能。
 
 **主要特性：**
+
 - 自动分页处理
 - 数据加载状态管理
 - 支持自定义列配置
@@ -19,28 +20,19 @@
 基于 Naive UI 的表单封装，提供表单验证、字段管理等功能。
 
 **主要特性：**
+
 - 自动表单验证规则生成
 - 支持多种表单组件类型
 - 嵌套字段支持
 - 表单状态管理
-
-## 快速开始
-
-### 安装依赖
-
-确保已安装 Naive UI：
-
-```bash
-pnpm add naive-ui
-```
 
 ### 使用示例
 
 #### useDataTable
 
 ```typescript
-import { useDataTable } from '@/hooks/use-data-table'
 import type { DataTableColumn } from 'naive-ui'
+import { useDataTable } from '@/hooks/use-data-table'
 
 const columns = shallowRef<DataTableColumn[]>([
   { title: '姓名', key: 'name' },
@@ -69,16 +61,6 @@ const [Form, form, { validate }] = useForm(fields, {
   autoRules: ['username', 'age']
 })
 ```
-
-## 演示
-
-### useDataTable 演示
-
-<DataTableDemo />
-
-### useForm 演示
-
-<FormDemo />
 
 ## 注意事项
 

@@ -6,17 +6,30 @@ export default defineConfig({
   description: 'A VitePress Site',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
-    nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Examples', link: '/markdown-examples' },
-    ],
 
     sidebar: [
       {
-        text: 'Examples',
+        text: '简介',
         items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' },
+          { text: 'Vue Best Admin', link: '/index' },
+          { text: '项目规范', link: '/specification' },
+        ],
+      },
+
+      {
+        text: 'Hooks',
+        items: [
+          { text: '快速开始', link: '/hooks/index' },
+          { text: 'useDataTable', link: '/hooks/use-data-table' },
+          { text: 'useForm', link: '/hooks/use-form' },
+        ],
+      },
+      {
+        text: '公共组件',
+        items: [
+          { text: 'PureButton', link: '/components/pure-button' },
+          { text: 'XModal', link: '/components/x-modal' },
+          { text: 'XTag', link: '/components/x-tag' },
         ],
       },
     ],

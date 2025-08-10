@@ -1,4 +1,4 @@
-import type { RouteLocationNormalized, RouteLocationNormalizedLoaded, Router } from 'vue-router'
+import type { RouteLocationNormalized, RouteLocationNormalizedLoaded, Router, RouteRecordRaw } from 'vue-router'
 import type { SidebarStore } from '@/stores/sidebar'
 import type { UserStore } from '@/stores/user'
 import { apiGetRouteData, apiGetUserInfo } from '@/api/user'
@@ -13,6 +13,8 @@ const commonRoutes: (string | symbol)[] = ['Login', '404']
 export function loadRouterGuard(router: Router) {
   const userStore = useUserStore()
   const sidebarStore = useSidebarStore()
+  let hasLoadedPermission = false
+
   router.beforeEach(async (to, from) => {
     if (userStore.id) {
       return toPermissionRoute(to, from)
@@ -21,8 +23,15 @@ export function loadRouterGuard(router: Router) {
     if (!token) {
       return toCommonRoute(to, from)
     }
-    await loadPermissionInfo(router, { userStore, sidebarStore })
-    return { ...to, replace: true }
+
+    if (!hasLoadedPermission) {
+      hasLoadedPermission = true
+      await loadPermissionInfo(router, { userStore, sidebarStore })
+      // 权限信息加载完成后，重新导航到目标路由
+      return { ...to, replace: true }
+    }
+
+    return true
   })
 }
 
@@ -33,13 +42,13 @@ async function loadPermissionInfo(router: Router, { userStore, sidebarStore }: {
   const menuData = (constantRoutes as any[]).concat(routes)
 
   const { menus, menusMap } = createSidebarMenus(menuData)
-  // const menusMap = createSidebarMenuMap(menuData)
 
   sidebarStore.setMenuMap(menusMap)
   sidebarStore.setMenus(menus)
   userStore.set(userInfoRes.data)
 
   routes.forEach((route) => {
+    if (isLinkRoute(route)) return
     router.addRoute(route)
   })
 }
@@ -52,10 +61,13 @@ function toCommonRoute(to: RouteLocationNormalizedLoaded, _from: RouteLocationNo
   }
 }
 
-function toPermissionRoute(to: RouteLocationNormalizedLoaded, _from: RouteLocationNormalized) {
+function toPermissionRoute(to: RouteLocationNormalizedLoaded, from: RouteLocationNormalized) {
   if (to?.name && commonRoutes.includes(to.name)) {
     return '/home'
-  } else {
-    return true
   }
+  return true
+}
+
+function isLinkRoute(route: RouteRecordRaw) {
+  return route?.meta?.link
 }

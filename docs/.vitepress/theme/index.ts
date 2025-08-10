@@ -1,11 +1,9 @@
 import type { Theme } from 'vitepress'
+import { NButton, NCard, NCode } from 'naive-ui'
 import DefaultTheme from 'vitepress/theme'
 // https://vitepress.dev/guide/custom-theme
 import { h } from 'vue'
 import './style.css'
-import { NButton, NCard, NCode } from 'naive-ui'
-import DataTableDemo from '../components/DataTableDemo.vue'
-import FormDemo from '../components/FormDemo.vue'
 
 export default {
   extends: DefaultTheme,
@@ -15,8 +13,6 @@ export default {
     })
   },
   enhanceApp({ app, router, siteData }) {
-    app.component('DataTableDemo', DataTableDemo)
-    app.component('FormDemo', FormDemo)
     app.component('NButton', NButton)
     app.component('NCard', NCard)
     app.component('NCode', NCode)

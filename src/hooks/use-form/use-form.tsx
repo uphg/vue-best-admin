@@ -1,5 +1,6 @@
 import type { FormRules, SelectOption } from 'naive-ui'
 import { isObject } from '@vueuse/core'
+import { assign } from 'lodash-es'
 import { NAutoComplete, NCascader, NCheckbox, NCheckboxGroup, NColorPicker, NDatePicker, NDynamicInput, NDynamicTags, NForm, NFormItem, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSwitch, NTimePicker, NTransfer, NTreeSelect, NUpload } from 'naive-ui'
 import { omit } from 'naive-ui/es/_utils'
 
@@ -30,40 +31,42 @@ interface FieldProps {
 
 type FieldDefinition = [string, string, FieldProps]
 
-interface UseFormOptions {
+interface FormProps {
   autoRules?: string[]
+  [key: string]: any
+}
+
+const defaultFormProps = {
+  labelPlacement: 'left',
+  labelWidth: 'auto',
+  requireMarkPlacement: 'right-hanging',
+  size: 'medium',
 }
 
 const selectTypes = ['select', 'tree-select', 'cascader', 'date', 'date-picker', 'time', 'time-picker', 'radio', 'radio-group', 'radio-button', 'radio-button-group', 'checkbox', 'checkbox-group', 'checkbox-button', 'checkbox-button-group', 'color-picker', 'switch', 'slider', 'rate', 'transfer', 'upload']
 
-export function useForm(fields: FieldDefinition[], options: UseFormOptions = {}) {
+export function useForm(fields: FieldDefinition[], options: FormProps = {}) {
   const form = ref<Record<string, any>>({})
   const formRef = ref()
   const tips = shallowRef<Record<string, any>>({})
   const itemsNodeMap = new Map<string, any>(createItemNodeMap(fields, form))
-  // 初始化表单数据
   const defaultField = createDefaultField()
   fields.forEach(([label, key]) => {
     tips.value[key] = `请输入${label}`
     form.value[key] = defaultField[key]
   })
 
-  // 生成表单规则
   const formRules = ref(createFormRules(fields, options))
+  const formProps = assign({}, defaultFormProps, omit(options, ['autoRules'])) as Record<string, any>
 
-  // 表单组件
   const Form = defineComponent(() => {
     return () => (
       <NForm
+        {...formProps}
         ref={formRef}
         model={form.value}
         rules={formRules.value}
-        labelPlacement="left"
-        labelWidth="auto"
-        requireMarkPlacement="right-hanging"
-        size="medium"
       >
-        {/* {fields.map(renderFormItem)} */}
         {fields.map(([label, key]) => {
           const Input = itemsNodeMap.get(key)
           return (
@@ -76,15 +79,13 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
     )
   })
 
-  // 重置表单
   function resetForm() {
-    setFields(createDefaultField())
-    clearValidation()
+    resetFields()
+    resetValidation()
   }
 
   // === 工具方法 ===
 
-  // 创建默认字段
   function createDefaultField() {
     const defaultField: Record<string, any> = {}
     fields.forEach(([, key, props]) => {
@@ -127,19 +128,17 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
     return defaultField
   }
 
-  // 重置字段
-  function resetField() {
-    const defaultData = createDefaultField()
-    form.value = defaultData
-    formRef.value?.restoreValidation()
+  function resetFields() {
+    const defaultValue = createDefaultField()
+    setFields(defaultValue)
   }
 
-  // 批量设置字段
   function setFields(fields: Partial<Record<string, any>>) {
-    Object.assign(form.value, fields)
+    Object.keys(fields).forEach((key) => {
+      form.value[key] = fields[key]
+    })
   }
 
-  // 验证表单
   async function validate() {
     return new Promise((resolve, reject) => {
       formRef.value?.validate((errors: any) => {
@@ -152,15 +151,14 @@ export function useForm(fields: FieldDefinition[], options: UseFormOptions = {})
     })
   }
 
-  // 清除验证
-  function clearValidation() {
+  function resetValidation() {
     formRef.value?.restoreValidation()
   }
 
-  return [Form, form, { formRef, rules: formRules, resetForm, setFields, resetField, validate, clearValidation }] as const
+  return [Form, form, { formRef, rules: formRules, resetForm, setFields, resetFields, validate, resetValidation }] as const
 }
 
-function createFormRules(fields: FieldDefinition[], options: UseFormOptions = {}) {
+function createFormRules(fields: FieldDefinition[], options: FormProps = {}) {
   const rules: FormRules = {}
 
   fields.forEach(([label, key, props]) => {
@@ -308,11 +306,9 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
   const propsData = _props || {}
   const { as: tag = 'input', placeholder, ...restProps } = propsData
   const modelKey = tag === 'upload' ? 'fileList' : 'value'
-  const commonProps = {
-    [modelKey]: form.value[key],
-    [`onUpdate:${modelKey}`]: (value: any) => {
-      form.value[key] = value
-    },
+
+  const onUpdateValue = (value: any) => {
+    form.value[key] = value
   }
 
   let InputElement
@@ -320,7 +316,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'input':
       InputElement = () => (
         <NInput
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
           placeholder={placeholder ?? `请输入${label}`}
         />
@@ -330,7 +329,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'input-number':
       InputElement = () => (
         <NInputNumber
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
           placeholder={placeholder ?? `请输入${label}`}
         />
@@ -340,7 +342,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'select':
       InputElement = () => (
         <NSelect
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
           placeholder={placeholder ?? `请选择${label}`}
         />
@@ -350,7 +355,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'date-picker':
       InputElement = () => (
         <NDatePicker
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
           placeholder={placeholder ?? `请选择${label}`}
         />
@@ -360,7 +368,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'time-picker':
       InputElement = () => (
         <NTimePicker
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
           placeholder={placeholder ?? `请选择${label}`}
         />
@@ -369,13 +380,25 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
 
     case 'switch':
       InputElement = () => (
-        <NSwitch {...commonProps} {...restProps} />
+        <NSwitch
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
+          {...restProps}
+        />
       )
       break
 
     case 'slider':
       InputElement = () => (
-        <NSlider {...commonProps} {...restProps} />
+        <NSlider
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
+          {...restProps}
+        />
       )
       break
 
@@ -384,7 +407,13 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       const { options } = restProps
       const otherProps = omit(restProps, ['options'])
       InputElement = () => (
-        <NCheckboxGroup {...commonProps} {...otherProps}>
+        <NCheckboxGroup
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
+          {...otherProps}
+        >
           {options?.map((option: SelectOption) => (
             <NCheckbox key={option.value} value={option.value}>
               {option.label}
@@ -400,7 +429,13 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       const { options } = restProps
       const otherProps = omit(restProps, ['options'])
       InputElement = () => (
-        <NRadioGroup {...commonProps} {...otherProps}>
+        <NRadioGroup
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
+          {...otherProps}
+        >
           {options?.map((option: SelectOption) => (
             <NRadio key={option.value} value={option.value}>
               {option.label}
@@ -416,7 +451,13 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       const { options } = restProps
       const otherProps = omit(restProps, ['options'])
       InputElement = () => (
-        <NRadioGroup {...commonProps} {...otherProps}>
+        <NRadioGroup
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
+          {...otherProps}
+        >
           {options?.map((option: SelectOption) => (
             <NRadioButton key={option.value} value={option.value}>
               {option.label}
@@ -430,7 +471,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'auto-complete':
       InputElement = () => (
         <NAutoComplete
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
           placeholder={placeholder ?? `请输入${label}`}
         />
@@ -440,7 +484,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'cascader':
       InputElement = () => (
         <NCascader
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
           placeholder={placeholder ?? `请选择${label}`}
         />
@@ -450,7 +497,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'color-picker':
       InputElement = () => (
         <NColorPicker
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
         />
       )
@@ -459,7 +509,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'dynamic-input':
       InputElement = () => (
         <NDynamicInput
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
           placeholder={placeholder ?? `请输入${label}`}
         />
@@ -469,7 +522,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'dynamic-tags':
       InputElement = () => (
         <NDynamicTags
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
         />
       )
@@ -480,7 +536,13 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
       const { options } = restProps
       const otherProps = omit(restProps, ['options'])
       InputElement = () => (
-        <NCheckboxGroup {...commonProps} {...otherProps}>
+        <NCheckboxGroup
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
+          {...otherProps}
+        >
           {options?.map((option: SelectOption) => (
             <NCheckbox key={option.value} value={option.value}>
               {option.label}
@@ -494,7 +556,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'rate':
       InputElement = () => (
         <NRate
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
         />
       )
@@ -503,7 +568,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'tree-select':
       InputElement = () => (
         <NTreeSelect
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
           placeholder={placeholder ?? `请选择${label}`}
         />
@@ -513,7 +581,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'upload':
       InputElement = () => (
         <NUpload
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
         />
       )
@@ -522,7 +593,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     case 'transfer':
       InputElement = () => (
         <NTransfer
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
         />
       )
@@ -531,7 +605,10 @@ function createItemNode(field: FieldDefinition, form: Ref<Record<FieldDefinition
     default:
       InputElement = () => (
         <NInput
-          {...commonProps}
+          {...{
+            [modelKey]: form.value[key],
+            [`onUpdate:${modelKey}`]: onUpdateValue,
+          }}
           {...restProps}
           placeholder={placeholder ?? `请输入${label}`}
         />

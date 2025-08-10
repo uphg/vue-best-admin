@@ -1,5 +1,5 @@
 import type { MouseEventHandler } from '@/types/intrinsic'
-import Tag from '@/components/ui/tag/tag'
+import Tag from '@/components/ui/x-tag/x-tag'
 
 const NavTag = defineComponent({
   props: {

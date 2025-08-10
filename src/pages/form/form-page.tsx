@@ -33,6 +33,12 @@ const FormPage = defineComponent(() => {
       as: 'date',
       placeholder: '选择日期',
     }],
+    ['活动日期', 'date2', {
+      as: 'date',
+      type: 'daterange',
+      placeholder: '选择日期',
+      clearable: true,
+    }],
     ['活动性质', 'type', {
       as: 'checkbox',
       options: [
@@ -43,13 +49,14 @@ const FormPage = defineComponent(() => {
       ],
     }],
     ['活动形式', 'desc', { type: 'textarea' }],
-  ], { autoRules: ['name', 'region', 'date'] })
+    ['动态录入', 'dynamic', { as: 'dynamic-input', min: 2, max: 6, defaultValue: ['', ''] }],
+  ], { autoRules: ['name', 'region', 'date', 'date2'] })
 
   // 处理表单提交
   const handleSubmit = async () => {
     try {
       const result = await validate()
-      // console.log('表单提交数据:', result)
+      console.log('表单提交数据:', result)
       console.log('formData')
       console.log(formData.value)
       // 这里可以调用 API 提交数据

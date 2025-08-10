@@ -25,7 +25,7 @@
 
 <script setup lang="ts">
 import { NButton, NCard, NCode } from 'naive-ui'
-import { useForm } from '@/hooks/use-form'
+import { useForm } from '../../../src/hooks/use-form'
 
 const fields = [
   ['用户名', 'username', {

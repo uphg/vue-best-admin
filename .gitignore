@@ -35,5 +35,5 @@ coverage
 src/auto-imports.d.ts
 setup_env.sh
 
-.vitepress/cache
-.vitepress/dist
+*/.vitepress/cache
+*/.vitepress/dist

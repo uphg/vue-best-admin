@@ -5,7 +5,7 @@ import IconX from '~icons/lucide/x'
 import { mergeClass } from '@/utils/merge-class'
 import PureButton from '../pure-button/pure-button'
 
-const Tag = defineComponent({
+const XTag = defineComponent({
   props: {
     class: {
       type: String as PropType<string>,
@@ -114,4 +114,4 @@ const Tag = defineComponent({
   },
 })
 
-export default Tag
+export default XTag

@@ -27,6 +27,9 @@ export default antfu({
     }],
     'eslint-comments/no-unlimited-disable': 'off',
   },
+  ignores: [
+    '*.zip.tsx',
+  ],
 }, {
   files: ['*.tsx', '*.jsx'],
   rules: {

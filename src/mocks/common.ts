@@ -76,6 +76,22 @@ export const routeDate = [
   },
 
   {
+    path: '/modal',
+    component: 'Default',
+    mergeSingleChild: true,
+    children: [
+      {
+        path: 'base',
+        component: 'modal/modal-page',
+        meta: {
+          title: 'Modal 弹框',
+          icon: 'table',
+        },
+      },
+    ],
+  },
+
+  {
     path: '/request',
     component: 'Default',
     mergeSingleChild: true,
