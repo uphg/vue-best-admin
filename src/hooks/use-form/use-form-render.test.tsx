@@ -15,6 +15,8 @@ vi.mock('naive-ui', () => ({
   NDynamicTags: vi.fn((props, { slots }) => h('div', { 'data-testid': 'n-dynamic-tags', ...props }, slots?.default?.())),
   NForm: vi.fn((props, { slots }) => h('form', { 'data-testid': 'n-form', ...props }, slots?.default?.())),
   NFormItem: vi.fn((props, { slots }) => h('div', { 'data-testid': 'n-form-item', ...props }, slots?.default?.())),
+  NFormItemGi: vi.fn((props, { slots }) => h('div', { 'data-testid': 'n-form-item-gi', ...props }, slots?.default?.())),
+  NGrid: vi.fn((props, { slots }) => h('div', { 'data-testid': 'n-grid', ...props }, slots?.default?.())),
   NInput: vi.fn((props, { slots }) => h('input', { 'data-testid': 'n-input', ...props }, slots?.default?.())),
   NInputNumber: vi.fn((props, { slots }) => h('input', { 'data-testid': 'n-input-number', 'type': 'number', ...props }, slots?.default?.())),
   NRadio: vi.fn((props, { slots }) => h('div', { 'data-testid': 'n-radio', ...props }, slots?.default?.())),
@@ -423,6 +425,72 @@ describe('useForm component rendering', () => {
       // Verify structure components
       expect(naiveUI.NForm).toHaveBeenCalledTimes(1)
       expect(naiveUI.NFormItem).toHaveBeenCalledTimes(18) // 18 form fields
+    })
+  })
+
+  describe('nested fields', () => {
+    it('should render nested fields with NGrid layout', async () => {
+      const [Form] = useForm([
+        ['活动名称', [
+          [null, 'name1', {}],
+          [null, 'name2', {}]
+        ], { cols: 2, xGap: 24 }],
+        ['活动区域', 'region', {
+          as: 'select',
+          options: [
+            { label: '区域一', value: 0 },
+            { label: '区域二', value: 1 },
+            { label: '区域三', value: 2 },
+          ],
+        }],
+      ])
+
+      render(h(Form))
+
+      const naiveUI = await import('naive-ui')
+      // 应该渲染 NGrid 组件
+      expect(naiveUI.NGrid).toHaveBeenCalledWith(
+        expect.objectContaining({
+          cols: 2,
+          xGap: 24,
+        }),
+        expect.any(Object)
+      )
+      
+      // 应该渲染两个输入框（嵌套字段）
+      expect(naiveUI.NInput).toHaveBeenCalledTimes(2)
+      
+      // 应该渲染一个选择框
+      expect(naiveUI.NSelect).toHaveBeenCalledTimes(1)
+      
+      // 应该有 NFormItemGi 用于嵌套字段
+      expect(naiveUI.NFormItemGi).toHaveBeenCalledTimes(2)
+      
+      // 总共应该有 3 个 FormItem：嵌套容器 1 个 + 普通字段 1 个 = 2 个
+      expect(naiveUI.NFormItem).toHaveBeenCalledTimes(2)
+      
+      // Form 应该只渲染一次
+      expect(naiveUI.NForm).toHaveBeenCalledTimes(1)
+    })
+
+    it('should properly flatten nested fields for form data', async () => {
+      const [_, form] = useForm([
+        ['联系方式', [
+          [null, 'phone', {}],
+          [null, 'email', { as: 'input' }]
+        ], { cols: 2 }],
+        ['备注', 'note', {}],
+      ])
+
+      // 检查表单数据是否正确初始化
+      expect(form.value).toHaveProperty('phone')
+      expect(form.value).toHaveProperty('email')
+      expect(form.value).toHaveProperty('note')
+      
+      // 初始值应该都是 null
+      expect(form.value.phone).toBe(null)
+      expect(form.value.email).toBe(null)
+      expect(form.value.note).toBe(null)
     })
   })
 })

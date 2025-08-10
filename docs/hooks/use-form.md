@@ -22,12 +22,21 @@ import { useForm } from '@/hooks/use-form'
 ```typescript
 interface FieldDefinition {
   0: string // 标签名
+  1: string | NestedFieldDefinition[] // 字段名或嵌套字段定义数组
+  2: FieldProps // 字段属性
+}
+
+interface NestedFieldDefinition {
+  0: string | null // 标签名（null 表示无标签）
   1: string // 字段名
   2: FieldProps // 字段属性
 }
 
 interface FieldProps {
   as?: FieldAs // 组件类型
+  cols?: number // 嵌套字段网格列数
+  xGap?: number // 嵌套字段水平间距
+  yGap?: number // 嵌套字段垂直间距
   [key: string]: any // 其他属性
 }
 
@@ -245,6 +254,107 @@ const fields = [
 
 const [Form, form] = useForm(fields)
 ```
+
+### 嵌套布局示例
+
+`useForm` 支持嵌套布局功能，可以在一个表单项下创建多个子字段，并通过网格布局进行排列。
+
+#### 基本嵌套布局
+
+```tsx
+import { defineComponent } from 'vue'
+import { useForm } from '@/hooks/use-form'
+
+export default defineComponent({
+  setup() {
+    const fields = [
+      ['活动名称', [
+        [null, 'name1', { as: 'input', placeholder: '请输入主要名称' }],
+        [null, 'name2', { as: 'input', placeholder: '请输入备用名称' }]
+      ], { cols: 2, xGap: 24 }],
+      ['活动区域', 'region', {
+        as: 'select',
+        options: [
+          { label: '区域一', value: 0 },
+          { label: '区域二', value: 1 },
+          { label: '区域三', value: 2 }
+        ]
+      }]
+    ]
+
+    const [Form, form] = useForm(fields, {
+      autoRules: ['name1', 'name2', 'region']
+    })
+
+    return () => <Form />
+  }
+})
+```
+
+上述代码将渲染为：
+
+```html
+<n-form>
+  <n-form-item label="活动名称">
+    <n-grid :cols="2" :x-gap="24">
+      <n-grid-item>
+        <n-form-item path="name1">
+          <n-input v-model:value={form.name1} placeholder="请输入主要名称" />
+        </n-form-item>
+      </n-grid-item>
+      <n-grid-item>
+        <n-form-item path="name2">
+          <n-input v-model:value={form.name2} placeholder="请输入备用名称" />
+        </n-form-item>
+      </n-grid-item>
+    </n-grid>
+  </n-form-item>
+  <n-form-item label="活动区域" path="region">
+    <n-select
+      v-model:value={form.region}
+      options={[
+        { label: '区域一', value: 0 },
+        { label: '区域二', value: 1 },
+        { label: '区域三', value: 2 }
+      ]}
+    />
+  </n-form-item>
+</n-form>
+```
+
+#### 复杂嵌套布局
+
+```tsx
+const fields = [
+  ['联系信息', [
+    ['姓名', 'contactName', { as: 'input' }],
+    ['电话', 'contactPhone', { as: 'input' }],
+    ['邮箱', 'contactEmail', { as: 'input', type: 'email' }]
+  ], { cols: 3, xGap: 16, yGap: 16 }],
+  ['地址信息', [
+    [null, 'province', { as: 'select', placeholder: '请选择省份', options: [] }],
+    [null, 'city', { as: 'select', placeholder: '请选择城市', options: [] }],
+    [null, 'district', { as: 'select', placeholder: '请选择区县', options: [] }],
+    [null, 'address', { as: 'input', placeholder: '详细地址' }]
+  ], { cols: 2, xGap: 16 }],
+  ['备注', 'remark', { as: 'input', type: 'textarea', rows: 3 }]
+]
+```
+
+#### 嵌套布局配置选项
+
+在嵌套字段的配置对象中，可以使用以下布局选项：
+
+| 属性   | 类型     | 默认值 | 说明           |
+| ------ | -------- | ------ | -------------- |
+| `cols` | `number` | `1`    | 网格列数       |
+| `xGap` | `number` | `0`    | 水平间距（px） |
+| `yGap` | `number` | `0`    | 垂直间距（px） |
+
+#### 嵌套字段标签
+
+- 当嵌套字段的标签为 `null` 时，该字段不会显示标签，只渲染输入组件
+- 当嵌套字段有标签时，会在网格项内创建带标签的表单项
 
 ### 嵌套字段示例
 

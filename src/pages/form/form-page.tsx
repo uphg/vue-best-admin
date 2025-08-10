@@ -1,5 +1,5 @@
 import { NButton, NSpace } from 'naive-ui'
-import { useForm } from '@/hooks/use-form'
+import { useForm } from '@/hooks/use-form/use-form'
 
 interface FormData {
   name: string
@@ -12,6 +12,10 @@ interface FormData {
 const FormPage = defineComponent(() => {
   const [Form, formData, { resetForm, validate }] = useForm([
     ['活动名称', 'name', {}],
+    ['活动名称', [
+      [null, 'name1', { showFeedback: false }],
+      [null, 'name2', { showFeedback: false }],
+    ], { cols: 2, xGap: 24 }],
     ['活动区域', 'region', {
       as: 'select',
       options: [
@@ -50,7 +54,7 @@ const FormPage = defineComponent(() => {
     }],
     ['活动形式', 'desc', { type: 'textarea' }],
     ['动态录入', 'dynamic', { as: 'dynamic-input', min: 2, max: 6, defaultValue: ['', ''] }],
-  ], { autoRules: ['name', 'region', 'date', 'date2'] })
+  ], { autoRules: ['name', 'name1', 'region', 'date', 'date2'] })
 
   // 处理表单提交
   const handleSubmit = async () => {
