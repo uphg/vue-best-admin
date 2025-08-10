@@ -15,6 +15,12 @@ interface UseTableProps extends DataTableProps {
   onAfterUpdateData: () => void
 }
 
+const pagingJustifyMap = {
+  center: 'justify-center',
+  start: 'justify-start',
+  end: 'justify-end',
+} as const
+
 const defaultProps = {
   // 自定义 props
   initDataSource: true,
@@ -28,9 +34,10 @@ const defaultProps = {
     pageSizes: [10, 20, 50, 100],
     showSizePicker: true,
   },
+  pagingJustify: 'end' as keyof typeof pagingJustifyMap,
 }
 
-const customPropsNames = ['pagination', 'dataSource', 'initDataSource', 'hasLoading', 'onBeforeUpdateData', 'onAfterUpdateData', 'pagingWrapClass']
+const customPropsNames = ['pagination', 'dataSource', 'initDataSource', 'hasLoading', 'onBeforeUpdateData', 'onAfterUpdateData', 'pagingWrapClass', 'pagingJustify']
 
 export function useDataTable(
   columns: ShallowRef<Array<DataTableColumn>>,
@@ -93,7 +100,7 @@ export function useDataTable(
         <NDataTable class={rawProps.tableClass} data={data.value} columns={columns.value} loading={loading.value} {...nTableProps}>
           {slots}
         </NDataTable>
-        <div class={mergeClass('mt-3 flex justify-end', rawProps.pagingWrapClass)}>
+        <div class={mergeClass('mt-3 flex', pagingJustifyMap[rawProps.pagingJustify], rawProps.pagingWrapClass)}>
           <NPagination {...rawProps.pagination} item-count={total.value} page={page.value} pageSize={pageSize.value} onUpdate:page={onPageChange} onUpdate:pageSize={onPageSizeChange} />
         </div>
       </div>
