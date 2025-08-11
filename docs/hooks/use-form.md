@@ -42,6 +42,7 @@ interface FieldProps {
 
 interface UseFormOptions {
   autoRules?: string[] // 自动生成规则的字段名数组
+  grid?: boolean // 是否启用 Grid 布局
 }
 ```
 
@@ -130,6 +131,106 @@ export default defineComponent({
     )
   }
 })
+```
+
+### Grid 布局
+
+`useForm` 支持启用 Grid 布局模式，将整个表单包装在 `NGrid` 组件中，并使用 `NFormItemGi` 替代 `NFormItem`。这样可以更灵活地控制表单项的布局。
+
+#### 启用 Grid 布局
+
+```tsx
+import { defineComponent } from 'vue'
+import { useForm } from '@/hooks/use-form'
+
+export default defineComponent({
+  setup() {
+    const fields = [
+      ['用户名', 'username', { as: 'input', span: 12 }],
+      ['邮箱', 'email', { as: 'input', span: 12 }],
+      ['手机号', 'phone', { as: 'input', span: 8 }],
+      ['年龄', 'age', { as: 'input-number', span: 8 }],
+      ['性别', 'gender', { as: 'select', span: 8, options: [
+        { label: '男', value: 'male' },
+        { label: '女', value: 'female' }
+      ]}],
+      ['地址', 'address', { as: 'input', span: 24 }],
+      ['备注', 'remark', { as: 'input', type: 'textarea', rows: 3, span: 24 }]
+    ]
+
+    const [Form, form] = useForm(fields, {
+      grid: true, // 启用 Grid 布局
+      autoRules: ['username', 'email', 'phone', 'age', 'gender']
+    })
+
+    return () => (
+      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        <h2>用户信息表单 (Grid 布局)</h2>
+        <Form />
+      </div>
+    )
+  }
+})
+```
+
+上述代码将渲染为：
+
+```html
+<n-form>
+  <n-grid>
+    <n-form-item-gi label="用户名" path="username" :span="12">
+      <n-input v-model:value={form.username} />
+    </n-form-item-gi>
+    <n-form-item-gi label="邮箱" path="email" :span="12">
+      <n-input v-model:value={form.email} />
+    </n-form-item-gi>
+    <n-form-item-gi label="手机号" path="phone" :span="8">
+      <n-input v-model:value={form.phone} />
+    </n-form-item-gi>
+    <n-form-item-gi label="年龄" path="age" :span="8">
+      <n-input-number v-model:value={form.age} />
+    </n-form-item-gi>
+    <n-form-item-gi label="性别" path="gender" :span="8">
+      <n-select v-model:value={form.gender} :options="[...]" />
+    </n-form-item-gi>
+    <n-form-item-gi label="地址" path="address" :span="24">
+      <n-input v-model:value={form.address} />
+    </n-form-item-gi>
+    <n-form-item-gi label="备注" path="remark" :span="24">
+      <n-input v-model:value={form.remark} type="textarea" :rows="3" />
+    </n-form-item-gi>
+  </n-grid>
+</n-form>
+```
+
+#### Grid 布局属性
+
+当启用 Grid 布局时，可以在字段属性中使用以下 Grid 相关的属性：
+
+| 属性     | 类型     | 默认值 | 说明                                           |
+| -------- | -------- | ------ | ---------------------------------------------- |
+| `span`   | `number` | -      | 栅格占据的列数（NFormItemGi 的 span 属性）    |
+| `offset` | `number` | -      | 栅格左侧间隔列数（NFormItemGi 的 offset 属性） |
+| `suffix` | `string` | -      | 后缀内容（NFormItemGi 的 suffix 属性）        |
+
+#### Grid 布局与嵌套字段
+
+Grid 布局也支持嵌套字段，嵌套字段内部仍然使用自己的网格配置：
+
+```tsx
+const fields = [
+  ['个人信息', [
+    ['姓名', 'name', { as: 'input', span: 12 }],
+    ['年龄', 'age', { as: 'input-number', span: 12 }]
+  ], { grid: { cols: 24, xGap: 16, yGap: 8 } }],
+  ['联系方式', [
+    [null, 'phone', { as: 'input', placeholder: '手机号' }],
+    [null, 'email', { as: 'input', placeholder: '邮箱' }]
+  ], { grid: { cols: 2, xGap: 16 } }],
+  ['备注', 'remark', { as: 'input', type: 'textarea', span: 24 }]
+]
+
+const [Form] = useForm(fields, { grid: true })
 ```
 
 ### 复杂表单示例

@@ -157,8 +157,8 @@ describe('useForm', () => {
       })
 
       // Verify specific default values
-      expect(form.value.input).toBe('')
-      expect(form.value.autoComplete).toBe('')
+      expect(form.value.input).toBe(null)
+      expect(form.value.autoComplete).toBe(null)
       expect(form.value.inputNumber).toBe(0)
       expect(form.value.slider).toBe(0)
       expect(form.value.rate).toBe(0)
@@ -170,8 +170,8 @@ describe('useForm', () => {
       expect(form.value.switch).toBe(false)
       expect(form.value.checkboxGroup).toEqual([])
       expect(form.value.checkboxButtonGroup).toEqual([])
-      expect(form.value.radioGroup).toBe('')
-      expect(form.value.radioButtonGroup).toBe('')
+      expect(form.value.radioGroup).toBe(null)
+      expect(form.value.radioButtonGroup).toBe(null)
       expect(form.value.colorPicker).toBe(null)
       expect(form.value.transfer).toEqual([])
       expect(form.value.upload).toEqual([])
@@ -182,7 +182,7 @@ describe('useForm', () => {
 
   describe('form methods', () => {
     it('should reset form to default values', () => {
-      const [, form, { resetField }] = useForm([
+      const [, form, { resetFields }] = useForm([
         ['文本', 'text', { as: 'input' }],
         ['数字', 'number', { as: 'input-number' }],
         ['开关', 'switch', { as: 'switch' }],
@@ -198,10 +198,10 @@ describe('useForm', () => {
       form.value.checkbox = ['value1']
 
       // Reset form
-      resetField()
+      resetFields()
 
       // Check if values are reset to defaults
-      expect(form.value.text).toBe('')
+      expect(form.value.text).toBe(null)
       expect(form.value.number).toBe(0)
       expect(form.value.switch).toBe(false)
       expect(form.value.select).toEqual([])
@@ -267,8 +267,8 @@ describe('useForm', () => {
       const [, form1] = useForm([['单选按钮1', 'radioButton1', { as: 'radio-button' }]])
       const [, form2] = useForm([['单选按钮2', 'radioButton2', { as: 'radio-button-group' }]])
 
-      expect(form1.value.radioButton1).toBe('')
-      expect(form2.value.radioButton2).toBe('')
+      expect(form1.value.radioButton1).toBe(null)
+      expect(form2.value.radioButton2).toBe(null)
     })
 
     it('should handle checkbox-button and checkbox-button-group aliases', () => {
@@ -286,7 +286,7 @@ describe('useForm', () => {
         ['默认字段', 'default', {}],
       ])
 
-      expect(form.value.default).toBe('')
+      expect(form.value.default).toBe(null)
     })
 
     it('should handle multiple selection with multiple property', () => {
@@ -311,25 +311,25 @@ describe('useForm', () => {
   describe('form rules generation', () => {
     describe('input type rules', () => {
       it('should generate correct rules for input components', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['文本输入', 'input', { as: 'input' }],
           ['自动完成', 'autoComplete', { as: 'auto-complete' }],
           ['动态输入', 'dynamicInput', { as: 'dynamic-input' }],
         ], { autoRules: ['input', 'autoComplete', 'dynamicInput'] })
 
-        const rules = formRef.value?.rules
-        expect(rules).toBeDefined()
-        expect(rules.input).toMatchObject({
+        const rulesValue = rules.value
+        expect(rulesValue).toBeDefined()
+        expect(rulesValue.input).toMatchObject({
           required: true,
           message: '请输入文本输入',
           trigger: ['blur', 'input'],
         })
-        expect(rules.autoComplete).toMatchObject({
+        expect(rulesValue.autoComplete).toMatchObject({
           required: true,
           message: '请输入自动完成',
           trigger: ['blur', 'input'],
         })
-        expect(rules.dynamicInput).toMatchObject({
+        expect(rulesValue.dynamicInput).toMatchObject({
           required: true,
           message: '请输入动态输入',
           trigger: ['blur', 'input'],
@@ -339,60 +339,60 @@ describe('useForm', () => {
 
     describe('selection type rules', () => {
       it('should generate correct rules for select components', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['下拉选择', 'select', { as: 'select' }],
           ['树选择', 'treeSelect', { as: 'tree-select' }],
           ['级联选择', 'cascader', { as: 'cascader' }],
         ], { autoRules: ['select', 'treeSelect', 'cascader'] })
 
-        const rules = formRef.value?.rules
-        expect(rules.select).toMatchObject({
+        const rulesValue = rules.value
+        expect(rulesValue.select).toMatchObject({
           required: true,
           message: '请选择下拉选择',
           trigger: ['blur', 'change'],
         })
-        expect(rules.select.validator).toBeDefined()
+        expect(rulesValue.select.validator).toBeDefined()
 
-        expect(rules.treeSelect).toMatchObject({
+        expect(rulesValue.treeSelect).toMatchObject({
           required: true,
           message: '请选择树选择',
           trigger: ['blur', 'change'],
         })
-        expect(rules.treeSelect.validator).toBeDefined()
+        expect(rulesValue.treeSelect.validator).toBeDefined()
 
-        expect(rules.cascader).toMatchObject({
+        expect(rulesValue.cascader).toMatchObject({
           required: true,
           message: '请选择级联选择',
           trigger: ['blur', 'change'],
         })
-        expect(rules.cascader.validator).toBeDefined()
+        expect(rulesValue.cascader.validator).toBeDefined()
       })
 
       it('should generate correct rules for date/time components', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['日期', 'date', { as: 'date' }],
           ['日期选择', 'datePicker', { as: 'date-picker' }],
           ['时间', 'time', { as: 'time' }],
           ['时间选择', 'timePicker', { as: 'time-picker' }],
         ], { autoRules: ['date', 'datePicker', 'time', 'timePicker'] })
 
-        const rules = formRef.value?.rules
-        expect(rules.date).toMatchObject({
+        const rulesValue = rules.value
+        expect(rulesValue.date).toMatchObject({
           required: true,
           message: '请选择日期',
           trigger: ['blur', 'change'],
         })
-        expect(rules.datePicker).toMatchObject({
+        expect(rulesValue.datePicker).toMatchObject({
           required: true,
           message: '请选择日期选择',
           trigger: ['blur', 'change'],
         })
-        expect(rules.time).toMatchObject({
+        expect(rulesValue.time).toMatchObject({
           required: true,
           message: '请选择时间',
           trigger: ['blur', 'change'],
         })
-        expect(rules.timePicker).toMatchObject({
+        expect(rulesValue.timePicker).toMatchObject({
           required: true,
           message: '请选择时间选择',
           trigger: ['blur', 'change'],
@@ -400,30 +400,30 @@ describe('useForm', () => {
       })
 
       it('should generate correct rules for radio components', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['单选', 'radio', { as: 'radio' }],
           ['单选组', 'radioGroup', { as: 'radio-group' }],
           ['单选按钮', 'radioButton', { as: 'radio-button' }],
           ['单选按钮组', 'radioButtonGroup', { as: 'radio-button-group' }],
         ], { autoRules: ['radio', 'radioGroup', 'radioButton', 'radioButtonGroup'] })
 
-        const rules = formRef.value?.rules
-        expect(rules.radio).toMatchObject({
+        const rulesValue = rules.value
+        expect(rulesValue.radio).toMatchObject({
           required: true,
           message: '请选择单选',
           trigger: ['blur', 'change'],
         })
-        expect(rules.radioGroup).toMatchObject({
+        expect(rulesValue.radioGroup).toMatchObject({
           required: true,
           message: '请选择单选组',
           trigger: ['blur', 'change'],
         })
-        expect(rules.radioButton).toMatchObject({
+        expect(rulesValue.radioButton).toMatchObject({
           required: true,
           message: '请选择单选按钮',
           trigger: ['blur', 'change'],
         })
-        expect(rules.radioButtonGroup).toMatchObject({
+        expect(rulesValue.radioButtonGroup).toMatchObject({
           required: true,
           message: '请选择单选按钮组',
           trigger: ['blur', 'change'],
@@ -433,7 +433,7 @@ describe('useForm', () => {
 
     describe('array type rules', () => {
       it('should generate correct rules for array components', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['复选框', 'checkbox', { as: 'checkbox' }],
           ['复选框组', 'checkboxGroup', { as: 'checkbox-group' }],
           ['复选框按钮', 'checkboxButton', { as: 'checkbox-button' }],
@@ -445,44 +445,44 @@ describe('useForm', () => {
           autoRules: ['checkbox', 'checkboxGroup', 'checkboxButton', 'checkboxButtonGroup', 'dynamicTags', 'transfer', 'upload'],
         })
 
-        const rules = formRef.value?.rules
-        expect(rules.checkbox).toMatchObject({
+        const rulesValue = rules.value
+        expect(rulesValue.checkbox).toMatchObject({
           type: 'array',
           required: true,
           message: '请选择复选框',
           trigger: 'change',
         })
-        expect(rules.checkboxGroup).toMatchObject({
+        expect(rulesValue.checkboxGroup).toMatchObject({
           type: 'array',
           required: true,
           message: '请选择复选框组',
           trigger: 'change',
         })
-        expect(rules.checkboxButton).toMatchObject({
+        expect(rulesValue.checkboxButton).toMatchObject({
           type: 'array',
           required: true,
           message: '请选择复选框按钮',
           trigger: 'change',
         })
-        expect(rules.checkboxButtonGroup).toMatchObject({
+        expect(rulesValue.checkboxButtonGroup).toMatchObject({
           type: 'array',
           required: true,
           message: '请选择复选框按钮组',
           trigger: 'change',
         })
-        expect(rules.dynamicTags).toMatchObject({
+        expect(rulesValue.dynamicTags).toMatchObject({
           type: 'array',
           required: true,
           message: '请输入动态标签',
           trigger: 'change',
         })
-        expect(rules.transfer).toMatchObject({
+        expect(rulesValue.transfer).toMatchObject({
           type: 'array',
           required: true,
           message: '请选择传输',
           trigger: 'change',
         })
-        expect(rules.upload).toMatchObject({
+        expect(rulesValue.upload).toMatchObject({
           type: 'array',
           required: true,
           message: '请选择上传',
@@ -493,26 +493,26 @@ describe('useForm', () => {
 
     describe('number type rules', () => {
       it('should generate correct rules for number components', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['数字输入', 'inputNumber', { as: 'input-number' }],
           ['滑块', 'slider', { as: 'slider' }],
           ['评分', 'rate', { as: 'rate' }],
         ], { autoRules: ['inputNumber', 'slider', 'rate'] })
 
-        const rules = formRef.value?.rules
-        expect(rules.inputNumber).toMatchObject({
+        const rulesValue = rules.value
+        expect(rulesValue.inputNumber).toMatchObject({
           type: 'number',
           required: true,
           message: '请输入数字输入',
           trigger: ['blur', 'change'],
         })
-        expect(rules.slider).toMatchObject({
+        expect(rulesValue.slider).toMatchObject({
           type: 'number',
           required: true,
           message: '请选择滑块',
           trigger: ['blur', 'change'],
         })
-        expect(rules.rate).toMatchObject({
+        expect(rulesValue.rate).toMatchObject({
           type: 'number',
           required: true,
           message: '请选择评分',
@@ -523,12 +523,12 @@ describe('useForm', () => {
 
     describe('boolean type rules', () => {
       it('should generate correct rules for switch component', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['开关', 'switch', { as: 'switch' }],
         ], { autoRules: ['switch'] })
 
-        const rules = formRef.value?.rules
-        expect(rules.switch).toMatchObject({
+        const rulesValue = rules.value
+        expect(rulesValue.switch).toMatchObject({
           type: 'boolean',
           required: true,
           message: '请选择开关',
@@ -539,12 +539,12 @@ describe('useForm', () => {
 
     describe('other type rules', () => {
       it('should generate correct rules for color-picker component', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['颜色选择', 'colorPicker', { as: 'color-picker' }],
         ], { autoRules: ['colorPicker'] })
 
-        const rules = formRef.value?.rules
-        expect(rules.colorPicker).toMatchObject({
+        const rulesValue = rules.value
+        expect(rulesValue.colorPicker).toMatchObject({
           required: true,
           message: '请选择颜色选择',
           trigger: 'change',
@@ -552,12 +552,12 @@ describe('useForm', () => {
       })
 
       it('should generate default rules for unknown component types', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['未知类型', 'unknown', { as: 'unknown-type' as any }],
         ], { autoRules: ['unknown'] })
 
-        const rules = formRef.value?.rules
-        expect(rules.unknown).toMatchObject({
+        const rulesValue = rules.value
+        expect(rulesValue.unknown).toMatchObject({
           required: true,
           message: '请输入未知类型',
           trigger: ['blur', 'input'],
@@ -567,36 +567,36 @@ describe('useForm', () => {
 
     describe('auto rules configuration', () => {
       it('should only generate rules for fields specified in autoRules', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['文本1', 'text1', { as: 'input' }],
           ['文本2', 'text2', { as: 'input' }],
           ['数字', 'number', { as: 'input-number' }],
         ], { autoRules: ['text1', 'number'] })
 
-        const rules = formRef.value?.rules
-        expect(rules.text1).toBeDefined()
-        expect(rules.text2).toBeUndefined()
-        expect(rules.number).toBeDefined()
+        const rulesValue = rules.value
+        expect(rulesValue.text1).toBeDefined()
+        expect(rulesValue.text2).toBeUndefined()
+        expect(rulesValue.number).toBeDefined()
       })
 
       it('should not generate rules when autoRules is not provided', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['文本', 'text', { as: 'input' }],
           ['数字', 'number', { as: 'input-number' }],
         ])
 
-        const rules = formRef.value?.rules
-        expect(Object.keys(rules)).toHaveLength(0)
+        const rulesValue = rules.value
+        expect(Object.keys(rulesValue)).toHaveLength(0)
       })
 
       it('should not generate rules when autoRules is empty', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['文本', 'text', { as: 'input' }],
           ['数字', 'number', { as: 'input-number' }],
         ], { autoRules: [] })
 
-        const rules = formRef.value?.rules
-        expect(Object.keys(rules)).toHaveLength(0)
+        const rulesValue = rules.value
+        expect(Object.keys(rulesValue)).toHaveLength(0)
       })
     })
 
@@ -608,25 +608,25 @@ describe('useForm', () => {
           trigger: 'input',
         }
 
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['文本', 'text', { as: 'input', rules: customRule }],
         ], { autoRules: ['text'] })
 
-        const rules = formRef.value?.rules
-        expect(rules.text).toEqual(customRule)
-        expect(rules.text.required).toBe(false)
-        expect(rules.text.message).toBe('自定义规则')
+        const rulesValue = rules.value
+        expect(rulesValue.text).toEqual(customRule)
+        expect(rulesValue.text.required).toBe(false)
+        expect(rulesValue.text.message).toBe('自定义规则')
       })
     })
 
     describe('validator functionality', () => {
       it('should validate null, undefined and empty string values correctly for select types', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['选择', 'select', { as: 'select' }],
         ], { autoRules: ['select'] })
 
-        const rules = formRef.value?.rules
-        const validator = rules.select.validator
+        const rulesValue = rules.value
+        const validator = rulesValue.select.validator
 
         // Test null value
         expect(validator(null, null)).toBeInstanceOf(Error)
@@ -641,20 +641,20 @@ describe('useForm', () => {
 
     describe('nested field rules', () => {
       it('should handle nested field paths correctly', () => {
-        const [, , { formRef }] = useForm([
+        const [, , { rules }] = useForm([
           ['嵌套字段', 'user.name', { as: 'input' }],
           ['深层嵌套', 'user.profile.email', { as: 'input' }],
         ], { autoRules: ['user.name', 'user.profile.email'] })
 
-        const rules = formRef.value?.rules
-        expect(rules.user?.name).toBeDefined()
-        expect(rules.user?.profile?.email).toBeDefined()
-        expect(rules.user.name).toMatchObject({
+        const rulesValue = rules.value
+        expect(rulesValue.user?.name).toBeDefined()
+        expect(rulesValue.user?.profile?.email).toBeDefined()
+        expect(rulesValue.user.name).toMatchObject({
           required: true,
           message: '请输入嵌套字段',
           trigger: ['blur', 'input'],
         })
-        expect(rules.user.profile.email).toMatchObject({
+        expect(rulesValue.user.profile.email).toMatchObject({
           required: true,
           message: '请输入深层嵌套',
           trigger: ['blur', 'input'],

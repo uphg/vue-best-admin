@@ -45,7 +45,7 @@ const defaultFormProps = {
   requireMarkPlacement: 'right-hanging',
   size: 'medium',
 }
-const nFormItemPropNames = ['showFeedback', 'showLabel', 'showRequireMark', 'requireMarkPlacement', 'labelPlacement', 'labelAlign', 'labelStyle', 'labelProps', 'labelWidth', 'first', 'ignorePathChange', 'rulePath', 'rule']
+const nFormItemPropNames = ['showFeedback', 'showLabel', 'showRequireMark', 'requireMarkPlacement', 'labelPlacement', 'labelAlign', 'labelStyle', 'labelProps', 'labelWidth', 'first', 'ignorePathChange', 'rulePath', 'rule', /* GridItemProps */ 'offset', 'span', 'suffix']
 const selectTypes = ['select', 'tree-select', 'cascader', 'date', 'date-picker', 'time', 'time-picker', 'radio', 'radio-group', 'radio-button', 'radio-button-group', 'checkbox', 'checkbox-group', 'checkbox-button', 'checkbox-button-group', 'color-picker', 'switch', 'slider', 'rate', 'transfer', 'upload']
 
 export function useForm(fields: FieldDefinition[], options: FormProps = {}) {
@@ -61,18 +61,22 @@ export function useForm(fields: FieldDefinition[], options: FormProps = {}) {
 
   const formRules = ref(createFormRules(flattenedFields, options))
   const formProps = assign({}, defaultFormProps, omit(options, ['autoRules'])) as Record<string, any>
+  const isGrid = !!options?.grid
 
   const Form = defineComponent(() => {
-    return () => (
-      <NForm
-        {...formProps}
-        ref={formRef}
-        model={form.value}
-        rules={formRules.value}
-      >
-        {renderFields(fields, itemsNodeMap)}
-      </NForm>
-    )
+    return () => {
+      const FormItems = renderFields(fields, itemsNodeMap, isGrid)
+      return (
+        <NForm
+          {...formProps}
+          ref={formRef}
+          model={form.value}
+          rules={formRules.value}
+        >
+          {isGrid ? <NGrid>{FormItems}</NGrid> : FormItems}
+        </NForm>
+      )
+    }
   })
 
   function resetForm() {
@@ -154,31 +158,46 @@ export function useForm(fields: FieldDefinition[], options: FormProps = {}) {
   return [Form, form, { formRef, rules: formRules, resetForm, setFields, resetFields, validate, resetValidation }] as const
 }
 
-function renderFields(fields: FieldDefinition[], itemsNodeMap: Map<string, any>) {
-  return fields.map((field) => {
+function renderFields(fields: FieldDefinition[], itemsNodeMap: Map<string, any>, isGrid: boolean) {
+  return fields.map((field, index) => {
+    const FormItem = isGrid ? NFormItemGi : NFormItem
     if (isNestedField(field)) {
-      const [label, nestedFields, gridProps] = field
+      const [label, nestedFields, props] = field
       return (
-        <NFormItem key={label} label={label}>
-          <NGrid {...gridProps}>
-            {nestedFields.map(([label, key, props]) => {
-              const Input = itemsNodeMap.get(key)
-              return (
-                <NFormItemGi key={key} path={key} label={label} {...pick(props, nFormItemPropNames)}>
-                  {Input}
-                </NFormItemGi>
+        <FormItem key={index} label={label}>
+          {props?.grid
+            ? (
+                <NGrid {...props.grid}>
+                  {nestedFields.map(([label, key, props]) => {
+                    const Input = itemsNodeMap.get(key)
+                    return (
+                      <NFormItemGi {...pick(props, nFormItemPropNames)} key={key} path={key} label={label}>
+                        {Input}
+                      </NFormItemGi>
+                    )
+                  })}
+                </NGrid>
               )
-            })}
-          </NGrid>
-        </NFormItem>
+            : (
+                nestedFields.map(([label, key, props]) => {
+                  const Input = itemsNodeMap.get(key)
+                  return (
+                    <NFormItem {...pick(props, nFormItemPropNames)} key={key} path={key} label={label}>
+                      {Input}
+                    </NFormItem>
+                  )
+                })
+              )}
+
+        </FormItem>
       )
     } else {
-      const [label, key] = field
+      const [label, key, props] = field
       const Input = itemsNodeMap.get(key)
       return (
-        <NFormItem key={key} path={key} label={label}>
+        <FormItem {...pick(props, nFormItemPropNames)} key={key} path={key} label={label}>
           {Input}
-        </NFormItem>
+        </FormItem>
       )
     }
   })
