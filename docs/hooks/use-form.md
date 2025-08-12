@@ -153,7 +153,7 @@ export default defineComponent({
       ['性别', 'gender', { as: 'select', span: 8, options: [
         { label: '男', value: 'male' },
         { label: '女', value: 'female' }
-      ]}],
+      ] }],
       ['地址', 'address', { as: 'input', span: 24 }],
       ['备注', 'remark', { as: 'input', type: 'textarea', rows: 3, span: 24 }]
     ]
@@ -179,25 +179,25 @@ export default defineComponent({
 <n-form>
   <n-grid>
     <n-form-item-gi label="用户名" path="username" :span="12">
-      <n-input v-model:value={form.username} />
+      <n-input v-model:value="{form.username}" />
     </n-form-item-gi>
     <n-form-item-gi label="邮箱" path="email" :span="12">
-      <n-input v-model:value={form.email} />
+      <n-input v-model:value="{form.email}" />
     </n-form-item-gi>
     <n-form-item-gi label="手机号" path="phone" :span="8">
-      <n-input v-model:value={form.phone} />
+      <n-input v-model:value="{form.phone}" />
     </n-form-item-gi>
     <n-form-item-gi label="年龄" path="age" :span="8">
-      <n-input-number v-model:value={form.age} />
+      <n-input-number v-model:value="{form.age}" />
     </n-form-item-gi>
     <n-form-item-gi label="性别" path="gender" :span="8">
-      <n-select v-model:value={form.gender} :options="[...]" />
+      <n-select v-model:value="{form.gender}" :options="[...]" />
     </n-form-item-gi>
     <n-form-item-gi label="地址" path="address" :span="24">
-      <n-input v-model:value={form.address} />
+      <n-input v-model:value="{form.address}" />
     </n-form-item-gi>
     <n-form-item-gi label="备注" path="remark" :span="24">
-      <n-input v-model:value={form.remark} type="textarea" :rows="3" />
+      <n-input v-model:value="{form.remark}" type="textarea" :rows="3" />
     </n-form-item-gi>
   </n-grid>
 </n-form>
@@ -205,13 +205,13 @@ export default defineComponent({
 
 #### Grid 布局属性
 
-当启用 Grid 布局时，可以在字段属性中使用以下 Grid 相关的属性：
+当启用 Grid 布局时，可以在 field 字段属性中使用以下 Grid 相关的属性：
 
 | 属性     | 类型     | 默认值 | 说明                                           |
 | -------- | -------- | ------ | ---------------------------------------------- |
-| `span`   | `number` | -      | 栅格占据的列数（NFormItemGi 的 span 属性）    |
+| `span`   | `number` | -      | 栅格占据的列数（NFormItemGi 的 span 属性）     |
 | `offset` | `number` | -      | 栅格左侧间隔列数（NFormItemGi 的 offset 属性） |
-| `suffix` | `string` | -      | 后缀内容（NFormItemGi 的 suffix 属性）        |
+| `suffix` | `string` | -      | 后缀内容（NFormItemGi 的 suffix 属性）         |
 
 #### Grid 布局与嵌套字段
 

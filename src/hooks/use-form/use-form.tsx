@@ -1,4 +1,5 @@
 import type { FormRules, SelectOption } from 'naive-ui'
+import type { GridProps } from 'naive-ui/es/grid/src/Grid'
 import { isObject } from '@vueuse/core'
 import { assign, pick } from 'lodash-es'
 import { NAutoComplete, NCascader, NCheckbox, NCheckboxGroup, NColorPicker, NDatePicker, NDynamicInput, NDynamicTags, NForm, NFormItem, NFormItemGi, NGrid, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSwitch, NTimePicker, NTransfer, NTreeSelect, NUpload } from 'naive-ui'
@@ -36,6 +37,7 @@ type FieldDefinition = RegularField | NestedFieldGroup
 
 interface FormProps {
   autoRules?: string[]
+  grid?: GridProps
   [key: string]: any
 }
 
@@ -45,6 +47,7 @@ const defaultFormProps = {
   requireMarkPlacement: 'right-hanging',
   size: 'medium',
 }
+const customOptionNames = ['autoRules', 'grid']
 const nFormItemPropNames = ['showFeedback', 'showLabel', 'showRequireMark', 'requireMarkPlacement', 'labelPlacement', 'labelAlign', 'labelStyle', 'labelProps', 'labelWidth', 'first', 'ignorePathChange', 'rulePath', 'rule', /* GridItemProps */ 'offset', 'span', 'suffix']
 const selectTypes = ['select', 'tree-select', 'cascader', 'date', 'date-picker', 'time', 'time-picker', 'radio', 'radio-group', 'radio-button', 'radio-button-group', 'checkbox', 'checkbox-group', 'checkbox-button', 'checkbox-button-group', 'color-picker', 'switch', 'slider', 'rate', 'transfer', 'upload']
 
@@ -60,8 +63,9 @@ export function useForm(fields: FieldDefinition[], options: FormProps = {}) {
   })
 
   const formRules = ref(createFormRules(flattenedFields, options))
-  const formProps = assign({}, defaultFormProps, omit(options, ['autoRules'])) as Record<string, any>
+  const formProps = assign({}, defaultFormProps, omit(options, customOptionNames)) as Record<string, any>
   const isGrid = !!options?.grid
+  const gridProps = isObject(options?.grid) ? options.grid : {}
 
   const Form = defineComponent(() => {
     return () => {
@@ -73,7 +77,7 @@ export function useForm(fields: FieldDefinition[], options: FormProps = {}) {
           model={form.value}
           rules={formRules.value}
         >
-          {isGrid ? <NGrid>{FormItems}</NGrid> : FormItems}
+          {isGrid ? <NGrid {...gridProps}>{FormItems}</NGrid> : FormItems}
         </NForm>
       )
     }
