@@ -1,9 +1,9 @@
 import type { FormRules, SelectOption } from 'naive-ui'
-import type { FieldAs, FieldDefinition, FieldProps, FormProps, NestedFieldGroup, RegularField } from './use-form-types'
+import type { FieldAs, FieldDefinition, FieldProps, FormProps, NestedFieldGroup, RegularField } from './types'
 import { isObject } from '@vueuse/core'
 import { omit, pick } from 'lodash-es'
 import { NAutoComplete, NCascader, NCheckbox, NCheckboxGroup, NColorPicker, NDatePicker, NDynamicInput, NDynamicTags, NFormItem, NFormItemGi, NGrid, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSwitch, NTimePicker, NTransfer, NTreeSelect, NUpload } from 'naive-ui'
-import { nFormItemPropNames, selectTypes } from './use-form-common'
+import { nFormItemPropNames, selectTypes } from './common'
 
 export function renderFields(fields: FieldDefinition[], itemsNodeMap: Map<string, any>, isGrid: boolean) {
   return fields.map((field, index) => {

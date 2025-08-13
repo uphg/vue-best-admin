@@ -1,9 +1,9 @@
-import type { FieldDefinition, FormProps } from './use-form-types'
+import type { FieldDefinition, FormProps } from './types'
 import { isObject } from '@vueuse/core'
 import { assign, omit } from 'lodash-es'
 import { NForm, NGrid } from 'naive-ui'
-import { customOptionNames, defaultFormProps } from './use-form-common'
-import { createDefaultField, createFormRules, createItemNodeMap, renderFields } from './use-form-utils'
+import { customOptionNames, defaultFormProps } from './common'
+import { createDefaultField, createFormRules, createItemNodeMap, renderFields } from './utils'
 
 export function useForm(fields: FieldDefinition[], options: FormProps = {}) {
   const form = ref<Record<string, any>>({})
