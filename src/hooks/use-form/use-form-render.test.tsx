@@ -433,7 +433,7 @@ describe('useForm component rendering', () => {
       const [Form] = useForm([
         ['活动名称', [
           [null, 'name1', {}],
-          [null, 'name2', {}]
+          [null, 'name2', {}],
         ], { grid: { cols: 2, xGap: 24 } }],
         ['活动区域', 'region', {
           as: 'select',
@@ -454,21 +454,21 @@ describe('useForm component rendering', () => {
           cols: 2,
           xGap: 24,
         }),
-        expect.any(Object)
+        expect.any(Object),
       )
-      
+
       // 应该渲染两个输入框（嵌套字段）
       expect(naiveUI.NInput).toHaveBeenCalledTimes(2)
-      
+
       // 应该渲染一个选择框
       expect(naiveUI.NSelect).toHaveBeenCalledTimes(1)
-      
+
       // 应该有 NFormItemGi 用于嵌套字段
       expect(naiveUI.NFormItemGi).toHaveBeenCalledTimes(2)
-      
+
       // 总共应该有 2 个 FormItem：嵌套容器 1 个 + 普通字段 1 个 = 2 个
       expect(naiveUI.NFormItem).toHaveBeenCalledTimes(2)
-      
+
       // Form 应该只渲染一次
       expect(naiveUI.NForm).toHaveBeenCalledTimes(1)
     })
@@ -477,7 +477,7 @@ describe('useForm component rendering', () => {
       const [_, form] = useForm([
         ['联系方式', [
           [null, 'phone', {}],
-          [null, 'email', { as: 'input' }]
+          [null, 'email', { as: 'input' }],
         ], { cols: 2 }],
         ['备注', 'note', {}],
       ])
@@ -486,7 +486,7 @@ describe('useForm component rendering', () => {
       expect(form.value).toHaveProperty('phone')
       expect(form.value).toHaveProperty('email')
       expect(form.value).toHaveProperty('note')
-      
+
       // 初始值应该都是 null
       expect(form.value.phone).toBe(null)
       expect(form.value.email).toBe(null)
@@ -507,19 +507,19 @@ describe('useForm component rendering', () => {
       const naiveUI = await import('naive-ui')
       // 应该渲染 NGrid 包装器
       expect(naiveUI.NGrid).toHaveBeenCalled()
-      
+
       // 应该使用 NFormItemGi 而不是 NFormItem
       expect(naiveUI.NFormItemGi).toHaveBeenCalledTimes(3)
       expect(naiveUI.NFormItem).not.toHaveBeenCalled()
-      
+
       // 应该传递 span 属性
       expect(naiveUI.NFormItemGi).toHaveBeenCalledWith(
         expect.objectContaining({ span: 12 }),
-        expect.any(Object)
+        expect.any(Object),
       )
       expect(naiveUI.NFormItemGi).toHaveBeenCalledWith(
         expect.objectContaining({ span: 24 }),
-        expect.any(Object)
+        expect.any(Object),
       )
     })
 
@@ -534,7 +534,7 @@ describe('useForm component rendering', () => {
       const naiveUI = await import('naive-ui')
       // 不应该渲染 NGrid
       expect(naiveUI.NGrid).not.toHaveBeenCalled()
-      
+
       // 应该使用 NFormItem 而不是 NFormItemGi
       expect(naiveUI.NFormItem).toHaveBeenCalledTimes(2)
       expect(naiveUI.NFormItemGi).not.toHaveBeenCalled()
@@ -544,7 +544,7 @@ describe('useForm component rendering', () => {
       const [Form] = useForm([
         ['个人信息', [
           ['姓名', 'name', { as: 'input', span: 12 }],
-          ['年龄', 'age', { as: 'input-number', span: 12 }]
+          ['年龄', 'age', { as: 'input-number', span: 12 }],
         ], { grid: { cols: 24, xGap: 16, yGap: 8 } }],
       ], { grid: true })
 
@@ -554,17 +554,17 @@ describe('useForm component rendering', () => {
       // 外层 Grid
       expect(naiveUI.NGrid).toHaveBeenCalledWith(
         expect.objectContaining({}),
-        expect.any(Object)
+        expect.any(Object),
       )
-      
+
       // 嵌套字段的 Grid
       expect(naiveUI.NGrid).toHaveBeenCalledWith(
         expect.objectContaining({
           cols: 24,
           xGap: 16,
-          yGap: 8
+          yGap: 8,
         }),
-        expect.any(Object)
+        expect.any(Object),
       )
     })
   })

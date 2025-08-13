@@ -15,7 +15,7 @@ const FormPage = defineComponent(() => {
     ['活动名称', [
       [null, 'name1', { showFeedback: false }],
       [null, 'name2', { showFeedback: false }],
-    ], { cols: 2, xGap: 24 }],
+    ], { grid: { cols: 2, xGap: 24 } }],
     ['活动区域', 'region', {
       as: 'select',
       options: [

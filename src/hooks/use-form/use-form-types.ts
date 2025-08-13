@@ -1,4 +1,41 @@
-import type { AutoCompleteProps, CascaderProps, CheckboxGroupProps, ColorPickerProps, DatePickerProps, DynamicInputProps, DynamicTagsProps, InputNumberProps, InputProps, RadioGroupProps, RateProps, SelectOption, SelectProps, SliderProps, SwitchProps, TimePickerProps, TransferProps, TreeSelectProps, UploadProps } from 'naive-ui'
+import type { AutoCompleteProps, CascaderProps, CheckboxGroupProps, ColorPickerProps, DatePickerProps, DynamicInputProps, DynamicTagsProps, GridProps, InputNumberProps, InputProps, RadioGroupProps, RateProps, SelectOption, SelectProps, SliderProps, SwitchProps, TimePickerProps, TransferProps, TreeSelectProps, UploadProps } from 'naive-ui'
+
+export type FieldAs = 'auto-complete'
+  | 'cascader'
+  | 'color-picker'
+  | 'checkbox' | 'checkbox-button' | 'checkbox-group' | 'checkbox-button-group'
+  | 'date' | 'date-picker'
+  | 'dynamic-input'
+  | 'dynamic-tags'
+  | 'input'
+  | 'input-number'
+  | 'radio' | 'radio-group' | 'radio-button' | 'radio-button-group'
+  | 'switch'
+  | 'rate'
+  | 'select'
+  | 'slider'
+  | 'switch'
+  | 'time' | 'time-picker'
+  | 'transfer'
+  | 'tree-select'
+  | 'upload'
+
+type LabelType = string | null
+export interface FieldProps {
+  as?: FieldAs
+  [key: string]: any
+}
+
+export type NestedField = [LabelType, string, FieldProps]
+export type NestedFieldGroup = [LabelType, NestedField[], Record<string, any>]
+export type RegularField = [LabelType, string, FieldProps]
+export type FieldDefinition = RegularField | NestedFieldGroup
+
+export interface FormProps {
+  autoRules?: string[]
+  grid?: GridProps
+  [key: string]: any
+}
 
 interface FieldPropsMap {
   'auto-complete': Partial<AutoCompleteProps> & { as?: 'auto-complete' }
