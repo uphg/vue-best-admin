@@ -3,7 +3,7 @@ import { isObject } from '@vueuse/core'
 import { assign, omit } from 'lodash-es'
 import { NForm, NGrid } from 'naive-ui'
 import { customOptionNames, defaultFormProps } from './common'
-import { createDefaultField, createFormRules, createItemNodeMap, renderFields } from './utils'
+import { createDefaultField, createFormRules, createItemNodeMap, renderFields } from './helpers'
 
 export function useForm(fields: FieldDefinition[], options: FormProps = {}) {
   const form = ref<Record<string, any>>({})

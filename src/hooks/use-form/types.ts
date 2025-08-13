@@ -20,15 +20,15 @@ export type FieldAs = 'auto-complete'
   | 'tree-select'
   | 'upload'
 
-export type FieldLabelType = string | undefined | null
+export type FieldLabel = string | undefined | null
 export interface FieldProps {
   as?: FieldAs
   [key: string]: any
 }
 
-export type NestedField = [FieldLabelType, string, FieldProps]
-export type NestedFieldGroup = [FieldLabelType, NestedField[], Record<string, any>]
-export type RegularField = [FieldLabelType, string, FieldProps]
+export type NestedField = [FieldLabel, string, FieldProps]
+export type NestedFieldGroup = [FieldLabel, NestedField[], Record<string, any>]
+export type RegularField = [FieldLabel, string, FieldProps]
 export type FieldDefinition = RegularField | NestedFieldGroup
 
 export interface FormProps {

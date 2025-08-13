@@ -1,5 +1,5 @@
 import type { FormRules, SelectOption } from 'naive-ui'
-import type { FieldAs, FieldDefinition, FieldLabelType, FieldProps, FormProps, NestedFieldGroup, RegularField } from './types'
+import type { FieldAs, FieldDefinition, FieldLabel, FieldProps, FormProps, NestedFieldGroup, RegularField } from './types'
 import { isObject } from '@vueuse/core'
 import { omit, pick } from 'lodash-es'
 import { NAutoComplete, NCascader, NCheckbox, NCheckboxGroup, NColorPicker, NDatePicker, NDynamicInput, NDynamicTags, NFormItem, NFormItemGi, NGrid, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSwitch, NTimePicker, NTransfer, NTreeSelect, NUpload } from 'naive-ui'
@@ -476,7 +476,7 @@ function flattenFields(fields: FieldDefinition[]): RegularField[] {
   return flattened
 }
 
-function getFieldRuleConfig(tag: FieldAs, label: FieldLabelType, key: string, props?: FieldProps) {
+function getFieldRuleConfig(tag: FieldAs, label: FieldLabel, key: string, props?: FieldProps) {
   const baseRule = {
     required: true,
     message: selectTypes.includes(tag) ? `请选择${label}` : `请输入${label}`,
