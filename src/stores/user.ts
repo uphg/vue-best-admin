@@ -8,6 +8,7 @@ export type UserState = Partial<{
   rules: string[]
   email: string
   token: string
+  avatar: string
   rawRoutes: RouteRecordRaw[]
 }>
 
@@ -18,8 +19,8 @@ export const useUserStore = defineStore('user', () => {
     rules: [],
     email: '',
     token: '',
+    avatar: '',
     rawRoutes: [],
-
   })
 
   function set(data: UserState) {
@@ -33,6 +34,7 @@ export const useUserStore = defineStore('user', () => {
       rules: [],
       email: '',
       token: '',
+      avatar: '',
       rawRoutes: [],
     })
   }

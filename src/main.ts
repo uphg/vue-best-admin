@@ -1,6 +1,7 @@
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
-import { loadRouterGuard } from '@/router/guards/guards'
+// import { loadRouterGuard } from '@/router/guards/guards'
+import { loadRouterGuard } from '@/router/guards/guards-improved'
 import App from './app'
 import { enableMocking } from './mocks/mocks'
 import router from './router/router'

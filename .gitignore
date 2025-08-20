@@ -29,6 +29,7 @@ coverage
 .kiro
 .claude
 .qodo
+CLAUDE.local.md
 
 *.tsbuildinfo
 

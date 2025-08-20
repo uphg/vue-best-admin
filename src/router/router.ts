@@ -1,60 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import LayoutDefault from '@/components/layout/layout-default'
-import Home from '@/pages/home/home-page'
+import { constantRoutes as baseConstantRoutes } from './routes'
 
-export const constantRoutes = [
-  {
-    path: '',
-    component: LayoutDefault,
-    redirect: '/home',
-    mergeSingleChild: true,
-    children: [
-      {
-        path: 'home',
-        name: 'Home',
-        component: Home,
-        meta: { title: '首页', icon: 'shell', affix: true },
-      },
-    ],
-  },
-  {
-    path: '/login',
-    name: 'Login',
-    hidden: true,
-    component: () => import('@/pages/login/login-page'),
-  },
-  {
-    path: '/register',
-    name: 'Register',
-    hidden: true,
-    component: () => import('@/pages/register/register-page'),
-  },
-  {
-    path: '/user',
-    redirect: 'noredirect',
-    hidden: true,
-    component: LayoutDefault,
-    children: [
-      {
-        path: 'profile',
-        component: () => import('@/pages/user/user-page'),
-        name: 'Profile',
-        meta: { title: '个人中心', icon: 'user' },
-      },
-    ],
-  },
-  {
-    path: '/:pathMatch(.*)*',
-    hidden: true,
-    component: () => import('@/pages/error/404'),
-  },
-  {
-    path: '/401',
-    name: '401',
-    hidden: true,
-    component: () => import('@/pages/error/401'),
-  },
-]
+// 处理常量路由，将字符串组件标识转换为实际组件
+function processRoutes(routes: any[]): any[] {
+  return routes.map((route) => {
+    const processedRoute = { ...route }
+
+    // 处理组件
+    if (typeof route.component === 'string') {
+      if (route.component === 'Default') {
+        processedRoute.component = LayoutDefault
+      }
+      // 可以在这里添加其他布局组件的处理
+    }
+
+    // 递归处理子路由
+    if (route.children) {
+      processedRoute.children = processRoutes(route.children)
+    }
+
+    return processedRoute
+  })
+}
+
+export const constantRoutes = processRoutes(baseConstantRoutes)
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

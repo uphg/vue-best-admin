@@ -3,9 +3,15 @@ import IconFileText from '~icons/lucide/file-text'
 import IconGithub from '~icons/lucide/github'
 import IconLogOut from '~icons/lucide/log-out'
 import IconUser from '~icons/lucide/user'
+import { useLogout } from '@/hooks/logout'
+import { useUserStore } from '@/stores/user'
 
 const UserDropdown = defineComponent({
   setup() {
+    const userStore = useUserStore()
+    const { logout } = useLogout()
+    const router = useRouter()
+
     const options = [
       {
         label: '个人资料',
@@ -33,22 +39,40 @@ const UserDropdown = defineComponent({
       },
     ]
 
-    const handleSelect = (key: string) => {
+    const handleSelect = async (key: string) => {
       switch (key) {
         case 'profile':
-          // TODO: 跳转到个人资料页面
+          // 跳转到个人资料页面
+          await router.push('/user/profile')
           break
         case 'docs':
-          // TODO: 打开文档页面
+          // 打开文档页面
+          window.open('https://vue-best-admin.github.io/', '_blank')
           break
         case 'github':
           window.open('https://github.com/vue-best-admin/vue-best-admin', '_blank')
           break
         case 'logout':
-          // TODO: 实现退出登录逻辑
+          try {
+            await logout()
+          } catch (error) {
+            // 用户取消退出或退出失败，这里可以添加错误处理
+            console.log('退出登录被取消或失败:', error)
+          }
           break
       }
     }
+
+    // 计算用户头像显示
+    const avatarSrc = computed(() => {
+      // 如果用户有头像，使用用户头像，否则使用默认头像
+      return userStore.avatar || 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
+    })
+
+    // 计算用户名显示
+    const userName = computed(() => {
+      return userStore.name || '用户'
+    })
 
     return () => (
       <NDropdown
@@ -57,12 +81,17 @@ const UserDropdown = defineComponent({
         trigger="hover"
         placement="bottom-end"
       >
-        <NAvatar
-          round
-          size="medium"
-          src="https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg"
-          class="cursor-pointer"
-        />
+        <div class="px-2 py-1 rounded-md flex cursor-pointer transition-colors items-center hover:bg-gray-100 dark:hover:bg-gray-800">
+          <NAvatar
+            round
+            size="medium"
+            src={avatarSrc.value}
+            class="mr-2"
+          />
+          <span class="text-sm text-gray-700 font-medium dark:text-gray-300">
+            {userName.value}
+          </span>
+        </div>
       </NDropdown>
     )
   },

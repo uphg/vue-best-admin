@@ -31,6 +31,11 @@ export const useSidebarStore = defineStore('sidebar', () => {
     menusMap.value = map
   }
 
+  function clear() {
+    menus.value = []
+    menusMap.value = new Map()
+  }
+
   return {
     inverted,
     collapsed,
@@ -41,5 +46,6 @@ export const useSidebarStore = defineStore('sidebar', () => {
     setCollapsed,
     setMenus,
     setMenuMap,
+    clear,
   }
 })
