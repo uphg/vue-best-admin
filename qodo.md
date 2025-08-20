@@ -208,4 +208,9 @@ vue-best-admin/
 - **Testing:** Unit tests are located alongside components - maintain test coverage
 - **Documentation:** VitePress docs in `/docs` - update when adding new features
 
+## Git Commit
+
+- Follow Conventional Commits
+- Submission descriptions must be in English
+
 _Updated at: 2025-01-27 UTC_
