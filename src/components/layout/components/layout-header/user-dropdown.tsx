@@ -3,7 +3,7 @@ import IconFileText from '~icons/lucide/file-text'
 import IconGithub from '~icons/lucide/github'
 import IconLogOut from '~icons/lucide/log-out'
 import IconUser from '~icons/lucide/user'
-import { useLogout } from '@/hooks/logout'
+import { useLogout } from '@/hooks/use-logout'
 import { useUserStore } from '@/stores/user'
 
 const UserDropdown = defineComponent({
@@ -42,11 +42,9 @@ const UserDropdown = defineComponent({
     const handleSelect = async (key: string) => {
       switch (key) {
         case 'profile':
-          // 跳转到个人资料页面
           await router.push('/user/profile')
           break
         case 'docs':
-          // 打开文档页面
           window.open('https://vue-best-admin.github.io/', '_blank')
           break
         case 'github':
@@ -63,13 +61,10 @@ const UserDropdown = defineComponent({
       }
     }
 
-    // 计算用户头像显示
     const avatarSrc = computed(() => {
-      // 如果用户有头像，使用用户头像，否则使用默认头像
       return userStore.avatar || 'https://07akioni.oss-cn-beijing.aliyuncs.com/07akioni.jpeg'
     })
 
-    // 计算用户名显示
     const userName = computed(() => {
       return userStore.name || '用户'
     })

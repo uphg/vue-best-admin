@@ -5,20 +5,12 @@ import { useSidebarStore } from '@/stores/sidebar'
 import { useUserStore } from '@/stores/user'
 import { removeToken } from '@/utils/token'
 
-/**
- * 退出登录
- * @param options 配置选项
- */
 export function useLogout() {
   const router = useRouter()
   const dialog = useDialog()
   const userStore = useUserStore()
   const sidebarStore = useSidebarStore()
 
-  /**
-   * 执行退出登录操作
-   * @param showConfirm 是否显示确认对话框，默认为 true
-   */
   const logout = async (showConfirm = true) => {
     if (showConfirm) {
       return new Promise<void>((resolve, reject) => {
@@ -45,9 +37,6 @@ export function useLogout() {
     }
   }
 
-  /**
-   * 执行实际的退出登录操作
-   */
   const performLogout = async () => {
     try {
       // 1. 清除 token
