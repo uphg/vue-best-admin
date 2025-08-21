@@ -5,7 +5,7 @@ import { apiGetRouteData, apiGetUserInfo } from '@/api/user'
 import { useSidebarStore } from '@/stores/sidebar'
 import { useUserStore } from '@/stores/user'
 import { getToken } from '@/utils/token'
-import { constantRoutes } from '../router'
+import { constantRoutes } from '../routes'
 import { createAsyncRoutes, createSidebarMenus } from './async-route'
 
 const commonRoutes: (string | symbol)[] = ['Login', '404']

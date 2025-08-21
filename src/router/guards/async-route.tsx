@@ -13,17 +13,9 @@ import IconTable from '~icons/lucide/table'
 import IconUser from '~icons/lucide/user'
 import IconUserCog from '~icons/lucide/user-cog'
 import IconUserSearch from '~icons/lucide/user-search'
-import LayoutDefault from '@/components/layout/layout-default'
-import LayoutInnerLink from '@/components/layout/layout-inner-link'
-import LayoutParentView from '@/components/layout/layout-parent-view'
+import { layouts } from '@/components/layout/layouts'
 
 const pagesModule = import.meta.glob('@/pages/**/*-page.tsx')
-
-const layoutsMap: { [key: string]: any } = {
-  Default: LayoutDefault,
-  ParentView: LayoutParentView,
-  InnerLink: LayoutInnerLink,
-}
 
 const iconsMap = createIconsMap({
   'user-search': IconUserSearch,
@@ -74,10 +66,35 @@ function baseCreateRoutes(routes: any[], paths: any[] = []) {
  * @param data 路由数据
  * @returns 侧边栏菜单数据
  */
+/**
+ * 处理路由数据用于菜单创建
+ * @param routes 路由数据
+ * @returns 处理后的路由数据
+ */
+function processRoutesForMenu(routes: any[]): any[] {
+  return routes.map((route) => {
+    const processedRoute = { ...route }
+
+    // 处理组件标识
+    if (typeof route.component === 'string') {
+      processedRoute.component = getComponent(route.component)
+    }
+
+    // 递归处理子路由
+    if (route.children) {
+      processedRoute.children = processRoutesForMenu(route.children)
+    }
+
+    return processedRoute
+  })
+}
+
 export function createSidebarMenus(data: any[]) {
   const routes = cloneJSON(data)
+  // 处理路由数据，将字符串组件标识转换为组件函数
+  const processedRoutes = processRoutesForMenu(routes)
   const menusMap = new Map()
-  const menus = baseCreateMenus(routes, menusMap)
+  const menus = baseCreateMenus(processedRoutes, menusMap)
   return { menus, menusMap }
 }
 
@@ -110,8 +127,11 @@ function baseCreateMenus(routes: any[], menusMap: Map<string, any>, options?: { 
 }
 
 function getComponent(componentPath: string) {
-  const layout = layoutsMap?.[componentPath]
-  if (layout) return layout
+  const layoutImporter = layouts?.[componentPath]
+  if (layoutImporter) {
+    // 对于布局组件，返回动态导入的 Promise，并获取 default 导出
+    return () => layoutImporter().then(module => module.default || module)
+  }
   const path = componentPath.replace(/^views\/|\.vue$/g, '')
   return pagesModule[`/src/pages/${path}.tsx`]
 }

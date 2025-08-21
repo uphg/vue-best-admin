@@ -1,0 +1,79 @@
+import { useDialog } from 'naive-ui'
+import { useRouter } from 'vue-router'
+import { resetPermission } from '@/router/guards/guards-optimized'
+import { useSidebarStore } from '@/stores/sidebar'
+import { useUserStore } from '@/stores/user'
+import { removeToken } from '@/utils/token'
+
+/**
+ * 退出登录
+ * @param options 配置选项
+ */
+export function useLogout() {
+  const router = useRouter()
+  const dialog = useDialog()
+  const userStore = useUserStore()
+  const sidebarStore = useSidebarStore()
+
+  /**
+   * 执行退出登录操作
+   * @param showConfirm 是否显示确认对话框，默认为 true
+   */
+  const logout = async (showConfirm = true) => {
+    if (showConfirm) {
+      return new Promise<void>((resolve, reject) => {
+        dialog.warning({
+          title: '退出登录',
+          content: '确定要退出登录吗？',
+          positiveText: '确定',
+          negativeText: '取消',
+          onPositiveClick: async () => {
+            try {
+              await performLogout()
+              resolve()
+            } catch (error) {
+              reject(error)
+            }
+          },
+          onNegativeClick: () => {
+            reject(new Error('用户取消退出'))
+          },
+        })
+      })
+    } else {
+      await performLogout()
+    }
+  }
+
+  /**
+   * 执行实际的退出登录操作
+   */
+  const performLogout = async () => {
+    try {
+      // 1. 清除 token
+      removeToken()
+
+      // 2. 清除用户状态
+      userStore.clear()
+
+      // 3. 清除侧边栏状态
+      sidebarStore.clear()
+
+      // 4. 重置权限状态
+      resetPermission()
+
+      // 5. 跳转到登录页
+      await router.push('/login')
+
+      console.log('退出登录成功')
+    } catch (error) {
+      console.error('退出登录失败:', error)
+      throw error
+    }
+  }
+
+  return {
+    logout,
+    performLogout,
+  }
+}
