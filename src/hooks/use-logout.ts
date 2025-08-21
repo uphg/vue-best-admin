@@ -1,6 +1,5 @@
 import { useDialog } from 'naive-ui'
 import { useRouter } from 'vue-router'
-import { resetPermission } from '@/router/guards/guards-optimized'
 import { useSidebarStore } from '@/stores/sidebar'
 import { useUserStore } from '@/stores/user'
 import { removeToken } from '@/utils/token'
@@ -49,7 +48,7 @@ export function useLogout() {
       sidebarStore.clear()
 
       // 4. 重置权限状态
-      resetPermission()
+      // resetPermission()
 
       // 5. 跳转到登录页
       await router.push('/login')

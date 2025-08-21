@@ -1,5 +1,6 @@
 import type { Component } from 'vue'
 import type { JSX } from 'vue/jsx-runtime'
+import type { LayoutType } from '@/components/layout/layouts'
 import { NIcon } from 'naive-ui'
 import { h } from 'vue'
 import IconArrowUpRight from '~icons/lucide/arrow-up-right'
@@ -126,7 +127,7 @@ function baseCreateMenus(routes: any[], menusMap: Map<string, any>, options?: { 
   return menus
 }
 
-function getComponent(componentPath: string) {
+function getComponent(componentPath: LayoutType) {
   const layoutImporter = layouts?.[componentPath]
   if (layoutImporter) {
     // 对于布局组件，返回动态导入的 Promise，并获取 default 导出

@@ -3,3 +3,5 @@ export const layouts = {
   ParentView: () => import('@/components/layout/layout-parent-view'),
   InnerLink: () => import('@/components/layout/layout-inner-link'),
 }
+
+export type LayoutType = keyof typeof layouts
