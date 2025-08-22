@@ -9,17 +9,18 @@ import { constantRoutes } from '../routes'
 import { createAsyncRoutes, createSidebarMenus } from './async-route'
 
 const commonRoutes: (string | symbol)[] = ['Login', '404']
+export const permState = createPermState()
 
 export function loadRouterGuard(router: Router) {
   const userStore = useUserStore()
   const sidebarStore = useSidebarStore()
-  let hasPermission = false
+
   let loadingPromise: Promise<void> | null = null
 
   router.beforeEach(async (to, from) => {
     try {
       // 如果用户已登录且权限已加载
-      if (userStore.id && hasPermission) {
+      if (userStore.id && permState.hasPerm) {
         return toPermissionRoute(to, from)
       }
 
@@ -35,17 +36,17 @@ export function loadRouterGuard(router: Router) {
       }
 
       // 如果有 token 但权限未加载
-      if (!hasPermission) {
+      if (!permState.hasPerm) {
         loadingPromise = loadPermissionInfo(router, { userStore, sidebarStore })
 
         try {
           await loadingPromise
-          hasPermission = true
+          permState.hasPerm = true
           // 权限信息加载完成后，重新导航到目标路由
           return { ...to, replace: true }
         } catch (error) {
           // 加载失败时清除状态
-          hasPermission = false
+          permState.hasPerm = false
           throw error
         } finally {
           loadingPromise = null
@@ -57,7 +58,7 @@ export function loadRouterGuard(router: Router) {
       console.error('Router guard error:', error)
       // 发生错误时清除用户状态并跳转到登录页
       userStore.clear()
-      hasPermission = false
+      permState.hasPerm = false
       loadingPromise = null
 
       if (to.name !== 'Login') {
@@ -71,8 +72,7 @@ export function loadRouterGuard(router: Router) {
   watch(() => userStore.id, (newId, oldId) => {
     if (oldId && !newId) {
       // 用户登出时重置状态
-      hasPermission = false
-      loadingPromise = null
+      permState.resetPerm()
     }
   })
 }
@@ -132,4 +132,14 @@ async function fetchUserAuthAndRoutes() {
   const { menus, menusMap } = createSidebarMenus(menuData)
 
   return { userInfo: userInfoRes.data, routes, menus, menusMap }
+}
+
+function createPermState() {
+  let hasPerm = false
+
+  return {
+    get hasPerm() { return hasPerm },
+    set hasPerm(value: boolean) { hasPerm = value },
+    resetPerm: () => hasPerm = false,
+  }
 }

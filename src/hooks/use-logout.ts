@@ -1,5 +1,6 @@
 import { useDialog } from 'naive-ui'
 import { useRouter } from 'vue-router'
+import { permState } from '@/router/guards/guards'
 import { useSidebarStore } from '@/stores/sidebar'
 import { useUserStore } from '@/stores/user'
 import { removeToken } from '@/utils/token'
@@ -48,7 +49,7 @@ export function useLogout() {
       sidebarStore.clear()
 
       // 4. 重置权限状态
-      // resetPermission()
+      permState.resetPerm()
 
       // 5. 跳转到登录页
       await router.push('/login')
