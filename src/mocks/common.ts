@@ -32,28 +32,24 @@ export const routeDate = [
   {
     path: '/table',
     component: 'Default',
-    mergeSingleChild: true,
+    meta: {
+      title: '表格',
+      icon: 'table',
+    },
     children: [
       {
         path: 'base',
-        component: 'table/table-page',
+        component: 'table/base-table/base-table-page',
         meta: {
-          title: '表格示例',
+          title: '基础表格',
           icon: 'table',
         },
       },
-    ],
-  },
-  {
-    path: '/data-table',
-    component: 'Default',
-    mergeSingleChild: true,
-    children: [
       {
-        path: 'base',
-        component: 'data-table/data-table-page',
+        path: 'data-table',
+        component: 'table/data-table/data-table-page',
         meta: {
-          title: '数据表格示例',
+          title: '数据表格',
           icon: 'table',
         },
       },
