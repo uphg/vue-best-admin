@@ -525,6 +525,90 @@ async function handleSubmit() {
 resetValidation()
 ```
 
+## 响应式 Options
+
+对于支持 `options` 属性的组件（如 `select`, `checkbox-group`, `radio-group` 等），`useForm` 现在支持响应式的 options 配置。这使得在异步获取数据时能够动态更新选项。
+
+### 使用响应式 Options
+
+```tsx
+import { defineComponent, ref } from 'vue'
+import { useForm } from '@/hooks/use-form'
+
+export default defineComponent({
+  setup() {
+    // 响应式的 options 数据
+    const genderOptions = ref([
+      { label: '男', value: 'male' },
+      { label: '女', value: 'female' }
+    ])
+
+    const cityOptions = ref([])
+
+    // 异步获取城市选项
+    const fetchCityOptions = async () => {
+      // 模拟 API 调用
+      const data = await api.getCities()
+      cityOptions.value = data.map(item => ({
+        label: item.name,
+        value: item.id
+      }))
+    }
+
+    const fields = [
+      ['性别', 'gender', { 
+        as: 'select', 
+        options: genderOptions // 直接传递 ref
+      }],
+      ['城市', 'city', { 
+        as: 'select', 
+        options: cityOptions // 异步更新的选项
+      }]
+    ]
+
+    const [Form] = useForm(fields)
+
+    // 组件挂载时获取城市数据
+    onMounted(() => {
+      fetchCityOptions()
+    })
+
+    return () => <Form />
+  }
+})
+```
+
+### 使用 Getter 函数
+
+除了传递 ref，你也可以使用 getter 函数：
+
+```tsx
+const getOptions = () => {
+  // 动态计算选项
+  return someCondition ? optionSetA : optionSetB
+}
+
+const fields = [
+  ['动态选项', 'dynamicField', { 
+    as: 'select', 
+    options: getOptions // 传递 getter 函数
+  }]
+]
+```
+
+### 支持响应式 Options 的组件
+
+以下组件的 `options` 属性支持响应式格式：
+
+- `select`
+- `cascader`
+- `checkbox-group`
+- `checkbox-button-group`
+- `radio-group`
+- `radio-button-group`
+- `tree-select`
+- `transfer`
+
 ## 注意事项
 
 1. 字段名支持嵌套路径（如 `user.name`）
@@ -533,3 +617,4 @@ resetValidation()
 4. 表单数据是响应式的，可以直接修改 `form.value`
 5. 所有表单组件都支持 Naive UI 的原生属性
 6. 上传组件使用 `fileList` 作为 modelKey
+7. 对于支持 `options` 属性的组件，现在支持传递响应式数据（ref）或 getter 函数，方便异步数据加载

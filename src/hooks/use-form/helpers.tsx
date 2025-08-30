@@ -1,3 +1,4 @@
+import type { MaybeRefOrGetter } from '@vueuse/core'
 import type { FormRules, SelectOption } from 'naive-ui'
 import type { FieldAs, FieldDefinition, FieldLabel, FieldProps, FormProps, NestedFieldGroup, RegularField } from './types'
 import { isObject } from '@vueuse/core'
@@ -48,6 +49,13 @@ export function renderFields(fields: FieldDefinition[], itemsNodeMap: Map<string
       )
     }
   })
+}
+
+// 处理可能的响应式 options 值
+function processOptions<T extends unknown>(options: MaybeRefOrGetter<T[]> | undefined): T[] | undefined
+function processOptions<T extends SelectOption>(options: MaybeRefOrGetter<T[]> | undefined) {
+  if (options === undefined) return undefined
+  return toValue(options)
 }
 
 export function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<string, any>>) {
@@ -112,6 +120,7 @@ export function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<st
             }}
             {...restProps}
             placeholder={placeholder ?? `请选择${label}`}
+            options={processOptions(restProps.options)}
           />
         )
         break
@@ -178,7 +187,7 @@ export function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<st
             }}
             {...otherProps}
           >
-            {options?.map((option: SelectOption) => (
+            {processOptions<SelectOption>(options)?.map((option: SelectOption) => (
               <NCheckbox key={option.value} value={option.value}>
                 {option.label}
               </NCheckbox>
@@ -200,7 +209,7 @@ export function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<st
             }}
             {...otherProps}
           >
-            {options?.map((option: SelectOption) => (
+            {processOptions<SelectOption>(options)?.map((option: SelectOption) => (
               <NRadio key={option.value} value={option.value}>
                 {option.label}
               </NRadio>
@@ -222,7 +231,7 @@ export function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<st
             }}
             {...otherProps}
           >
-            {options?.map((option: SelectOption) => (
+            {processOptions<SelectOption>(options)?.map((option: SelectOption) => (
               <NRadioButton key={option.value} value={option.value}>
                 {option.label}
               </NRadioButton>
@@ -254,6 +263,7 @@ export function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<st
             }}
             {...restProps}
             placeholder={placeholder ?? `请选择${label}`}
+            options={processOptions(restProps.options)}
           />
         )
         break
@@ -307,7 +317,7 @@ export function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<st
             }}
             {...otherProps}
           >
-            {options?.map((option: SelectOption) => (
+            {processOptions<SelectOption>(options)?.map((option: SelectOption) => (
               <NCheckbox key={option.value} value={option.value}>
                 {option.label}
               </NCheckbox>
@@ -338,6 +348,7 @@ export function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<st
             }}
             {...restProps}
             placeholder={placeholder ?? `请选择${label}`}
+            options={processOptions(restProps.options)}
           />
         )
         break
@@ -362,6 +373,7 @@ export function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<st
               [`onUpdate:${modelKey}`]: onUpdateValue,
             }}
             {...restProps}
+            options={processOptions(restProps.options)}
           />
         )
         break
