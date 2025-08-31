@@ -1,16 +1,16 @@
-import type { FieldDefinition, FormProps } from './types'
+import type { FieldProps, FormProps } from './types'
 import { isObject } from '@vueuse/core'
 import { assign, omit } from 'lodash-es'
 import { NForm, NGrid } from 'naive-ui'
 import { customOptionNames, defaultFormProps } from './common'
 import { createDefaultField, createFormRules, createItemNodeMap, renderFields } from './helpers'
 
-export function useForm(fields: FieldDefinition[], options: FormProps = {}) {
+export function useForm(fields: FieldProps[], options: FormProps = {}) {
   const form = ref<Record<string, any>>({})
   const formRef = ref()
   const { itemsNodeMap, flattenedFields } = createItemNodeMap(fields, form)
   const defaultField = createDefaultField(flattenedFields)
-  flattenedFields.forEach(([_, key]) => {
+  flattenedFields.forEach(({ key }) => {
     form.value[key] = defaultField[key]
   })
 

@@ -1,46 +1,47 @@
 import type { MaybeRefOrGetter } from '@vueuse/core'
 import type { FormRules, SelectOption } from 'naive-ui'
-import type { FieldAs, FieldDefinition, FieldLabel, FieldProps, FormProps, NestedFieldGroup, RegularField } from './types'
+import type { FieldAs, FieldLabel, FieldProps, FormProps } from './types'
 import { isObject } from '@vueuse/core'
 import { omit, pick } from 'lodash-es'
 import { NAutoComplete, NCascader, NCheckbox, NCheckboxGroup, NColorPicker, NDatePicker, NDynamicInput, NDynamicTags, NFormItem, NFormItemGi, NGrid, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSwitch, NTimePicker, NTransfer, NTreeSelect, NUpload } from 'naive-ui'
 import { nFormItemPropNames, selectTypes } from './common'
 
-export function renderFields(fields: FieldDefinition[], itemsNodeMap: Map<string, any>, isGrid: boolean) {
+export function renderFields(fields: FieldProps[], itemsNodeMap: Map<string, any>, isGrid: boolean) {
   return fields.map((field, index) => {
     const FormItem = isGrid ? NFormItemGi : NFormItem
     if (isNestedField(field)) {
-      const [label, nestedFields, props] = field
+      const { label, children: nestedFields, ...props } = field
       return (
         <FormItem key={index} label={label!}>
-          {props?.grid
-            ? (
-                <NGrid {...props.grid}>
-                  {nestedFields.map(([label, key, props]) => {
+          {nestedFields && (
+            props?.grid
+              ? (
+                  <NGrid {...props.grid}>
+                    {nestedFields.map(({ label, key, ...props }) => {
+                      const Input = itemsNodeMap.get(key)
+                      return (
+                        <NFormItemGi {...pick(props, nFormItemPropNames)} key={key} path={key} label={label!}>
+                          {Input}
+                        </NFormItemGi>
+                      )
+                    })}
+                  </NGrid>
+                )
+              : (
+                  nestedFields.map(({ label, key, ...props }) => {
                     const Input = itemsNodeMap.get(key)
                     return (
-                      <NFormItemGi {...pick(props, nFormItemPropNames)} key={key} path={key} label={label!}>
+                      <NFormItem {...pick(props, nFormItemPropNames)} key={key} path={key} label={label!}>
                         {Input}
-                      </NFormItemGi>
+                      </NFormItem>
                     )
-                  })}
-                </NGrid>
-              )
-            : (
-                nestedFields.map(([label, key, props]) => {
-                  const Input = itemsNodeMap.get(key)
-                  return (
-                    <NFormItem {...pick(props, nFormItemPropNames)} key={key} path={key} label={label!}>
-                      {Input}
-                    </NFormItem>
-                  )
-                })
-              )}
-
+                  })
+                )
+          )}
         </FormItem>
       )
     } else {
-      const [label, key, props] = field
+      const { label, key, ...props } = field
       const Input = itemsNodeMap.get(key)
       return (
         <FormItem {...pick(props, nFormItemPropNames)} key={key} path={key} label={label!}>
@@ -52,18 +53,18 @@ export function renderFields(fields: FieldDefinition[], itemsNodeMap: Map<string
 }
 
 // 处理可能的响应式 options 值
-function processOptions<T extends unknown>(options: MaybeRefOrGetter<T[]> | undefined): T[] | undefined
-function processOptions<T extends SelectOption>(options: MaybeRefOrGetter<T[]> | undefined) {
+function processOptions<T extends unknown>(options?: MaybeRefOrGetter<T[]>): T[] | undefined
+function processOptions<T extends SelectOption>(options?: MaybeRefOrGetter<T[]>) {
   if (options === undefined) return undefined
   return toValue(options)
 }
 
-export function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<string, any>>) {
+export function createItemNodeMap(fields: FieldProps[], form: Ref<Record<string, any>>) {
   const flattenedFields = flattenFields(fields)
   const map = new Map()
 
   flattenedFields.forEach((field) => {
-    const [_, key] = field
+    const { key } = field
     const node = createItemNode(field, form)
     map.set(key, node)
   })
@@ -73,9 +74,9 @@ export function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<st
     flattenedFields,
   }
 
-  function createItemNode(field: RegularField, form: Ref<Record<string, any>>) {
-    const [label, key, _props] = field
-    const propsData = _props || {}
+  function createItemNode(field: FieldProps, form: Ref<Record<string, any>>) {
+    const { label, key, ..._props } = field
+    const propsData = omit(_props || {}, 'children')
     const { as: tag = 'input', placeholder, ...restProps } = propsData
     const modelKey = tag === 'upload' ? 'fileList' : 'value'
 
@@ -394,9 +395,9 @@ export function createItemNodeMap(fields: FieldDefinition[], form: Ref<Record<st
   }
 }
 
-export function createDefaultField(flattenedFields: RegularField[]) {
+export function createDefaultField(flattenedFields: FieldProps[]) {
   const defaultField: Record<string, any> = {}
-  flattenedFields.forEach(([, key, props]) => {
+  flattenedFields.forEach(({ label, key, ...props }) => {
     const tag = props?.as || 'input'
     switch (tag) {
       case 'checkbox':
@@ -436,10 +437,10 @@ export function createDefaultField(flattenedFields: RegularField[]) {
   return defaultField
 }
 
-export function createFormRules(fields: RegularField[], options: FormProps = {}) {
+export function createFormRules(fields: FieldProps[], options: FormProps = {}) {
   const rules: FormRules = {}
 
-  fields.forEach(([label, key, props]) => {
+  fields.forEach(({ label, key, ...props }) => {
     // 优先使用手动传入的规则
     if (isObject(props?.rules)) {
       rules[key] = props.rules
@@ -452,7 +453,7 @@ export function createFormRules(fields: RegularField[], options: FormProps = {})
     }
 
     const tag = props?.as || 'input'
-    const ruleConfig = getFieldRuleConfig(tag, label, key, props)
+    const ruleConfig = getFieldRuleConfig(tag, label)
 
     if (ruleConfig) {
       // 处理嵌套字段
@@ -467,18 +468,18 @@ export function createFormRules(fields: RegularField[], options: FormProps = {})
   return rules
 }
 
-function isNestedField(field: FieldDefinition): field is NestedFieldGroup {
-  return Array.isArray(field[1])
+function isNestedField(field: FieldProps) {
+  return Array.isArray(field.children)
 }
 
-function flattenFields(fields: FieldDefinition[]): RegularField[] {
-  const flattened: RegularField[] = []
+function flattenFields(fields: FieldProps[]): FieldProps[] {
+  const flattened: FieldProps[] = []
 
   fields.forEach((field) => {
     if (isNestedField(field)) {
-      const [label, nestedFields] = field
-      nestedFields.forEach(([_, key, props]) => {
-        flattened.push([label, key, props])
+      const { label, children: nestedFields } = field
+      nestedFields?.forEach(({ key, props }) => {
+        flattened.push({ label, key, props })
       })
     } else {
       flattened.push(field)
@@ -488,7 +489,7 @@ function flattenFields(fields: FieldDefinition[]): RegularField[] {
   return flattened
 }
 
-function getFieldRuleConfig(tag: FieldAs, label: FieldLabel, key: string, props?: FieldProps) {
+function getFieldRuleConfig(tag: FieldAs, label: FieldLabel) {
   const baseRule = {
     required: true,
     message: selectTypes.includes(tag) ? `请选择${label}` : `请输入${label}`,

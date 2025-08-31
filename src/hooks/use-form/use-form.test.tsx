@@ -5,8 +5,8 @@ describe('useForm', () => {
   describe('form data initialization', () => {
     it('should initialize form data with correct default values for input components', () => {
       const [, form] = useForm([
-        ['文本', 'text', { as: 'input' }],
-        ['自动完成', 'autoComplete', { as: 'auto-complete' }],
+        { label: '文本', key: 'text', as: 'input' },
+        { label: '自动完成', key: 'autoComplete', as: 'auto-complete' },
       ])
 
       expect(form.value.text).toBe(null)
@@ -15,9 +15,9 @@ describe('useForm', () => {
 
     it('should initialize form data with correct default values for number components', () => {
       const [, form] = useForm([
-        ['数字', 'number', { as: 'input-number' }],
-        ['滑块', 'slider', { as: 'slider' }],
-        ['评分', 'rate', { as: 'rate' }],
+        { label: '数字', key: 'number', as: 'input-number' },
+        { label: '滑块', key: 'slider', as: 'slider' },
+        { label: '评分', key: 'rate', as: 'rate' },
       ])
 
       expect(form.value.number).toBe(0)
@@ -27,7 +27,7 @@ describe('useForm', () => {
 
     it('should initialize form data with correct default values for boolean components', () => {
       const [, form] = useForm([
-        ['开关', 'switch', { as: 'switch' }],
+        { label: '开关', key: 'switch', as: 'switch' },
       ])
 
       expect(form.value.switch).toBe(false)
@@ -35,10 +35,10 @@ describe('useForm', () => {
 
     it('should initialize form data with correct default values for selection components', () => {
       const [, form] = useForm([
-        ['选择', 'select', { as: 'select' }],
-        ['多选', 'multiSelect', { as: 'select', multiple: true }],
-        ['级联', 'cascader', { as: 'cascader' }],
-        ['树选择', 'treeSelect', { as: 'tree-select' }],
+        { label: '选择', key: 'select', as: 'select' },
+        { label: '多选', key: 'multiSelect', as: 'select', multiple: true },
+        { label: '级联', key: 'cascader', as: 'cascader' },
+        { label: '树选择', key: 'treeSelect', as: 'tree-select' },
       ])
 
       expect(form.value.select).toBe(null)
@@ -49,9 +49,9 @@ describe('useForm', () => {
 
     it('should initialize form data with correct default values for date/time components', () => {
       const [, form] = useForm([
-        ['日期', 'date', { as: 'date-picker' }],
-        ['时间', 'time', { as: 'time-picker' }],
-        ['颜色', 'color', { as: 'color-picker' }],
+        { label: '日期', key: 'date', as: 'date-picker' },
+        { label: '时间', key: 'time', as: 'time-picker' },
+        { label: '颜色', key: 'color', as: 'color-picker' },
       ])
 
       expect(form.value.date).toBe(null)
@@ -61,12 +61,12 @@ describe('useForm', () => {
 
     it('should initialize form data with correct default values for array components', () => {
       const [, form] = useForm([
-        ['复选框', 'checkbox', { as: 'checkbox-group' }],
-        ['复选框按钮', 'checkboxButton', { as: 'checkbox-button-group' }],
-        ['传输', 'transfer', { as: 'transfer' }],
-        ['上传', 'upload', { as: 'upload' }],
-        ['动态输入', 'dynamicInput', { as: 'dynamic-input' }],
-        ['动态标签', 'dynamicTags', { as: 'dynamic-tags' }],
+        { label: '复选框', key: 'checkbox', as: 'checkbox-group' },
+        { label: '复选框按钮', key: 'checkboxButton', as: 'checkbox-button-group' },
+        { label: '传输', key: 'transfer', as: 'transfer' },
+        { label: '上传', key: 'upload', as: 'upload' },
+        { label: '动态输入', key: 'dynamicInput', as: 'dynamic-input' },
+        { label: '动态标签', key: 'dynamicTags', as: 'dynamic-tags' },
       ])
 
       expect(form.value.checkbox).toEqual([])
@@ -79,9 +79,9 @@ describe('useForm', () => {
 
     it('should initialize with custom min values', () => {
       const [, form] = useForm([
-        ['数字', 'number', { as: 'input-number', min: 10 }],
-        ['滑块', 'slider', { as: 'slider', min: 5 }],
-        ['评分', 'rate', { as: 'rate', min: 1 }],
+        { label: '数字', key: 'number', as: 'input-number', min: 10 },
+        { label: '滑块', key: 'slider', as: 'slider', min: 5 },
+        { label: '评分', key: 'rate', as: 'rate', min: 1 },
       ])
 
       expect(form.value.number).toBe(10)

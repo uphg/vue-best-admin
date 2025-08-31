@@ -1,5 +1,5 @@
-import type { AutoCompleteProps, CascaderProps, CheckboxGroupProps, ColorPickerProps, DatePickerProps, DynamicInputProps, DynamicTagsProps, GridProps, InputNumberProps, InputProps, RadioGroupProps, RateProps, SelectOption, SelectProps, SliderProps, SwitchProps, TimePickerProps, TransferProps, TreeSelectProps, UploadProps } from 'naive-ui'
 import type { MaybeRefOrGetter } from '@vueuse/core'
+import type { AutoCompleteProps, CascaderProps, CheckboxGroupProps, ColorPickerProps, DatePickerProps, DynamicInputProps, DynamicTagsProps, GridProps, InputNumberProps, InputProps, RadioGroupProps, RateProps, SelectOption, SelectProps, SliderProps, SwitchProps, TimePickerProps, TransferProps, TreeSelectProps, UploadProps } from 'naive-ui'
 
 export type FieldAs = 'auto-complete'
   | 'cascader'
@@ -22,15 +22,20 @@ export type FieldAs = 'auto-complete'
   | 'upload'
 
 export type FieldLabel = string | undefined | null
+export type FieldKey = string
 export interface FieldProps {
+  label: FieldLabel
+  key: FieldKey
   as?: FieldAs
+  children?: FieldProps[]
   [key: string]: any
 }
+export interface LiteFieldGroupOptions { grid?: GridProps, [key: string]: any }
 
-export type NestedField = [FieldLabel, string, FieldProps]
-export type NestedFieldGroup = [FieldLabel, NestedField[], Record<string, any>]
-export type RegularField = [FieldLabel, string, FieldProps]
-export type FieldDefinition = RegularField | NestedFieldGroup
+export type LiteFieldProps = [FieldLabel, FieldKey, FieldProps?]
+export type LiteFieldGroupProps = [FieldLabel, LiteFieldProps[], LiteFieldGroupOptions?]
+export type LiteFieldDefinition = LiteFieldProps | LiteFieldGroupProps
+export type FieldInputProps = Omit<FieldProps, 'label' | 'key' | 'children'>
 
 export interface FormProps {
   autoRules?: string[]
