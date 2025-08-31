@@ -1,13 +1,13 @@
-# useDataTable
+# useTable
 
-`useDataTable` 是一个基于 Naive UI 的 `NDataTable` 封装的组合式函数，提供了分页、数据加载、刷新等功能。
+`useTable` 是一个基于 Naive UI 的 `NDataTable` 封装的组合式函数，提供了分页、数据加载、刷新等功能。
 
 ## 基本用法
 
 ### 导入
 
 ```typescript
-import { useDataTable } from '@/hooks/use-data-table'
+import { useTable } from '@/hooks/use-data-table'
 ```
 
 ### 参数说明
@@ -34,7 +34,7 @@ interface UseTableProps extends DataTableProps {
 
 ### 返回值
 
-`useDataTable` 返回一个包含两个元素的元组：
+`useTable` 返回一个包含两个元素的元组：
 
 1. `TableComponent` - 渲染表格的 JSX 组件
 2. `tableState` - 表格状态对象，包含：
@@ -51,7 +51,7 @@ interface UseTableProps extends DataTableProps {
 ```tsx
 import type { DataTableColumn } from 'naive-ui'
 import { defineComponent, shallowRef } from 'vue'
-import { useDataTable } from '@/hooks/use-data-table'
+import { useTable } from '@/hooks/use-data-table'
 
 export default defineComponent({
   setup() {
@@ -88,7 +88,7 @@ export default defineComponent({
       }
     }
 
-    const [Table, tableState] = useDataTable(columns, {
+    const [Table, tableState] = useTable(columns, {
       dataSource: fetchData
     })
 
@@ -106,7 +106,7 @@ export default defineComponent({
 ```tsx
 import type { DataTableColumn } from 'naive-ui'
 import { defineComponent, shallowRef } from 'vue'
-import { useDataTable } from '@/hooks/use-data-table'
+import { useTable } from '@/hooks/use-data-table'
 
 export default defineComponent({
   setup() {
@@ -133,7 +133,7 @@ export default defineComponent({
       }
     }
 
-    const [Table, { refresh }] = useDataTable(columns, {
+    const [Table, { refresh }] = useTable(columns, {
       dataSource: fetchData,
       hasLoading: true,
       tableClass: 'custom-table',
@@ -153,7 +153,7 @@ export default defineComponent({
 ### 自定义分页配置
 
 ```tsx
-const [Table] = useDataTable(columns, {
+const [Table] = useTable(columns, {
   dataSource: fetchData,
   pagination: {
     pageSizes: [5, 10, 20, 50],
@@ -168,7 +168,7 @@ const [Table] = useDataTable(columns, {
 ### 自定义空数据和加载状态
 
 ```tsx
-const [Table] = useDataTable(columns, {
+const [Table] = useTable(columns, {
   dataSource: fetchData
 }, {
   empty: () => <div class="text-gray-500">暂无数据</div>,
@@ -179,7 +179,7 @@ const [Table] = useDataTable(columns, {
 ### 事件监听
 
 ```typescript
-const [Table] = useDataTable(columns, {
+const [Table] = useTable(columns, {
   dataSource: fetchData,
   onBeforeUpdateData: () => {
     console.log('开始更新数据')

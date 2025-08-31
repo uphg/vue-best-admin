@@ -93,39 +93,39 @@ describe('useForm', () => {
   describe('form component types coverage', () => {
     it('should support all FieldAs component types', () => {
       const [, form] = useForm([
-        // Text input types
-        ['输入框', 'input', { as: 'input' }],
-        ['自动完成', 'autoComplete', { as: 'auto-complete' }],
+      // Text input types
+        { label: '输入框', key: 'input', as: 'input' },
+        { label: '自动完成', key: 'autoComplete', as: 'auto-complete' },
 
         // Number input types
-        ['数字输入', 'inputNumber', { as: 'input-number' }],
-        ['滑块', 'slider', { as: 'slider' }],
-        ['评分', 'rate', { as: 'rate' }],
+        { label: '数字输入', key: 'inputNumber', as: 'input-number' },
+        { label: '滑块', key: 'slider', as: 'slider' },
+        { label: '评分', key: 'rate', as: 'rate' },
 
         // Selection types
-        ['下拉选择', 'select', { as: 'select' }],
-        ['级联选择', 'cascader', { as: 'cascader' }],
-        ['树选择', 'treeSelect', { as: 'tree-select' }],
+        { label: '下拉选择', key: 'select', as: 'select' },
+        { label: '级联选择', key: 'cascader', as: 'cascader' },
+        { label: '树选择', key: 'treeSelect', as: 'tree-select' },
 
         // Date/Time types
-        ['日期选择', 'datePicker', { as: 'date-picker' }],
-        ['时间选择', 'timePicker', { as: 'time-picker' }],
+        { label: '日期选择', key: 'datePicker', as: 'date-picker' },
+        { label: '时间选择', key: 'timePicker', as: 'time-picker' },
 
         // Boolean types
-        ['开关', 'switch', { as: 'switch' }],
+        { label: '开关', key: 'switch', as: 'switch' },
 
         // Multiple selection types
-        ['复选框组', 'checkboxGroup', { as: 'checkbox-group' }],
-        ['复选框按钮组', 'checkboxButtonGroup', { as: 'checkbox-button-group' }],
-        ['单选框组', 'radioGroup', { as: 'radio-group' }],
-        ['单选按钮组', 'radioButtonGroup', { as: 'radio-button-group' }],
+        { label: '复选框组', key: 'checkboxGroup', as: 'checkbox-group' },
+        { label: '复选框按钮组', key: 'checkboxButtonGroup', as: 'checkbox-button-group' },
+        { label: '单选框组', key: 'radioGroup', as: 'radio-group' },
+        { label: '单选按钮组', key: 'radioButtonGroup', as: 'radio-button-group' },
 
         // Other types
-        ['颜色选择', 'colorPicker', { as: 'color-picker' }],
-        ['传输框', 'transfer', { as: 'transfer' }],
-        ['上传', 'upload', { as: 'upload' }],
-        ['动态输入', 'dynamicInput', { as: 'dynamic-input' }],
-        ['动态标签', 'dynamicTags', { as: 'dynamic-tags' }],
+        { label: '颜色选择', key: 'colorPicker', as: 'color-picker' },
+        { label: '传输框', key: 'transfer', as: 'transfer' },
+        { label: '上传', key: 'upload', as: 'upload' },
+        { label: '动态输入', key: 'dynamicInput', as: 'dynamic-input' },
+        { label: '动态标签', key: 'dynamicTags', as: 'dynamic-tags' },
       ])
 
       // Verify all form fields are initialized
@@ -183,11 +183,11 @@ describe('useForm', () => {
   describe('form methods', () => {
     it('should reset form to default values', () => {
       const [, form, { resetFields }] = useForm([
-        ['文本', 'text', { as: 'input' }],
-        ['数字', 'number', { as: 'input-number' }],
-        ['开关', 'switch', { as: 'switch' }],
-        ['选择', 'select', { as: 'select', multiple: true }],
-        ['复选框', 'checkbox', { as: 'checkbox-group' }],
+        { label: '文本', key: 'text', as: 'input' },
+        { label: '数字', key: 'number', as: 'input-number' },
+        { label: '开关', key: 'switch', as: 'switch' },
+        { label: '选择', key: 'select', as: 'select', multiple: true },
+        { label: '复选框', key: 'checkbox', as: 'checkbox-group' },
       ])
 
       // Modify form values
@@ -210,10 +210,10 @@ describe('useForm', () => {
 
     it('should set multiple fields at once', () => {
       const [, form, { setFields }] = useForm([
-        ['文本', 'text', { as: 'input' }],
-        ['数字', 'number', { as: 'input-number' }],
-        ['开关', 'switch', { as: 'switch' }],
-        ['选择', 'select', { as: 'select' }],
+        { label: '文本', key: 'text', as: 'input' },
+        { label: '数字', key: 'number', as: 'input-number' },
+        { label: '开关', key: 'switch', as: 'switch' },
+        { label: '选择', key: 'select', as: 'select' },
       ])
 
       setFields({
@@ -232,48 +232,48 @@ describe('useForm', () => {
 
   describe('component type aliases', () => {
     it('should handle date and date-picker aliases', () => {
-      const [, form1] = useForm([['日期1', 'date1', { as: 'date' }]])
-      const [, form2] = useForm([['日期2', 'date2', { as: 'date-picker' }]])
+      const [, form1] = useForm([{ label: '日期1', key: 'date1', as: 'date' }])
+      const [, form2] = useForm([{ label: '日期2', key: 'date2', as: 'date-picker' }])
 
       expect(form1.value.date1).toBe(null)
       expect(form2.value.date2).toBe(null)
     })
 
     it('should handle time and time-picker aliases', () => {
-      const [, form1] = useForm([['时间1', 'time1', { as: 'time' }]])
-      const [, form2] = useForm([['时间2', 'time2', { as: 'time-picker' }]])
+      const [, form1] = useForm([{ label: '时间1', key: 'time1', as: 'time' }])
+      const [, form2] = useForm([{ label: '时间2', key: 'time2', as: 'time-picker' }])
 
       expect(form1.value.time1).toBe(null)
       expect(form2.value.time2).toBe(null)
     })
 
     it('should handle checkbox and checkbox-group aliases', () => {
-      const [, form1] = useForm([['复选框1', 'checkbox1', { as: 'checkbox' }]])
-      const [, form2] = useForm([['复选框2', 'checkbox2', { as: 'checkbox-group' }]])
+      const [, form1] = useForm([{ label: '复选框1', key: 'checkbox1', as: 'checkbox' }])
+      const [, form2] = useForm([{ label: '复选框2', key: 'checkbox2', as: 'checkbox-group' }])
 
       expect(form1.value.checkbox1).toEqual([])
       expect(form2.value.checkbox2).toEqual([])
     })
 
     it('should handle radio and radio-group aliases', () => {
-      const [, form1] = useForm([['单选1', 'radio1', { as: 'radio' }]])
-      const [, form2] = useForm([['单选2', 'radio2', { as: 'radio-group' }]])
+      const [, form1] = useForm([{ label: '单选1', key: 'radio1', as: 'radio' }])
+      const [, form2] = useForm([{ label: '单选2', key: 'radio2', as: 'radio-group' }])
 
       expect(form1.value.radio1).toBe(null)
       expect(form2.value.radio2).toBe(null)
     })
 
     it('should handle radio-button and radio-button-group aliases', () => {
-      const [, form1] = useForm([['单选按钮1', 'radioButton1', { as: 'radio-button' }]])
-      const [, form2] = useForm([['单选按钮2', 'radioButton2', { as: 'radio-button-group' }]])
+      const [, form1] = useForm([{ label: '单选按钮1', key: 'radioButton1', as: 'radio-button' }])
+      const [, form2] = useForm([{ label: '单选按钮2', key: 'radioButton2', as: 'radio-button-group' }])
 
       expect(form1.value.radioButton1).toBe(null)
       expect(form2.value.radioButton2).toBe(null)
     })
 
     it('should handle checkbox-button and checkbox-button-group aliases', () => {
-      const [, form1] = useForm([['复选按钮1', 'checkboxButton1', { as: 'checkbox-button' }]])
-      const [, form2] = useForm([['复选按钮2', 'checkboxButton2', { as: 'checkbox-button-group' }]])
+      const [, form1] = useForm([{ label: '复选按钮1', key: 'checkboxButton1', as: 'checkbox-button' }])
+      const [, form2] = useForm([{ label: '复选按钮2', key: 'checkboxButton2', as: 'checkbox-button-group' }])
 
       expect(form1.value.checkboxButton1).toEqual([])
       expect(form2.value.checkboxButton2).toEqual([])
@@ -283,7 +283,7 @@ describe('useForm', () => {
   describe('edge cases', () => {
     it('should handle fields without explicit as property (defaults to input)', () => {
       const [, form] = useForm([
-        ['默认字段', 'default', {}],
+        { label: '默认字段', key: 'default' },
       ])
 
       expect(form.value.default).toBe(null)
@@ -291,12 +291,12 @@ describe('useForm', () => {
 
     it('should handle multiple selection with multiple property', () => {
       const [, form] = useForm([
-        ['单选', 'singleSelect', { as: 'select' }],
-        ['多选', 'multiSelect', { as: 'select', multiple: true }],
-        ['单选级联', 'singleCascader', { as: 'cascader' }],
-        ['多选级联', 'multiCascader', { as: 'cascader', multiple: true }],
-        ['单选树', 'singleTree', { as: 'tree-select' }],
-        ['多选树', 'multiTree', { as: 'tree-select', multiple: true }],
+        { label: '单选', key: 'singleSelect', as: 'select' },
+        { label: '多选', key: 'multiSelect', as: 'select', multiple: true },
+        { label: '单选级联', key: 'singleCascader', as: 'cascader' },
+        { label: '多选级联', key: 'multiCascader', as: 'cascader', multiple: true },
+        { label: '单选树', key: 'singleTree', as: 'tree-select' },
+        { label: '多选树', key: 'multiTree', as: 'tree-select', multiple: true },
       ])
 
       expect(form.value.singleSelect).toBe(null)
@@ -312,9 +312,9 @@ describe('useForm', () => {
     describe('input type rules', () => {
       it('should generate correct rules for input components', () => {
         const [, , { rules }] = useForm([
-          ['文本输入', 'input', { as: 'input' }],
-          ['自动完成', 'autoComplete', { as: 'auto-complete' }],
-          ['动态输入', 'dynamicInput', { as: 'dynamic-input' }],
+          { label: '文本输入', key: 'input', as: 'input' },
+          { label: '自动完成', key: 'autoComplete', as: 'auto-complete' },
+          { label: '动态输入', key: 'dynamicInput', as: 'dynamic-input' },
         ], { autoRules: ['input', 'autoComplete', 'dynamicInput'] })
 
         const rulesValue = rules.value
@@ -340,9 +340,9 @@ describe('useForm', () => {
     describe('selection type rules', () => {
       it('should generate correct rules for select components', () => {
         const [, , { rules }] = useForm([
-          ['下拉选择', 'select', { as: 'select' }],
-          ['树选择', 'treeSelect', { as: 'tree-select' }],
-          ['级联选择', 'cascader', { as: 'cascader' }],
+          { label: '下拉选择', key: 'select', as: 'select' },
+          { label: '树选择', key: 'treeSelect', as: 'tree-select' },
+          { label: '级联选择', key: 'cascader', as: 'cascader' },
         ], { autoRules: ['select', 'treeSelect', 'cascader'] })
 
         const rulesValue = rules.value
@@ -370,10 +370,10 @@ describe('useForm', () => {
 
       it('should generate correct rules for date/time components', () => {
         const [, , { rules }] = useForm([
-          ['日期', 'date', { as: 'date' }],
-          ['日期选择', 'datePicker', { as: 'date-picker' }],
-          ['时间', 'time', { as: 'time' }],
-          ['时间选择', 'timePicker', { as: 'time-picker' }],
+          { label: '日期', key: 'date', as: 'date' },
+          { label: '日期选择', key: 'datePicker', as: 'date-picker' },
+          { label: '时间', key: 'time', as: 'time' },
+          { label: '时间选择', key: 'timePicker', as: 'time-picker' },
         ], { autoRules: ['date', 'datePicker', 'time', 'timePicker'] })
 
         const rulesValue = rules.value
@@ -401,10 +401,10 @@ describe('useForm', () => {
 
       it('should generate correct rules for radio components', () => {
         const [, , { rules }] = useForm([
-          ['单选', 'radio', { as: 'radio' }],
-          ['单选组', 'radioGroup', { as: 'radio-group' }],
-          ['单选按钮', 'radioButton', { as: 'radio-button' }],
-          ['单选按钮组', 'radioButtonGroup', { as: 'radio-button-group' }],
+          { label: '单选', key: 'radio', as: 'radio' },
+          { label: '单选组', key: 'radioGroup', as: 'radio-group' },
+          { label: '单选按钮', key: 'radioButton', as: 'radio-button' },
+          { label: '单选按钮组', key: 'radioButtonGroup', as: 'radio-button-group' },
         ], { autoRules: ['radio', 'radioGroup', 'radioButton', 'radioButtonGroup'] })
 
         const rulesValue = rules.value
@@ -434,13 +434,13 @@ describe('useForm', () => {
     describe('array type rules', () => {
       it('should generate correct rules for array components', () => {
         const [, , { rules }] = useForm([
-          ['复选框', 'checkbox', { as: 'checkbox' }],
-          ['复选框组', 'checkboxGroup', { as: 'checkbox-group' }],
-          ['复选框按钮', 'checkboxButton', { as: 'checkbox-button' }],
-          ['复选框按钮组', 'checkboxButtonGroup', { as: 'checkbox-button-group' }],
-          ['动态标签', 'dynamicTags', { as: 'dynamic-tags' }],
-          ['传输', 'transfer', { as: 'transfer' }],
-          ['上传', 'upload', { as: 'upload' }],
+          { label: '复选框', key: 'checkbox', as: 'checkbox' },
+          { label: '复选框组', key: 'checkboxGroup', as: 'checkbox-group' },
+          { label: '复选框按钮', key: 'checkboxButton', as: 'checkbox-button' },
+          { label: '复选框按钮组', key: 'checkboxButtonGroup', as: 'checkbox-button-group' },
+          { label: '动态标签', key: 'dynamicTags', as: 'dynamic-tags' },
+          { label: '传输', key: 'transfer', as: 'transfer' },
+          { label: '上传', key: 'upload', as: 'upload' },
         ], {
           autoRules: ['checkbox', 'checkboxGroup', 'checkboxButton', 'checkboxButtonGroup', 'dynamicTags', 'transfer', 'upload'],
         })
@@ -494,9 +494,9 @@ describe('useForm', () => {
     describe('number type rules', () => {
       it('should generate correct rules for number components', () => {
         const [, , { rules }] = useForm([
-          ['数字输入', 'inputNumber', { as: 'input-number' }],
-          ['滑块', 'slider', { as: 'slider' }],
-          ['评分', 'rate', { as: 'rate' }],
+          { label: '数字输入', key: 'inputNumber', as: 'input-number' },
+          { label: '滑块', key: 'slider', as: 'slider' },
+          { label: '评分', key: 'rate', as: 'rate' },
         ], { autoRules: ['inputNumber', 'slider', 'rate'] })
 
         const rulesValue = rules.value
@@ -524,7 +524,7 @@ describe('useForm', () => {
     describe('boolean type rules', () => {
       it('should generate correct rules for switch component', () => {
         const [, , { rules }] = useForm([
-          ['开关', 'switch', { as: 'switch' }],
+          { label: '开关', key: 'switch', as: 'switch' },
         ], { autoRules: ['switch'] })
 
         const rulesValue = rules.value
@@ -540,7 +540,7 @@ describe('useForm', () => {
     describe('other type rules', () => {
       it('should generate correct rules for color-picker component', () => {
         const [, , { rules }] = useForm([
-          ['颜色选择', 'colorPicker', { as: 'color-picker' }],
+          { label: '颜色选择', key: 'colorPicker', as: 'color-picker' },
         ], { autoRules: ['colorPicker'] })
 
         const rulesValue = rules.value
@@ -553,7 +553,7 @@ describe('useForm', () => {
 
       it('should generate default rules for unknown component types', () => {
         const [, , { rules }] = useForm([
-          ['未知类型', 'unknown', { as: 'unknown-type' as any }],
+          { label: '未知类型', key: 'unknown', as: 'unknown-type' as any },
         ], { autoRules: ['unknown'] })
 
         const rulesValue = rules.value
@@ -568,9 +568,9 @@ describe('useForm', () => {
     describe('auto rules configuration', () => {
       it('should only generate rules for fields specified in autoRules', () => {
         const [, , { rules }] = useForm([
-          ['文本1', 'text1', { as: 'input' }],
-          ['文本2', 'text2', { as: 'input' }],
-          ['数字', 'number', { as: 'input-number' }],
+          { label: '文本1', key: 'text1', as: 'input' },
+          { label: '文本2', key: 'text2', as: 'input' },
+          { label: '数字', key: 'number', as: 'input-number' },
         ], { autoRules: ['text1', 'number'] })
 
         const rulesValue = rules.value
@@ -581,8 +581,8 @@ describe('useForm', () => {
 
       it('should not generate rules when autoRules is not provided', () => {
         const [, , { rules }] = useForm([
-          ['文本', 'text', { as: 'input' }],
-          ['数字', 'number', { as: 'input-number' }],
+          { label: '文本', key: 'text', as: 'input' },
+          { label: '数字', key: 'number', as: 'input-number' },
         ])
 
         const rulesValue = rules.value
@@ -591,8 +591,8 @@ describe('useForm', () => {
 
       it('should not generate rules when autoRules is empty', () => {
         const [, , { rules }] = useForm([
-          ['文本', 'text', { as: 'input' }],
-          ['数字', 'number', { as: 'input-number' }],
+          { label: '文本', key: 'text', as: 'input' },
+          { label: '数字', key: 'number', as: 'input-number' },
         ], { autoRules: [] })
 
         const rulesValue = rules.value
@@ -609,7 +609,7 @@ describe('useForm', () => {
         }
 
         const [, , { rules }] = useForm([
-          ['文本', 'text', { as: 'input', rules: customRule }],
+          { label: '文本', key: 'text', as: 'input', rules: customRule },
         ], { autoRules: ['text'] })
 
         const rulesValue = rules.value
@@ -622,7 +622,7 @@ describe('useForm', () => {
     describe('validator functionality', () => {
       it('should validate null, undefined and empty string values correctly for select types', () => {
         const [, , { rules }] = useForm([
-          ['选择', 'select', { as: 'select' }],
+          { label: '选择', key: 'select', as: 'select' },
         ], { autoRules: ['select'] })
 
         const rulesValue = rules.value
@@ -642,8 +642,8 @@ describe('useForm', () => {
     describe('nested field rules', () => {
       it('should handle nested field paths correctly', () => {
         const [, , { rules }] = useForm([
-          ['嵌套字段', 'user.name', { as: 'input' }],
-          ['深层嵌套', 'user.profile.email', { as: 'input' }],
+          { label: '嵌套字段', key: 'user.name', as: 'input' },
+          { label: '深层嵌套', key: 'user.profile.email', as: 'input' },
         ], { autoRules: ['user.name', 'user.profile.email'] })
 
         const rulesValue = rules.value

@@ -1,19 +1,7 @@
-import type { ClassValue } from 'clsx'
-import type { DataTableColumn, DataTableProps } from 'naive-ui'
-import type { ShallowRef } from 'vue'
+import type { TableDefaultColumns, UseTableProps } from './types'
 import { isNil, omit } from 'lodash-es'
 import { NDataTable, NPagination } from 'naive-ui'
 import { mergeClass } from '@/utils/merge-class'
-
-interface UseTableProps extends DataTableProps {
-  dataSource: (options: { page: number, pageSize: number }) => Promise<any>
-  initDataSource: boolean
-  hasLoading: boolean
-  tableClass: ClassValue
-  pagingWrapClass: ClassValue
-  onBeforeUpdateData: () => void
-  onAfterUpdateData: () => void
-}
 
 const pagingJustifyMap = {
   center: 'justify-center',
@@ -39,8 +27,8 @@ const defaultProps = {
 
 const customPropsNames = ['pagination', 'dataSource', 'initDataSource', 'hasLoading', 'onBeforeUpdateData', 'onAfterUpdateData', 'pagingWrapClass', 'pagingJustify']
 
-export function useDataTable(
-  columns: ShallowRef<Array<DataTableColumn>>,
+export function useTable(
+  defaultColumns: TableDefaultColumns,
   props?: Partial<UseTableProps>,
   slots?: { empty: () => any, loading: () => any },
 ) {
@@ -53,6 +41,7 @@ export function useDataTable(
   const total = ref(0)
   const sorter = ref()
   const loading = ref(false)
+  const columns = ref(defaultColumns)
 
   rawProps.initDataSource && refresh()
 
@@ -105,6 +94,6 @@ export function useDataTable(
         </div>
       </div>
     ),
-    { data, page, pageSize, sorter, refresh },
+    { data, columns, page, pageSize, sorter, refresh },
   ] as const
 }

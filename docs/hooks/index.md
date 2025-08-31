@@ -4,7 +4,7 @@
 
 ## 可用的 Hooks
 
-### [useDataTable](./use-data-table.md)
+### [useTable](./use-data-table.md)
 
 基于 Naive UI 的数据表格封装，提供分页、数据加载、刷新等功能。
 
@@ -28,18 +28,18 @@
 
 ### 使用示例
 
-#### useDataTable
+#### useTable
 
 ```typescript
 import type { DataTableColumn } from 'naive-ui'
-import { useDataTable } from '@/hooks/use-data-table'
+import { useTable } from '@/hooks/use-data-table'
 
 const columns = shallowRef<DataTableColumn[]>([
   { title: '姓名', key: 'name' },
   { title: '年龄', key: 'age' }
 ])
 
-const [Table] = useDataTable(columns, {
+const [Table] = useTable(columns, {
   dataSource: async ({ page, pageSize }) => {
     // 获取数据
     return { data: [], total: 0 }

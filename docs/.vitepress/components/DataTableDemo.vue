@@ -1,6 +1,6 @@
 <template>
   <div class="demo-container">
-    <h3>useDataTable 演示</h3>
+    <h3>useTable 演示</h3>
     <NCard>
       <Table />
       <div style="margin-top: 16px">
@@ -19,7 +19,7 @@
 import type { DataTableColumn } from 'naive-ui'
 import { NButton, NCard } from 'naive-ui'
 import { shallowRef } from 'vue'
-import { useDataTable } from '../../../src/hooks/use-data-table'
+import { useTable } from '../../../src/hooks/use-data-table'
 
 // 设置演示数据
 const columns = shallowRef<DataTableColumn[]>([
@@ -83,7 +83,7 @@ async function fetchData({ page, pageSize }: { page: number, pageSize: number })
   }
 }
 
-const [Table, { refresh, data }] = useDataTable(columns, {
+const [Table, { refresh, data }] = useTable(columns, {
   dataSource: fetchData,
   hasLoading: true,
   tableClass: 'demo-table',

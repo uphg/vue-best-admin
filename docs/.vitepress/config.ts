@@ -20,7 +20,7 @@ export default defineConfig({
         text: 'Hooks',
         items: [
           { text: '快速开始', link: '/hooks/index' },
-          { text: 'useDataTable', link: '/hooks/use-data-table' },
+          { text: 'useTable', link: '/hooks/use-data-table' },
           { text: 'useForm', link: '/hooks/use-form' },
         ],
       },

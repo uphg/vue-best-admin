@@ -1,48 +1,74 @@
-# useForm
+# useForm & useFormLite
 
 `useForm` 是一个基于 Naive UI 的表单封装组合式函数，提供了表单验证、字段管理、数据重置等功能。
+
+`useFormLite` 是 `useForm` 的简化版本，使用更简洁的字段定义语法，适合快速构建简单表单。
+
+## useForm vs useFormLite
+
+| 特性 | useForm | useFormLite |
+| ---- | ------- | ----------- |
+| 字段定义 | 对象格式 `{label, key, as, ...}` | 数组格式 `[label, key, props?]` |
+| 嵌套字段 | `children` 属性 | 嵌套数组语法 |
+| 类型安全 | 强类型 | 强类型 |
+| 功能完整性 | 100% | 100%（内部转换） |
+| 使用场景 | 复杂表单，类型提示更清晰 | 简单表单，代码更简洁 |
 
 ## 基本用法
 
 ### 导入
 
 ```typescript
-import { useForm } from '@/hooks/use-form'
+import { useForm, useFormLite } from '@/hooks/use-form'
 ```
 
-### 参数说明
+### useForm 参数说明
 
 | 参数      | 类型                | 默认值 | 说明             |
 | --------- | ------------------- | ------ | ---------------- |
-| `fields`  | `FieldDefinition[]` | -      | 表单字段定义数组 |
-| `options` | `UseFormOptions`    | `{}`   | 表单配置选项     |
+| `fields`  | `FieldProps[]`      | -      | 表单字段定义数组 |
+| `options` | `FormProps`         | `{}`   | 表单配置选项     |
 
-### 类型定义
+### useFormLite 参数说明
+
+| 参数         | 类型                | 默认值 | 说明                 |
+| ------------ | ------------------- | ------ | -------------------- |
+| `liteFields` | `LiteFieldProps[]`  | -      | 简化版表单字段定义数组 |
+| `options`    | `FormProps`         | `{}`   | 表单配置选项         |
+
+### useForm 类型定义
 
 ```typescript
-interface FieldDefinition {
-  0: string // 标签名
-  1: string | NestedFieldDefinition[] // 字段名或嵌套字段定义数组
-  2: FieldProps // 字段属性
-}
-
-interface NestedFieldDefinition {
-  0: string | null // 标签名（null 表示无标签）
-  1: string // 字段名
-  2: FieldProps // 字段属性
-}
-
 interface FieldProps {
+  label: string | null | undefined
+  key: string
   as?: FieldAs // 组件类型
-  cols?: number // 嵌套字段网格列数
-  xGap?: number // 嵌套字段水平间距
-  yGap?: number // 嵌套字段垂直间距
+  children?: FieldProps[] // 嵌套字段
   [key: string]: any // 其他属性
 }
 
-interface UseFormOptions {
+interface FormProps {
   autoRules?: string[] // 自动生成规则的字段名数组
-  grid?: boolean // 是否启用 Grid 布局
+  grid?: GridProps // 是否启用 Grid 布局
+  [key: string]: any
+}
+```
+
+### useFormLite 类型定义
+
+```typescript
+// 简化版字段定义：[标签, 字段名, 属性?]
+type LiteFieldProps = [string | null | undefined, string, FieldProps?]
+
+// 字段组定义：[标签, 子字段数组, 组属性?]
+type LiteFieldGroupProps = [string | null | undefined, LiteFieldProps[], LiteFieldGroupOptions?]
+
+// 字段定义可以是单个字段或字段组
+type LiteFieldDefinition = LiteFieldProps | LiteFieldGroupProps
+
+interface LiteFieldGroupOptions {
+  grid?: GridProps // 网格布局配置
+  [key: string]: any
 }
 ```
 
@@ -86,7 +112,7 @@ interface UseFormOptions {
 
 ## 使用示例
 
-### 基础示例
+### useForm 基础示例
 
 ```tsx
 import { defineComponent } from 'vue'
@@ -94,7 +120,52 @@ import { useForm } from '@/hooks/use-form'
 
 export default defineComponent({
   setup() {
-    const fields = [
+    const fields: FieldProps[] = [
+      { label: '用户名', key: 'username', as: 'input', placeholder: '请输入用户名' },
+      { label: '邮箱', key: 'email', as: 'input', type: 'email', placeholder: '请输入邮箱' },
+      { label: '年龄', key: 'age', as: 'input-number', min: 0, max: 120 },
+      { label: '性别', key: 'gender', as: 'select', options: [
+        { label: '男', value: 'male' },
+        { label: '女', value: 'female' }
+      ]}
+    ]
+
+    const [Form, form, { validate, resetForm }] = useForm(fields, {
+      autoRules: ['username', 'email', 'age', 'gender']
+    })
+
+    const handleSubmit = async () => {
+      try {
+        const values = await validate()
+        console.log('表单提交:', values)
+      } catch (errors) {
+        console.error('验证失败:', errors)
+      }
+    }
+
+    return () => (
+      <div>
+        <Form />
+        <div style={{ marginTop: '16px' }}>
+          <button onClick={handleSubmit}>提交</button>
+          <button onClick={resetForm} style={{ marginLeft: '8px' }}>重置</button>
+        </div>
+      </div>
+    )
+  }
+})
+```
+
+### useFormLite 基础示例
+
+```tsx
+import { defineComponent } from 'vue'
+import { useFormLite } from '@/hooks/use-form'
+
+export default defineComponent({
+  setup() {
+    // 使用简化语法：[标签, 字段名, 属性?]
+    const liteFields = [
       ['用户名', 'username', { as: 'input', placeholder: '请输入用户名' }],
       ['邮箱', 'email', { as: 'input', type: 'email', placeholder: '请输入邮箱' }],
       ['年龄', 'age', { as: 'input-number', min: 0, max: 120 }],
@@ -107,7 +178,7 @@ export default defineComponent({
       }]
     ]
 
-    const [Form, form, { validate, resetForm }] = useForm(fields, {
+    const [Form, form, { validate, resetForm }] = useFormLite(liteFields, {
       autoRules: ['username', 'email', 'age', 'gender']
     })
 
@@ -360,7 +431,7 @@ const [Form, form] = useForm(fields)
 
 `useForm` 支持嵌套布局功能，可以在一个表单项下创建多个子字段，并通过网格布局进行排列。
 
-#### 基本嵌套布局
+#### useForm 基本嵌套布局
 
 ```tsx
 import { defineComponent } from 'vue'
@@ -368,7 +439,48 @@ import { useForm } from '@/hooks/use-form'
 
 export default defineComponent({
   setup() {
-    const fields = [
+    const fields: FieldProps[] = [
+      {
+        label: '活动名称',
+        key: '',
+        children: [
+          { label: null, key: 'name1', as: 'input', placeholder: '请输入主要名称' },
+          { label: null, key: 'name2', as: 'input', placeholder: '请输入备用名称' }
+        ],
+        cols: 2,
+        xGap: 24
+      },
+      {
+        label: '活动区域',
+        key: 'region',
+        as: 'select',
+        options: [
+          { label: '区域一', value: 0 },
+          { label: '区域二', value: 1 },
+          { label: '区域三', value: 2 }
+        ]
+      }
+    ]
+
+    const [Form, form] = useForm(fields, {
+      autoRules: ['name1', 'name2', 'region']
+    })
+
+    return () => <Form />
+  }
+})
+```
+
+#### useFormLite 基本嵌套布局
+
+```tsx
+import { defineComponent } from 'vue'
+import { useFormLite } from '@/hooks/use-form'
+
+export default defineComponent({
+  setup() {
+    // 使用简化语法：[标签, 子字段数组, 组属性?]
+    const liteFields = [
       ['活动名称', [
         [null, 'name1', { as: 'input', placeholder: '请输入主要名称' }],
         [null, 'name2', { as: 'input', placeholder: '请输入备用名称' }]
@@ -383,7 +495,7 @@ export default defineComponent({
       }]
     ]
 
-    const [Form, form] = useForm(fields, {
+    const [Form, form] = useFormLite(liteFields, {
       autoRules: ['name1', 'name2', 'region']
     })
 
@@ -611,6 +723,8 @@ const fields = [
 
 ## 注意事项
 
+### 通用注意事项
+
 1. 字段名支持嵌套路径（如 `user.name`）
 2. `autoRules` 参数用于指定哪些字段自动生成验证规则
 3. 可以通过 `rules` 属性自定义验证规则
@@ -618,3 +732,11 @@ const fields = [
 5. 所有表单组件都支持 Naive UI 的原生属性
 6. 上传组件使用 `fileList` 作为 modelKey
 7. 对于支持 `options` 属性的组件，现在支持传递响应式数据（ref）或 getter 函数，方便异步数据加载
+
+### useFormLite 特有注意事项
+
+1. `useFormLite` 使用数组语法定义字段，更简洁但功能与 `useForm` 完全一致
+2. 单个字段格式：`[标签, 字段名, 属性?]`
+3. 字段组格式：`[标签, 子字段数组, 组属性?]`
+4. `useFormLite` 内部会将简化语法转换为 `useForm` 所需的完整格式
+5. 两种方法返回的 API 完全相同，可以无缝切换使用
