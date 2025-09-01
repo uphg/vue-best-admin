@@ -6,7 +6,7 @@
 - **构建**: Vite
 - **包管理**: pnpm
 - **运行环境**: Node.js v20+, Ubuntu
-- **代码规范**: Conventional Commits
+- **Git Commit**: Conventional Commits
 
 ## 开发命令
 

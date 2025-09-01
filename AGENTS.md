@@ -6,7 +6,7 @@
 - **Build Tool**: Vite
 - **Package Manager**: pnpm
 - **Environment**: Node.js v20+, Ubuntu
-- **Convention**: Conventional Commits
+- **Git Commit**: Conventional Commits
 
 ## Development Commands
 
