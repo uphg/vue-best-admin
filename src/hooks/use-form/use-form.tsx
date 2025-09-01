@@ -1,3 +1,4 @@
+import type { FormValidateCallback, ShouldRuleBeApplied } from 'naive-ui/es/form/src/interface'
 import type { FieldProps, FormProps } from './types'
 import { isObject } from '@vueuse/core'
 import { assign, omit } from 'lodash-es'
@@ -7,7 +8,7 @@ import { createDefaultField, createFormRules, createItemNodeMap, renderFields } 
 
 export function useForm(fields: FieldProps[], options: FormProps = {}) {
   const form = ref<Record<string, any>>({})
-  const formRef = ref()
+  const formRef = shallowRef<InstanceType<typeof NForm>>()
   const { itemsNodeMap, flattenedFields } = createItemNodeMap(fields, form)
   const defaultField = createDefaultField(flattenedFields)
   flattenedFields.forEach(({ key }) => {
@@ -51,16 +52,8 @@ export function useForm(fields: FieldProps[], options: FormProps = {}) {
     })
   }
 
-  async function validate() {
-    return new Promise((resolve, reject) => {
-      formRef.value?.validate((errors: any) => {
-        if (errors) {
-          reject(errors)
-        } else {
-          resolve(form.value)
-        }
-      })
-    })
+  async function validate(callback?: FormValidateCallback, shouldRuleBeApplied?: ShouldRuleBeApplied) {
+    return formRef.value?.validate(callback, shouldRuleBeApplied)
   }
 
   function resetValidation() {

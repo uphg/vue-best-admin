@@ -1,12 +1,13 @@
 import type { DataTableColumn } from 'naive-ui'
-import type { ColumnKey, TableColumnTitle } from 'naive-ui/es/data-table/src/interface'
+import type { ColumnKey, TableBaseColumn, TableColumnTitle } from 'naive-ui/es/data-table/src/interface'
 import type { TableDefaultColumns, UseTableProps } from './types'
+import { isFunction, omit } from 'lodash-es'
 import { useTable } from './use-table'
 
 type liteColumn = [
   TableColumnTitle,
   ColumnKey,
-  Omit<DataTableColumn, 'title' | 'key'>?,
+  (TableBaseColumn['render'] | Omit<DataTableColumn, 'title' | 'key'>)?,
 ]
 
 export function useTableLite(liteColumns: liteColumn[], props?: Partial<UseTableProps>, slots?: { empty: () => any, loading: () => any }) {
@@ -15,9 +16,12 @@ export function useTableLite(liteColumns: liteColumn[], props?: Partial<UseTable
 }
 
 function convertLiteColumnsToColumns(liteColumns: liteColumn[]): TableDefaultColumns {
-  return liteColumns.map(([title, key, options]) => ({
-    title,
-    key,
-    ...(options as Omit<DataTableColumn, 'title' | 'key'>),
-  } as DataTableColumn))
+  return liteColumns.map(([title, key, _options]) => {
+    const options = isFunction(_options) ? { render: _options } : omit(_options, 'title', 'key')
+    return {
+      title,
+      key,
+      ...(options),
+    } as DataTableColumn
+  })
 }

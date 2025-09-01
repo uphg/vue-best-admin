@@ -1,18 +1,14 @@
-import type { TableDefaultColumns, UseTableProps } from './types'
+import type { PagingJustify, TableDefaultColumns, UseTableProps } from './types'
 import { isNil, omit } from 'lodash-es'
 import { NDataTable, NPagination } from 'naive-ui'
 import { mergeClass } from '@/utils/merge-class'
-
-const pagingJustifyMap = {
-  center: 'justify-center',
-  start: 'justify-start',
-  end: 'justify-end',
-} as const
+import { pagingJustifyMap } from './common'
 
 const defaultProps = {
   // 自定义 props
   initDataSource: true,
   hasLoading: true,
+  defaultColumnProps: null,
 
   // table props
   striped: true,
@@ -22,17 +18,17 @@ const defaultProps = {
     pageSizes: [10, 20, 50, 100],
     showSizePicker: true,
   },
-  pagingJustify: 'end' as keyof typeof pagingJustifyMap,
+  pagingJustify: 'end' as PagingJustify,
 }
 
-const customPropsNames = ['pagination', 'dataSource', 'initDataSource', 'hasLoading', 'onBeforeUpdateData', 'onAfterUpdateData', 'pagingWrapClass', 'pagingJustify']
+const customPropsNames = ['pagination', 'dataSource', 'initDataSource', 'hasLoading', 'onBeforeUpdateData', 'onAfterUpdateData', 'pagingWrapClass', 'pagingJustify', 'defaultColumnProps']
 
 export function useTable(
   defaultColumns: TableDefaultColumns,
   props?: Partial<UseTableProps>,
   slots?: { empty: () => any, loading: () => any },
 ) {
-  const rawProps = Object.assign({}, defaultProps, props)
+  const rawProps = Object.assign({}, defaultProps, props) as Partial<UseTableProps>
   const nTableProps = omit(rawProps, customPropsNames)
 
   const data = ref<any[]>([])
@@ -89,7 +85,7 @@ export function useTable(
         <NDataTable {...nTableProps} class={rawProps.tableClass} data={data.value} columns={columns.value} loading={loading.value}>
           {slots}
         </NDataTable>
-        <div class={mergeClass('mt-3 flex', pagingJustifyMap[rawProps.pagingJustify], rawProps.pagingWrapClass)}>
+        <div class={mergeClass('mt-3 flex', pagingJustifyMap[rawProps.pagingJustify!], rawProps.pagingWrapClass)}>
           <NPagination {...rawProps.pagination} item-count={total.value} page={page.value} pageSize={pageSize.value} onUpdate:page={onPageChange} onUpdate:pageSize={onPageSizeChange} />
         </div>
       </div>
