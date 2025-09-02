@@ -58,7 +58,10 @@ export const routeDate = [
   {
     path: '/form',
     component: 'Default',
-    mergeSingleChild: true,
+    meta: {
+      title: '表单',
+      icon: 'table',
+    },
     children: [
       {
         path: 'base',
@@ -66,6 +69,14 @@ export const routeDate = [
         meta: {
           title: '表单示例',
           icon: 'table',
+        },
+      },
+      {
+        path: 'x-form',
+        component: 'form/x-form-demo',
+        meta: {
+          title: 'XForm 组件',
+          icon: 'form-input',
         },
       },
     ],
