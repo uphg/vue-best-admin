@@ -1,7 +1,7 @@
-import type { FormElement } from '@/types/form'
+import type { InputElement } from '@/types/form'
 import { selectTypes } from '@/constants/form'
 
-export function getFieldRuleConfig(tag: FormElement, label: string) {
+export function getFieldRuleConfig(tag: InputElement, label?: string | null) {
   const baseRule = {
     required: true,
     message: selectTypes.includes(tag) ? `请选择${label}` : `请输入${label}`,

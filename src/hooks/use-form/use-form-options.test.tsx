@@ -1,6 +1,7 @@
-import { ref } from 'vue'
 import { describe, expect, it } from 'vitest'
+import { ref } from 'vue'
 import { useForm } from './use-form'
+import { useFormLite } from './use-form-lite'
 
 describe('useForm with reactive options', () => {
   it('should support reactive options for select component', async () => {
@@ -10,7 +11,7 @@ describe('useForm with reactive options', () => {
       { label: '选项2', value: 'option2' },
     ])
 
-    const [, form] = useForm([
+    const [, form] = useFormLite([
       ['选择器', 'selectField', { as: 'select', options: selectOptions }],
     ])
 
