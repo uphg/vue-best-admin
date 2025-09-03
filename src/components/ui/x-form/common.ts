@@ -1,12 +1,83 @@
 import type { InputProps } from 'naive-ui'
-import { pick } from 'lodash-es'
-import { NFormItem, NInput } from 'naive-ui'
-import { defineComponent } from 'vue'
-import { boolUndef, nFormItemDefaultProps, nFormItemProps } from './common'
-import { genPlaceholder, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import type { LabelHTMLAttributes } from 'vue'
+import { formProps as nFormProps } from 'naive-ui'
 
-const inputProps = {
+export const boolUndef = {
+  type: Boolean,
+  default: void 0,
+}
+
+// export const nFormProps = {
+//   model: { type: Object, default: () => ({}) },
+//   rules: Object,
+//   labelPlacement: String,
+//   labelWidth: [String, Number],
+//   labelAlign: String,
+//   showFeedback: { type: Boolean, default: true },
+//   showLabel: { type: Boolean, default: true },
+//   showRequireMark: Boolean,
+//   requireMarkPlacement: String,
+//   size: String,
+//   disabled: Boolean,
+//   inline: Boolean,
+// }
+export const nFormPropNames = Object.keys(nFormProps)
+
+export const nFormItemProps = {
+  label: String,
+  path: String,
+  rulePath: String,
+  required: boolUndef,
+  size: String as PropType<'small' | 'medium' | 'large'>,
+  labelProps: {
+    type: Object as PropType<LabelHTMLAttributes>,
+    default: void 0,
+  },
+  theme: Object,
+  themeOverrides: Object,
+  builtinThemeOverrides: Object,
+  rule: [Object, Array],
+  first: boolUndef,
+  ignorePathChange: boolUndef,
+  showFeedback: boolUndef,
+  showLabel: boolUndef,
+  showRequireMark: boolUndef,
+  requireMarkPlacement: String,
+  labelWidth: [String, Number],
+  labelAlign: String,
+  labelPlacement: String,
+  labelStyle: [String, Object],
+  feedback: String,
+  feedbackClass: String,
+  feedbackStyle: [String, Object],
+  validationStatus: String,
+}
+
+export const nFormItemDefaultProps = {
+  feedback: undefined,
+  feedbackClass: undefined,
+  feedbackStyle: undefined,
+  first: false,
+  ignorePathChange: false,
+  label: undefined,
+  labelAlign: undefined,
+  labelPlacement: undefined,
+  labelStyle: undefined,
+  labelProps: undefined,
+  labelWidth: undefined,
+  path: undefined,
+  rule: undefined,
+  rulePath: undefined,
+  showFeedback: true,
+  showLabel: true,
+  showRequireMark: undefined,
+  requireMarkPlacement: 'right',
+  size: 'medium',
+  validationStatus: undefined,
+}
+
+// === Input ===
+export const nInputProps = {
   bordered: boolUndef,
   type: String as PropType<InputProps['type']>,
   placeholder: [String, Array] as PropType<InputProps['placeholder']>,
@@ -65,12 +136,7 @@ const inputProps = {
   themeOverrides: Object as PropType<InputProps['themeOverrides']>,
 }
 
-const xInputProps = {
-  ...nFormItemProps,
-  ...inputProps,
-}
-
-const nInputDefaultProps = {
+export const nInputDefaultProps = {
   allowInput: undefined,
   autofocus: false,
   autosize: false,
@@ -104,40 +170,5 @@ const nInputDefaultProps = {
   onUpdateValue: undefined,
 }
 
-const nFormItemPropNames = Object.keys(nFormItemProps)
-const inputPropNames = Object.keys(inputProps).filter(key => key !== 'value' && key !== 'placeholder')
-
-const XFormInput = defineComponent({
-  name: 'XFormInput',
-  props: xInputProps,
-  emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps } = inject<Record<string, Ref<any>>>(xFormContextProviderKey, {
-      model: ref({}),
-      defaultProps: ref({}),
-    })
-
-    const formItemProps = computed(() => mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {}))
-    const inputProps = computed(() => mergeProps(pick(rawProps, inputPropNames), nInputDefaultProps, defaultProps.value?.input ?? {}))
-    const placeholder = computed(() => genPlaceholder('input', { label: formItemProps.value.label, placeholder: inputProps.value.placeholder }))
-
-    function handleUpdateValue(...args: any[]) {
-      emit('update:value', ...args)
-    }
-
-    return () => (
-      <NFormItem {...formItemProps.value}>
-        <NInput
-          {...inputProps.value}
-          value={rawProps.value}
-          placeholder={placeholder.value}
-          onUpdate:value={handleUpdateValue}
-        >
-          {slots}
-        </NInput>
-      </NFormItem>
-    )
-  },
-})
-
-export default XFormInput
+export const nFormItemPropNames = Object.keys(nFormItemProps)
+export const nInputPropNames = Object.keys(nInputProps).filter(key => key !== 'value' && key !== 'placeholder')

@@ -1,5 +1,5 @@
-import { NFormItem, NInputNumber } from 'naive-ui'
 import type { XFormInputNumberBaseProps } from './types'
+import { NFormItem, NInputNumber } from 'naive-ui'
 import { extractFormItemProps, generatePlaceholder, mergeDefaultProps } from './utils'
 
 const XFormInputNumber = defineComponent<XFormInputNumberBaseProps>({
@@ -41,7 +41,7 @@ const XFormInputNumber = defineComponent<XFormInputNumberBaseProps>({
     // 获取表单上下文
     const formContext = inject('xFormContext', {
       model: ref({}),
-      defaultProps: ref({})
+      defaultProps: ref({}),
     })
 
     // 提取 FormItem 属性和其他属性
@@ -52,7 +52,7 @@ const XFormInputNumber = defineComponent<XFormInputNumberBaseProps>({
       return mergeDefaultProps(
         formContext.defaultProps.value,
         'input-number',
-        otherProps
+        otherProps,
       )
     })
 
@@ -67,12 +67,12 @@ const XFormInputNumber = defineComponent<XFormInputNumberBaseProps>({
       if (!props.autoPlaceholder) {
         return props.placeholder
       }
-      
+
       return generatePlaceholder(
         props.label,
         'input-number',
         props.placeholder,
-        props.placeholderPrefix ? { input: props.placeholderPrefix, select: props.placeholderPrefix } : undefined
+        props.placeholderPrefix ? { input: props.placeholderPrefix, select: props.placeholderPrefix } : undefined,
       )
     })
 
@@ -91,7 +91,7 @@ const XFormInputNumber = defineComponent<XFormInputNumberBaseProps>({
         />
       </NFormItem>
     )
-  }
+  },
 })
 
 export default XFormInputNumber

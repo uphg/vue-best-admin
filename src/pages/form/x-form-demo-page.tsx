@@ -17,7 +17,6 @@ import {
   XFormSelect,
   XFormSlider,
   XFormSwitch,
-  XFormTextarea,
   XFormTimePicker,
   XFormTransfer,
   XFormTreeSelect,
@@ -314,14 +313,6 @@ const XFormDemo = defineComponent(() => {
               value={basicForm.gender}
               options={genderOptions}
               onUpdate:value={(value: any) => basicForm.gender = value}
-            />
-
-            <XFormTextarea
-              label="个人简介"
-              path="bio"
-              value={basicForm.bio}
-              rows={4}
-              onUpdate:value={(value: string) => basicForm.bio = value}
             />
 
             <XFormDatePicker

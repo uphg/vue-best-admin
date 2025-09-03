@@ -73,7 +73,7 @@ export const routeDate = [
       },
       {
         path: 'x-form',
-        component: 'form/x-form-demo',
+        component: 'form/x-form-demo-page',
         meta: {
           title: 'XForm 组件',
           icon: 'form-input',

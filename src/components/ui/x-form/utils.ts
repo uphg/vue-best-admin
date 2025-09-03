@@ -1,4 +1,5 @@
-import type { XFormComponentType, PlaceholderConfig } from './types'
+import type { PlaceholderConfig, XFormComponentType } from './types'
+import { selectTypes } from '@/constants/form'
 
 /**
  * 生成 placeholder 文本
@@ -12,7 +13,7 @@ export function generatePlaceholder(
   label?: string,
   type: XFormComponentType = 'input',
   customPlaceholder?: string,
-  placeholderPrefix?: Partial<PlaceholderConfig>
+  placeholderPrefix?: Partial<PlaceholderConfig>,
 ): string {
   // 如果有自定义 placeholder，直接返回
   if (customPlaceholder) {
@@ -21,46 +22,18 @@ export function generatePlaceholder(
 
   // 如果没有 label，返回默认值
   if (!label) {
-    return getDefaultPlaceholder(type)
+    return selectTypes.includes(type) ? '请选择' : '请输入'
   }
 
   // 根据组件类型生成 placeholder
   const config: PlaceholderConfig = {
     input: '请输入',
     select: '请选择',
-    ...placeholderPrefix
+    ...placeholderPrefix,
   }
-
-  const selectTypes: XFormComponentType[] = [
-    'select',
-    'date-picker',
-    'time-picker',
-    'cascader',
-    'tree-select',
-    'color-picker',
-    'transfer'
-  ]
 
   const prefix = selectTypes.includes(type) ? config.select : config.input
   return `${prefix}${label}`
-}
-
-/**
- * 获取默认 placeholder
- * @param type 组件类型
- * @returns 默认 placeholder
- */
-function getDefaultPlaceholder(type: XFormComponentType): string {
-  const selectTypes: XFormComponentType[] = [
-    'select',
-    'date-picker',
-    'time-picker',
-    'cascader',
-    'tree-select',
-    'color-picker'
-  ]
-
-  return selectTypes.includes(type) ? '请选择' : '请输入'
 }
 
 /**
@@ -73,16 +46,16 @@ function getDefaultPlaceholder(type: XFormComponentType): string {
 export function mergeDefaultProps(
   defaultProps: Record<string, any> = {},
   componentType: XFormComponentType,
-  currentProps: Record<string, any> = {}
+  currentProps: Record<string, any> = {},
 ): Record<string, any> {
   const typeDefaults = defaultProps[componentType] || {}
   const globalDefaults = defaultProps.global || {}
-  
+
   // 合并顺序：全局默认 < 组件类型默认 < 当前属性
   return {
     ...globalDefaults,
     ...typeDefaults,
-    ...currentProps
+    ...currentProps,
   }
 }
 
@@ -99,7 +72,7 @@ export function isSelectType(type: XFormComponentType): boolean {
     'cascader',
     'tree-select',
     'color-picker',
-    'transfer'
+    'transfer',
   ]
   return selectTypes.includes(type)
 }
@@ -116,7 +89,7 @@ export function isInputType(type: XFormComponentType): boolean {
     'input-number',
     'auto-complete',
     'dynamic-input',
-    'mention'
+    'mention',
   ]
   return inputTypes.includes(type)
 }
@@ -135,29 +108,29 @@ export function getDefaultValue(type: XFormComponentType, multiple = false): any
     case 'transfer':
     case 'upload':
       return []
-    
+
     case 'select':
     case 'cascader':
     case 'tree-select':
       return multiple ? [] : null
-    
+
     case 'switch':
       return false
-    
+
     case 'input-number':
     case 'slider':
     case 'rate':
       return 0
-    
+
     case 'date-picker':
     case 'time-picker':
     case 'color-picker':
       return null
-    
+
     case 'input-otp':
     case 'mention':
       return ''
-    
+
     default:
       return null
   }
@@ -171,12 +144,12 @@ export function getDefaultValue(type: XFormComponentType, multiple = false): any
  */
 export function deepMerge(target: Record<string, any>, source: Record<string, any>): Record<string, any> {
   const result = { ...target }
-  
+
   for (const key in source) {
-    if (source.hasOwnProperty(key)) {
+    if (source.hasOwn(key)) {
       const sourceValue = source[key]
       const targetValue = result[key]
-      
+
       if (isObject(sourceValue) && isObject(targetValue)) {
         result[key] = deepMerge(targetValue, sourceValue)
       } else {
@@ -184,7 +157,7 @@ export function deepMerge(target: Record<string, any>, source: Record<string, an
       }
     }
   }
-  
+
   return result
 }
 
@@ -220,7 +193,7 @@ export function extractFormItemProps(props: Record<string, any>) {
     'feedbackClass',
     'feedbackStyle',
     'size',
-    'validationStatus'
+    'validationStatus',
   ]
 
   const formItemProps: Record<string, any> = {}

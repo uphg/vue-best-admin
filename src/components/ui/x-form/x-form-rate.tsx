@@ -1,5 +1,5 @@
-import { NFormItem, NRate } from 'naive-ui'
 import type { XFormRateBaseProps } from './types'
+import { NFormItem, NRate } from 'naive-ui'
 import { extractFormItemProps, mergeDefaultProps } from './utils'
 
 const XFormRate = defineComponent<XFormRateBaseProps>({
@@ -34,7 +34,7 @@ const XFormRate = defineComponent<XFormRateBaseProps>({
     // 获取表单上下文
     const formContext = inject('xFormContext', {
       model: ref({}),
-      defaultProps: ref({})
+      defaultProps: ref({}),
     })
 
     // 提取 FormItem 属性和其他属性
@@ -45,7 +45,7 @@ const XFormRate = defineComponent<XFormRateBaseProps>({
       return mergeDefaultProps(
         formContext.defaultProps.value,
         'rate',
-        otherProps
+        otherProps,
       )
     })
 
@@ -69,7 +69,7 @@ const XFormRate = defineComponent<XFormRateBaseProps>({
         />
       </NFormItem>
     )
-  }
+  },
 })
 
 export default XFormRate

@@ -1,5 +1,5 @@
-import { NFormItem, NDynamicTags } from 'naive-ui'
 import type { XFormDynamicTagsBaseProps } from './types'
+import { NDynamicTags, NFormItem } from 'naive-ui'
 import { extractFormItemProps, mergeDefaultProps } from './utils'
 
 const XFormDynamicTags = defineComponent<XFormDynamicTagsBaseProps>({
@@ -32,7 +32,7 @@ const XFormDynamicTags = defineComponent<XFormDynamicTagsBaseProps>({
     // 获取表单上下文
     const formContext = inject('xFormContext', {
       model: ref({}),
-      defaultProps: ref({})
+      defaultProps: ref({}),
     })
 
     // 提取 FormItem 属性和其他属性
@@ -43,7 +43,7 @@ const XFormDynamicTags = defineComponent<XFormDynamicTagsBaseProps>({
       return mergeDefaultProps(
         formContext.defaultProps.value,
         'dynamic-tags',
-        otherProps
+        otherProps,
       )
     })
 
@@ -67,7 +67,7 @@ const XFormDynamicTags = defineComponent<XFormDynamicTagsBaseProps>({
         />
       </NFormItem>
     )
-  }
+  },
 })
 
 export default XFormDynamicTags

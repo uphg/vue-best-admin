@@ -1,21 +1,24 @@
-import type { XFormCascaderBaseProps } from './types'
-import { NCascader, NFormItem } from 'naive-ui'
+import type { XFormInputBaseProps } from './types'
+import { NFormItem, NInput } from 'naive-ui'
 import { extractFormItemProps, generatePlaceholder, mergeDefaultProps } from './utils'
 
-const XFormCascader = defineComponent<XFormCascaderBaseProps>({
-  name: 'XFormCascader',
+const XFormInput = defineComponent<XFormInputBaseProps>({
+  name: 'XFormInput',
   props: {
     label: String,
     path: String,
-    value: Array,
+    value: [String, Number, Array],
     autoPlaceholder: { type: Boolean, default: true },
     placeholderPrefix: String,
     placeholder: String,
-    options: { type: Array, default: () => [] },
-    multiple: Boolean,
+    type: String,
     clearable: Boolean,
     disabled: Boolean,
+    readonly: Boolean,
     size: String,
+    maxlength: Number,
+    minlength: Number,
+    showPasswordOn: String,
     // FormItem props
     rule: [Object, Array],
     first: Boolean,
@@ -48,14 +51,14 @@ const XFormCascader = defineComponent<XFormCascaderBaseProps>({
     const mergedProps = computed(() => {
       return mergeDefaultProps(
         formContext.defaultProps.value,
-        'cascader',
+        'input',
         otherProps,
       )
     })
 
-    // 级联选择器属性（排除 value、placeholder、options 和事件处理）
-    const cascaderProps = computed(() => {
-      const { value, placeholder, options, autoPlaceholder, placeholderPrefix, ...rest } = mergedProps.value
+    // 输入框属性（排除 value 和事件处理）
+    const inputProps = computed(() => {
+      const { value, placeholder, autoPlaceholder, placeholderPrefix, ...rest } = mergedProps.value
       return rest
     })
 
@@ -67,24 +70,23 @@ const XFormCascader = defineComponent<XFormCascaderBaseProps>({
 
       return generatePlaceholder(
         props.label,
-        'cascader',
+        'input',
         props.placeholder,
         props.placeholderPrefix ? { input: props.placeholderPrefix, select: props.placeholderPrefix } : undefined,
       )
     })
 
     // 处理值更新
-    const handleUpdateValue = (value: any[]) => {
+    const handleUpdateValue = (value: string | number | null) => {
       emit('update:value', value)
     }
 
     return () => (
       <NFormItem {...formItemProps}>
-        <NCascader
-          {...cascaderProps.value}
+        <NInput
+          {...inputProps.value}
           value={props.value}
           placeholder={computedPlaceholder.value}
-          options={props.options}
           onUpdate:value={handleUpdateValue}
         />
       </NFormItem>
@@ -92,4 +94,4 @@ const XFormCascader = defineComponent<XFormCascaderBaseProps>({
   },
 })
 
-export default XFormCascader
+export default XFormInput

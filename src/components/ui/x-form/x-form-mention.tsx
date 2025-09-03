@@ -1,5 +1,5 @@
-import { NFormItem, NMention } from 'naive-ui'
 import type { XFormMentionBaseProps } from './types'
+import { NFormItem, NMention } from 'naive-ui'
 import { extractFormItemProps, generatePlaceholder, mergeDefaultProps } from './utils'
 
 const XFormMention = defineComponent<XFormMentionBaseProps>({
@@ -36,7 +36,7 @@ const XFormMention = defineComponent<XFormMentionBaseProps>({
     // 获取表单上下文
     const formContext = inject('xFormContext', {
       model: ref({}),
-      defaultProps: ref({})
+      defaultProps: ref({}),
     })
 
     // 提取 FormItem 属性和其他属性
@@ -47,7 +47,7 @@ const XFormMention = defineComponent<XFormMentionBaseProps>({
       return mergeDefaultProps(
         formContext.defaultProps.value,
         'mention',
-        otherProps
+        otherProps,
       )
     })
 
@@ -62,12 +62,12 @@ const XFormMention = defineComponent<XFormMentionBaseProps>({
       if (!props.autoPlaceholder) {
         return props.placeholder
       }
-      
+
       return generatePlaceholder(
         props.label,
         'mention',
         props.placeholder,
-        props.placeholderPrefix ? { input: props.placeholderPrefix, select: props.placeholderPrefix } : undefined
+        props.placeholderPrefix ? { input: props.placeholderPrefix, select: props.placeholderPrefix } : undefined,
       )
     })
 
@@ -87,7 +87,7 @@ const XFormMention = defineComponent<XFormMentionBaseProps>({
         />
       </NFormItem>
     )
-  }
+  },
 })
 
 export default XFormMention

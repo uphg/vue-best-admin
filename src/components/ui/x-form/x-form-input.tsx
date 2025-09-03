@@ -1,97 +1,52 @@
+import { pick } from 'lodash-es'
 import { NFormItem, NInput } from 'naive-ui'
-import type { XFormInputBaseProps } from './types'
-import { extractFormItemProps, generatePlaceholder, mergeDefaultProps } from './utils'
+import { defineComponent } from 'vue'
+import { mergeClass } from '@/utils/merge-class'
+import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nInputDefaultProps, nInputPropNames, nInputProps } from './common'
+import { genPlaceholder, mergeProps } from './helpers'
+import { xFormContextProviderKey } from './x-form'
 
-const XFormInput = defineComponent<XFormInputBaseProps>({
+const xInputProps = {
+  contentClass: [String, Object, Array],
+  ...nFormItemProps,
+  ...nInputProps,
+}
+
+const XFormInput = defineComponent({
   name: 'XFormInput',
-  props: {
-    label: String,
-    path: String,
-    value: [String, Number, Array],
-    autoPlaceholder: { type: Boolean, default: true },
-    placeholderPrefix: String,
-    placeholder: String,
-    type: String,
-    clearable: Boolean,
-    disabled: Boolean,
-    readonly: Boolean,
-    size: String,
-    maxlength: Number,
-    minlength: Number,
-    showPasswordOn: String,
-    // FormItem props
-    rule: [Object, Array],
-    first: Boolean,
-    ignorePathChange: Boolean,
-    showFeedback: Boolean,
-    showLabel: Boolean,
-    showRequireMark: Boolean,
-    requireMarkPlacement: String,
-    labelWidth: [String, Number],
-    labelAlign: String,
-    labelPlacement: String,
-    labelStyle: [String, Object],
-    feedback: String,
-    feedbackClass: String,
-    feedbackStyle: [String, Object],
-    validationStatus: String,
-  },
+  props: xInputProps,
   emits: ['update:value'],
-  setup(props, { emit }) {
-    // 获取表单上下文
-    const formContext = inject('xFormContext', {
-      model: ref({}),
-      defaultProps: ref({})
+  setup(rawProps, { emit, slots }) {
+    const { defaultProps } = inject<Record<string, Ref<any>>>(xFormContextProviderKey, {
+      defaultProps: ref({}),
     })
 
-    // 提取 FormItem 属性和其他属性
-    const { formItemProps, otherProps } = extractFormItemProps(props)
+    const formItemProps = computed(() => mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {}))
+    const inputProps = computed(() => mergeProps(pick(rawProps, nInputPropNames), nInputDefaultProps, defaultProps.value?.input ?? {}))
+    const placeholder = computed(() => genPlaceholder('input', { label: formItemProps.value.label, placeholder: inputProps.value.placeholder }))
 
-    // 合并默认属性
-    const mergedProps = computed(() => {
-      return mergeDefaultProps(
-        formContext.defaultProps.value,
-        'input',
-        otherProps
-      )
-    })
-
-    // 输入框属性（排除 value 和事件处理）
-    const inputProps = computed(() => {
-      const { value, placeholder, autoPlaceholder, placeholderPrefix, ...rest } = mergedProps.value
-      return rest
-    })
-
-    // 计算 placeholder
-    const computedPlaceholder = computed(() => {
-      if (!props.autoPlaceholder) {
-        return props.placeholder
-      }
-      
-      return generatePlaceholder(
-        props.label,
-        'input',
-        props.placeholder,
-        props.placeholderPrefix ? { input: props.placeholderPrefix, select: props.placeholderPrefix } : undefined
-      )
-    })
-
-    // 处理值更新
-    const handleUpdateValue = (value: string | number | null) => {
-      emit('update:value', value)
+    function handleUpdateValue(...args: any[]) {
+      emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps}>
-        <NInput
-          {...inputProps.value}
-          value={props.value}
-          placeholder={computedPlaceholder.value}
-          onUpdate:value={handleUpdateValue}
-        />
+      <NFormItem {...formItemProps.value}>
+        <div class={mergeClass('w-full', rawProps.contentClass)}>
+          {slots.itemPrefix ? slots.itemPrefix() : null}
+          <NInput
+            class="w-full"
+            {...inputProps.value}
+            value={rawProps.value}
+            placeholder={placeholder.value}
+            onUpdate:value={handleUpdateValue}
+          >
+            {slots}
+          </NInput>
+          {slots.itemSuffix ? slots.itemSuffix() : null}
+        </div>
       </NFormItem>
     )
-  }
+  },
 })
 
 export default XFormInput

@@ -1,5 +1,6 @@
-import { NFormItem, NInputOTP } from 'naive-ui'
+import type { InputOtpOnUpdateValueMeta } from 'naive-ui'
 import type { XFormInputOTPBaseProps } from './types'
+import { NFormItem, NInputOtp } from 'naive-ui'
 import { extractFormItemProps, mergeDefaultProps } from './utils'
 
 const XFormInputOTP = defineComponent<XFormInputOTPBaseProps>({
@@ -7,7 +8,7 @@ const XFormInputOTP = defineComponent<XFormInputOTPBaseProps>({
   props: {
     label: String,
     path: String,
-    value: String,
+    value: Array,
     length: { type: Number, default: 6 },
     disabled: Boolean,
     // FormItem props
@@ -32,7 +33,7 @@ const XFormInputOTP = defineComponent<XFormInputOTPBaseProps>({
     // 获取表单上下文
     const formContext = inject('xFormContext', {
       model: ref({}),
-      defaultProps: ref({})
+      defaultProps: ref({}),
     })
 
     // 提取 FormItem 属性和其他属性
@@ -43,7 +44,7 @@ const XFormInputOTP = defineComponent<XFormInputOTPBaseProps>({
       return mergeDefaultProps(
         formContext.defaultProps.value,
         'input-otp',
-        otherProps
+        otherProps,
       )
     })
 
@@ -54,20 +55,20 @@ const XFormInputOTP = defineComponent<XFormInputOTPBaseProps>({
     })
 
     // 处理值更新
-    const handleUpdateValue = (value: string) => {
-      emit('update:value', value)
+    function handleUpdateValue(value: string[], meta: InputOtpOnUpdateValueMeta) {
+      emit('update:value', value, meta)
     }
 
     return () => (
       <NFormItem {...formItemProps}>
-        <NInputOTP
+        <NInputOtp
           {...inputOTPProps.value}
           value={props.value}
           onUpdate:value={handleUpdateValue}
         />
       </NFormItem>
     )
-  }
+  },
 })
 
 export default XFormInputOTP

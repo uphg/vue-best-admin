@@ -1,24 +1,34 @@
-import type { FormInst } from 'naive-ui'
-import type { XFormProps } from './types'
-import { NForm } from 'naive-ui'
+import type { FormInst, FormItemProps, InputProps } from 'naive-ui'
+import type { PropType } from 'vue'
+import { pick } from 'lodash-es'
+import { NForm, formProps as nFormProps } from 'naive-ui'
+import { nFormPropNames } from './common'
 
-const XForm = defineComponent<XFormProps>({
-  name: 'XForm',
-  props: {
-    model: { type: Object, default: () => ({}) },
-    defaultProps: { type: Object, default: () => ({}) },
-    rules: Object,
-    labelPlacement: String,
-    labelWidth: [String, Number],
-    labelAlign: String,
-    showFeedback: { type: Boolean, default: true },
-    showLabel: { type: Boolean, default: true },
-    showRequireMark: Boolean,
-    requireMarkPlacement: String,
-    size: String,
-    disabled: Boolean,
-    inline: Boolean,
+export const xFormContextProviderKey = Symbol('xFormContext')
+
+interface formDefaultProps {
+  formItem: Partial<FormItemProps>
+  input: Partial<InputProps>
+}
+
+export interface XFormContext {
+  defaultProps: formDefaultProps
+}
+
+const formProps = {
+  autoRules: {
+    type: [Boolean, Array] as PropType<boolean | string[]>,
+    default: false,
   },
+  defaultProps: { type: Object, default: () => ({}) },
+
+  // NForm Props
+  ...nFormProps,
+}
+
+const XForm = defineComponent({
+  name: 'XForm',
+  props: formProps,
   emits: [],
   setup(props, { slots, expose }) {
     // 表单实例引用
@@ -26,25 +36,20 @@ const XForm = defineComponent<XFormProps>({
 
     // 提供给子组件的上下文
     const formContext = {
-      model: toRef(props, 'model'),
+      autoRules: toRef(props, 'autoRules'),
       defaultProps: toRef(props, 'defaultProps'),
     }
 
-    provide('xFormContext', formContext)
+    provide(xFormContextProviderKey, formContext)
 
-    // 过滤掉自定义属性，只传递 NForm 支持的属性
-    const formProps = computed(() => {
-      const { model, defaultProps, ...restProps } = props
-      return restProps
-    })
+    const formProps = computed(() => pick(props, nFormPropNames))
 
-    // 暴露表单方法
-    const validate = (callback?: any, shouldRuleBeApplied?: any) => {
+    function validate(callback?: any, shouldRuleBeApplied?: any) {
       return formRef.value?.validate(callback, shouldRuleBeApplied)
     }
 
-    const restoreValidation = () => {
-      formRef.value?.restoreValidation()
+    function restoreValidation() {
+      return formRef.value?.restoreValidation()
     }
 
     expose({
@@ -56,7 +61,6 @@ const XForm = defineComponent<XFormProps>({
     return () => (
       <NForm
         ref={formRef}
-        model={props.model}
         {...formProps.value}
       >
         {slots.default?.()}
