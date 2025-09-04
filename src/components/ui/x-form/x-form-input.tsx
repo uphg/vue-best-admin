@@ -3,7 +3,7 @@ import { NFormItem, NInput } from 'naive-ui'
 import { defineComponent } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nInputDefaultProps, nInputPropNames, nInputProps } from './common'
-import { genPlaceholder, mergeProps } from './helpers'
+import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
 import { xFormContextProviderKey } from './x-form'
 
 const xInputProps = {
@@ -17,13 +17,19 @@ const XFormInput = defineComponent({
   props: xInputProps,
   emits: ['update:value'],
   setup(rawProps, { emit, slots }) {
-    const { defaultProps } = inject<Record<string, Ref<any>>>(xFormContextProviderKey, {
+    const { defaultProps, rules, autoRules } = inject<Record<string, Ref<any>>>(xFormContextProviderKey, {
+      autoRules: ref(),
       defaultProps: ref({}),
+      rules: ref<Record<string, any>>({}),
     })
+
+    rules.value = autoRules.value || autoRules.value
 
     const formItemProps = computed(() => mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {}))
     const inputProps = computed(() => mergeProps(pick(rawProps, nInputPropNames), nInputDefaultProps, defaultProps.value?.input ?? {}))
     const placeholder = computed(() => genPlaceholder('input', { label: formItemProps.value.label, placeholder: inputProps.value.placeholder }))
+
+    genFormItemRule(formItemProps.value, rules.value, Array.isArray(autoRules.value) ? autoRules.value : [])
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)

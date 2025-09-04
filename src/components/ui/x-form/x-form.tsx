@@ -33,9 +33,11 @@ const XForm = defineComponent({
   setup(props, { slots, expose }) {
     // 表单实例引用
     const formRef = ref<FormInst>()
+    const rules = ref(props.rules || {})
 
     // 提供给子组件的上下文
     const formContext = {
+      rules,
       autoRules: toRef(props, 'autoRules'),
       defaultProps: toRef(props, 'defaultProps'),
     }

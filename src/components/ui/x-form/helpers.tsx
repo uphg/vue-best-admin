@@ -1,6 +1,8 @@
+import type { FormRules } from 'naive-ui'
 import type { PlaceholderConfig, XFormComponentType } from './types'
 import { merge } from 'lodash-es'
 import { selectTypes } from '@/constants/form'
+import { getFieldRuleConfig, setNestedRule } from '@/utils/form'
 
 export function mergeProps<T extends Record<string, any>>(props: T, defaultProps: T, provideDefaultProps: T): T {
   return merge(defaultProps, provideDefaultProps, props)
@@ -34,4 +36,27 @@ export function genPlaceholder(
 
   const placeholderPrefix = selectTypes.includes(type) ? config.select : config.input
   return `${placeholderPrefix}${label}`
+}
+
+export function genFormItemRule(props: Record<string, any>, rules: FormRules, autoRules: boolean | string[] = false) {
+  const { path, label, type } = props
+
+  if (!path || !label) {
+    return
+  }
+
+  if (typeof autoRules === 'boolean') {
+    if (!autoRules) return
+  } else {
+    if (!autoRules?.includes(path)) return
+  }
+
+  const rule = getFieldRuleConfig(type || 'input', label)
+  if (rule) {
+    if (path.includes('.')) {
+      setNestedRule(rules, path, rule)
+    } else {
+      rules[path] = rule
+    }
+  }
 }

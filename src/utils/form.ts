@@ -1,3 +1,4 @@
+import type { FormRules } from 'naive-ui'
 import type { FormElement } from '@/types/form'
 import { selectTypes } from '@/constants/form'
 
@@ -85,4 +86,20 @@ export function getFieldRuleConfig(tag: FormElement, label: string) {
         trigger: ['blur', 'input'],
       }
   }
+}
+
+export function setNestedRule(rules: FormRules, path: string, ruleConfig: any) {
+  const keys = path.split('.')
+  let current: any = rules
+
+  for (let i = 0; i < keys.length - 1; i++) {
+    const key = keys[i]
+    if (!current[key]) {
+      current[key] = {}
+    }
+    current = current[key]
+  }
+
+  const lastKey = keys[keys.length - 1]
+  current[lastKey] = ruleConfig
 }
