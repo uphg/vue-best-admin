@@ -1,39 +1,31 @@
 import { pick } from 'lodash-es'
-import { NFormItem, NInput } from 'naive-ui'
+import { NFormItem, NInputOtp } from 'naive-ui'
 import { computed, defineComponent, inject, type Ref } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
-import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nInputDefaultProps, nInputPropNames, nInputProps } from './common'
-import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
+import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nInputOTPDefaultProps, nInputOTPPropNames, nInputOTPProps } from './common'
+import { genFormItemRule, mergeProps } from './helpers'
 import { xFormContextProviderKey } from './x-form'
 
-const xInputProps = {
+const xInputOTPProps = {
   contentClass: [String, Object, Array],
   ...nFormItemProps,
-  ...nInputProps,
+  ...nInputOTPProps,
 }
 
-const XFormInput = defineComponent({
-  name: 'XFormInput',
-  props: xInputProps,
+const XFormInputOTP = defineComponent({
+  name: 'XFormInputOTP',
+  props: xInputOTPProps,
   emits: ['update:value'],
   setup(rawProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
 
     const formItemProps = computed(() => {
       const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      const formItem = pick(rawProps, nFormItemPropNames)
-      console.log('formItem')
-      console.log(formItem)
-      console.log('nFormItemDefaultProps')
-      console.log(nFormItemDefaultProps)
-      console.log('result')
-      console.log(result)
       return result
     })
-    const inputProps = computed(() => mergeProps(pick(rawProps, nInputPropNames), nInputDefaultProps, defaultProps.value?.input ?? {}))
-    const placeholder = computed(() => genPlaceholder('input', { label: formItemProps.value.label, placeholder: inputProps.value.placeholder }))
+    const inputOTPProps = computed(() => mergeProps(pick(rawProps, nInputOTPPropNames), nInputOTPDefaultProps, defaultProps.value?.inputOTP ?? {}))
 
-    genFormItemRule(formItemProps.value, rules.value, autoRules.value)
+    genFormItemRule({ ...formItemProps.value, type: 'input-otp' }, rules.value, autoRules.value)
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
@@ -43,16 +35,14 @@ const XFormInput = defineComponent({
       <NFormItem {...formItemProps.value}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
-          <span>{formItemProps.value.label}</span>
-          <NInput
+          <NInputOtp
             class="w-full"
-            {...inputProps.value}
+            {...inputOTPProps.value}
             value={rawProps.value}
-            placeholder={placeholder.value}
             onUpdate:value={handleUpdateValue}
           >
             {slots}
-          </NInput>
+          </NInputOtp>
           {slots.itemSuffix ? slots.itemSuffix() : null}
         </div>
       </NFormItem>
@@ -60,4 +50,4 @@ const XFormInput = defineComponent({
   },
 })
 
-export default XFormInput
+export default XFormInputOTP

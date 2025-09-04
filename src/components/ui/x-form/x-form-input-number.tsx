@@ -1,39 +1,32 @@
 import { pick } from 'lodash-es'
-import { NFormItem, NInput } from 'naive-ui'
+import { NFormItem, NInputNumber } from 'naive-ui'
 import { computed, defineComponent, inject, type Ref } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
-import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nInputDefaultProps, nInputPropNames, nInputProps } from './common'
+import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nInputNumberDefaultProps, nInputNumberPropNames, nInputNumberProps } from './common'
 import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
 import { xFormContextProviderKey } from './x-form'
 
-const xInputProps = {
+const xInputNumberProps = {
   contentClass: [String, Object, Array],
   ...nFormItemProps,
-  ...nInputProps,
+  ...nInputNumberProps,
 }
 
-const XFormInput = defineComponent({
-  name: 'XFormInput',
-  props: xInputProps,
+const XFormInputNumber = defineComponent({
+  name: 'XFormInputNumber',
+  props: xInputNumberProps,
   emits: ['update:value'],
   setup(rawProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
 
     const formItemProps = computed(() => {
       const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      const formItem = pick(rawProps, nFormItemPropNames)
-      console.log('formItem')
-      console.log(formItem)
-      console.log('nFormItemDefaultProps')
-      console.log(nFormItemDefaultProps)
-      console.log('result')
-      console.log(result)
       return result
     })
-    const inputProps = computed(() => mergeProps(pick(rawProps, nInputPropNames), nInputDefaultProps, defaultProps.value?.input ?? {}))
-    const placeholder = computed(() => genPlaceholder('input', { label: formItemProps.value.label, placeholder: inputProps.value.placeholder }))
+    const inputNumberProps = computed(() => mergeProps(pick(rawProps, nInputNumberPropNames), nInputNumberDefaultProps, defaultProps.value?.inputNumber ?? {}))
+    const placeholder = computed(() => genPlaceholder('input-number', { label: formItemProps.value.label, placeholder: inputNumberProps.value.placeholder }))
 
-    genFormItemRule(formItemProps.value, rules.value, autoRules.value)
+    genFormItemRule({ ...formItemProps.value, type: 'input-number' }, rules.value, autoRules.value)
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
@@ -43,16 +36,15 @@ const XFormInput = defineComponent({
       <NFormItem {...formItemProps.value}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
-          <span>{formItemProps.value.label}</span>
-          <NInput
+          <NInputNumber
             class="w-full"
-            {...inputProps.value}
+            {...inputNumberProps.value}
             value={rawProps.value}
             placeholder={placeholder.value}
             onUpdate:value={handleUpdateValue}
           >
             {slots}
-          </NInput>
+          </NInputNumber>
           {slots.itemSuffix ? slots.itemSuffix() : null}
         </div>
       </NFormItem>
@@ -60,4 +52,4 @@ const XFormInput = defineComponent({
   },
 })
 
-export default XFormInput
+export default XFormInputNumber

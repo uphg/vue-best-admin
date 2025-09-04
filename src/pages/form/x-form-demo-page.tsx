@@ -1,15 +1,85 @@
 import { NButton } from 'naive-ui'
+import { computed, defineComponent, ref, shallowRef } from 'vue'
 import {
   XForm,
   XFormInput,
+  XFormSelect,
+  XFormCheckbox,
+  XFormRadio,
+  XFormSwitch,
+  XFormInputNumber,
+  XFormSlider,
+  XFormRate,
+  XFormDatePicker,
+  XFormTimePicker,
+  XFormColorPicker,
+  XFormAutoComplete,
+  XFormCascader,
+  XFormTreeSelect,
+  XFormDynamicTags,
+  XFormUpload,
+  XFormInputOTP,
 } from '@/components/ui/x-form'
 
 const XFormDemo = defineComponent(() => {
   const basicFormRef = shallowRef<InstanceType<typeof XForm> | null>(null)
   const basicForm = ref({
     username: '',
-    username2: '',
+    email: '',
+    gender: null,
+    hobbies: [],
+    isVip: false,
+    age: null,
+    score: 0,
+    rating: 0,
+    birthday: null,
+    workTime: null,
+    favoriteColor: null,
+    skills: [],
+    city: null,
+    tags: [],
+    fileList: [],
+    otpCode: null,
   })
+
+  const genderOptions = [
+    { label: '男', value: 'male' },
+    { label: '女', value: 'female' },
+    { label: '其他', value: 'other' },
+  ]
+
+  const hobbyOptions = [
+    { label: '阅读', value: 'reading' },
+    { label: '运动', value: 'sports' },
+    { label: '音乐', value: 'music' },
+    { label: '旅行', value: 'travel' },
+  ]
+
+  const skillOptions = [
+    { label: 'JavaScript', value: 'js' },
+    { label: 'TypeScript', value: 'ts' },
+    { label: 'Vue', value: 'vue' },
+    { label: 'React', value: 'react' },
+  ]
+
+  const cityOptions = [
+    {
+      label: '北京',
+      value: 'beijing',
+      children: [
+        { label: '朝阳区', value: 'chaoyang' },
+        { label: '海淀区', value: 'haidian' },
+      ],
+    },
+    {
+      label: '上海',
+      value: 'shanghai',
+      children: [
+        { label: '浦东新区', value: 'pudong' },
+        { label: '黄浦区', value: 'huangpu' },
+      ],
+    },
+  ]
 
   function handleBasicSubmit() {
     basicFormRef.value?.validate((errors) => {
@@ -42,7 +112,7 @@ const XFormDemo = defineComponent(() => {
 
         {/* 基础表单示例 */}
         <div class="mb-8">
-          <h3 class="text-lg font-semibold mb-4">基础表单</h3>
+          <h3 class="text-lg font-semibold mb-4">完整表单组件演示</h3>
           <XForm
             ref={basicFormRef}
             model={basicForm.value}
@@ -50,14 +120,139 @@ const XFormDemo = defineComponent(() => {
             labelWidth="auto"
             autoRules
           >
-            <XFormInput v-model:value={basicForm.value.username} label="用户名233" path="username">{{
-              itemPrefix: () => 1,
-            }}
-            </XFormInput>
-            <XFormInput v-model:value={basicForm.value.username2} label="用户名" path="username2">{{
-              itemPrefix: () => 2,
-            }}
-            </XFormInput>
+            <XFormInput 
+              v-model:value={basicForm.value.username} 
+              label="用户名" 
+              path="username" 
+              placeholder="请输入用户名"
+            />
+            
+            <XFormInput 
+              v-model:value={basicForm.value.email} 
+              label="邮箱" 
+              path="email" 
+              placeholder="请输入邮箱地址"
+            />
+            
+            <XFormSelect 
+              v-model:value={basicForm.value.gender} 
+              label="性别" 
+              path="gender" 
+              options={genderOptions}
+              placeholder="请选择性别"
+            />
+            
+            <XFormCheckbox 
+              v-model:value={basicForm.value.hobbies} 
+              label="爱好" 
+              path="hobbies" 
+              options={hobbyOptions}
+            />
+            
+            <XFormRadio 
+              v-model:value={basicForm.value.gender} 
+              label="性别（单选）" 
+              path="gender2" 
+              options={genderOptions}
+            />
+            
+            <XFormSwitch 
+              v-model:value={basicForm.value.isVip} 
+              label="VIP会员" 
+              path="isVip"
+            />
+            
+            <XFormInputNumber 
+              v-model:value={basicForm.value.age} 
+              label="年龄" 
+              path="age" 
+              min={0}
+              max={120}
+              placeholder="请输入年龄"
+            />
+            
+            <XFormSlider 
+              v-model:value={basicForm.value.score} 
+              label="分数" 
+              path="score" 
+              min={0}
+              max={100}
+            />
+            
+            <XFormRate 
+              v-model:value={basicForm.value.rating} 
+              label="评分" 
+              path="rating" 
+              count={5}
+              allowHalf
+            />
+            
+            <XFormDatePicker 
+              v-model:value={basicForm.value.birthday} 
+              label="生日" 
+              path="birthday" 
+              type="date"
+              placeholder="请选择生日"
+            />
+            
+            <XFormTimePicker 
+              v-model:value={basicForm.value.workTime} 
+              label="工作时间" 
+              path="workTime" 
+              placeholder="请选择时间"
+            />
+            
+            <XFormColorPicker 
+              v-model:value={basicForm.value.favoriteColor} 
+              label="喜欢的颜色" 
+              path="favoriteColor"
+            />
+            
+            <XFormAutoComplete 
+              v-model:value={basicForm.value.username} 
+              label="自动完成" 
+              path="autoComplete" 
+              options={skillOptions}
+              placeholder="请输入技能"
+            />
+            
+            <XFormCascader 
+              v-model:value={basicForm.value.city} 
+              label="城市" 
+              path="city" 
+              options={cityOptions}
+              placeholder="请选择城市"
+            />
+            
+            <XFormTreeSelect 
+              v-model:value={basicForm.value.city} 
+              label="树形选择" 
+              path="treeSelect" 
+              options={cityOptions}
+              placeholder="请选择"
+            />
+            
+            <XFormDynamicTags 
+              v-model:value={basicForm.value.tags} 
+              label="标签" 
+              path="tags"
+            />
+            
+            <XFormUpload 
+              v-model:fileList={basicForm.value.fileList} 
+              label="文件上传" 
+              path="fileList" 
+              action="/api/upload"
+              multiple
+            />
+            
+            <XFormInputOTP 
+              v-model:value={basicForm.value.otpCode} 
+              label="验证码" 
+              path="otpCode" 
+              length={6}
+              placeholder="请输入验证码"
+            />
           </XForm>
 
           <div class="mt-6 flex gap-4">

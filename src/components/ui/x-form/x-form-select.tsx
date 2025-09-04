@@ -1,37 +1,30 @@
 import { pick } from 'lodash-es'
-import { NFormItem, NInput } from 'naive-ui'
+import { NFormItem, NSelect } from 'naive-ui'
 import { computed, defineComponent, inject, type Ref } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
-import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nInputDefaultProps, nInputPropNames, nInputProps } from './common'
+import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nSelectDefaultProps, nSelectPropNames, nSelectProps } from './common'
 import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
 import { xFormContextProviderKey } from './x-form'
 
-const xInputProps = {
+const xSelectProps = {
   contentClass: [String, Object, Array],
   ...nFormItemProps,
-  ...nInputProps,
+  ...nSelectProps,
 }
 
-const XFormInput = defineComponent({
-  name: 'XFormInput',
-  props: xInputProps,
+const XFormSelect = defineComponent({
+  name: 'XFormSelect',
+  props: xSelectProps,
   emits: ['update:value'],
   setup(rawProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
 
     const formItemProps = computed(() => {
       const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      const formItem = pick(rawProps, nFormItemPropNames)
-      console.log('formItem')
-      console.log(formItem)
-      console.log('nFormItemDefaultProps')
-      console.log(nFormItemDefaultProps)
-      console.log('result')
-      console.log(result)
       return result
     })
-    const inputProps = computed(() => mergeProps(pick(rawProps, nInputPropNames), nInputDefaultProps, defaultProps.value?.input ?? {}))
-    const placeholder = computed(() => genPlaceholder('input', { label: formItemProps.value.label, placeholder: inputProps.value.placeholder }))
+    const selectProps = computed(() => mergeProps(pick(rawProps, nSelectPropNames), nSelectDefaultProps, defaultProps.value?.select ?? {}))
+    const placeholder = computed(() => genPlaceholder('select', { label: formItemProps.value.label, placeholder: selectProps.value.placeholder }))
 
     genFormItemRule(formItemProps.value, rules.value, autoRules.value)
 
@@ -43,16 +36,15 @@ const XFormInput = defineComponent({
       <NFormItem {...formItemProps.value}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
-          <span>{formItemProps.value.label}</span>
-          <NInput
+          <NSelect
             class="w-full"
-            {...inputProps.value}
+            {...selectProps.value}
             value={rawProps.value}
             placeholder={placeholder.value}
             onUpdate:value={handleUpdateValue}
           >
             {slots}
-          </NInput>
+          </NSelect>
           {slots.itemSuffix ? slots.itemSuffix() : null}
         </div>
       </NFormItem>
@@ -60,4 +52,4 @@ const XFormInput = defineComponent({
   },
 })
 
-export default XFormInput
+export default XFormSelect

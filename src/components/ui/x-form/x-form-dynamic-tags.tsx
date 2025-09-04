@@ -1,39 +1,31 @@
 import { pick } from 'lodash-es'
-import { NFormItem, NInput } from 'naive-ui'
+import { NDynamicTags, NFormItem } from 'naive-ui'
 import { computed, defineComponent, inject, type Ref } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
-import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nInputDefaultProps, nInputPropNames, nInputProps } from './common'
-import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
+import { nDynamicTagsDefaultProps, nDynamicTagsPropNames, nDynamicTagsProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
+import { genFormItemRule, mergeProps } from './helpers'
 import { xFormContextProviderKey } from './x-form'
 
-const xInputProps = {
+const xDynamicTagsProps = {
   contentClass: [String, Object, Array],
   ...nFormItemProps,
-  ...nInputProps,
+  ...nDynamicTagsProps,
 }
 
-const XFormInput = defineComponent({
-  name: 'XFormInput',
-  props: xInputProps,
+const XFormDynamicTags = defineComponent({
+  name: 'XFormDynamicTags',
+  props: xDynamicTagsProps,
   emits: ['update:value'],
   setup(rawProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
 
     const formItemProps = computed(() => {
       const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      const formItem = pick(rawProps, nFormItemPropNames)
-      console.log('formItem')
-      console.log(formItem)
-      console.log('nFormItemDefaultProps')
-      console.log(nFormItemDefaultProps)
-      console.log('result')
-      console.log(result)
       return result
     })
-    const inputProps = computed(() => mergeProps(pick(rawProps, nInputPropNames), nInputDefaultProps, defaultProps.value?.input ?? {}))
-    const placeholder = computed(() => genPlaceholder('input', { label: formItemProps.value.label, placeholder: inputProps.value.placeholder }))
+    const dynamicTagsProps = computed(() => mergeProps(pick(rawProps, nDynamicTagsPropNames), nDynamicTagsDefaultProps, defaultProps.value?.dynamicTags ?? {}))
 
-    genFormItemRule(formItemProps.value, rules.value, autoRules.value)
+    genFormItemRule({ ...formItemProps.value, type: 'dynamic-tags' }, rules.value, autoRules.value)
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
@@ -43,16 +35,14 @@ const XFormInput = defineComponent({
       <NFormItem {...formItemProps.value}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
-          <span>{formItemProps.value.label}</span>
-          <NInput
+          <NDynamicTags
             class="w-full"
-            {...inputProps.value}
+            {...dynamicTagsProps.value}
             value={rawProps.value}
-            placeholder={placeholder.value}
             onUpdate:value={handleUpdateValue}
           >
             {slots}
-          </NInput>
+          </NDynamicTags>
           {slots.itemSuffix ? slots.itemSuffix() : null}
         </div>
       </NFormItem>
@@ -60,4 +50,4 @@ const XFormInput = defineComponent({
   },
 })
 
-export default XFormInput
+export default XFormDynamicTags
