@@ -1,26 +1,8 @@
 import type { MaybeRefOrGetter } from '@vueuse/core'
 import type { AutoCompleteProps, CascaderProps, CheckboxGroupProps, ColorPickerProps, DatePickerProps, DynamicInputProps, DynamicTagsProps, GridProps, InputNumberProps, InputProps, RadioGroupProps, RateProps, SelectOption, SelectProps, SliderProps, SwitchProps, TimePickerProps, TransferProps, TreeSelectProps, UploadProps } from 'naive-ui'
+import type { InputElement } from '@/types/form'
 
-export type FieldAs = 'auto-complete'
-  | 'cascader'
-  | 'color-picker'
-  | 'checkbox' | 'checkbox-button' | 'checkbox-group' | 'checkbox-button-group'
-  | 'date' | 'date-picker'
-  | 'dynamic-input'
-  | 'dynamic-tags'
-  | 'input'
-  | 'input-number'
-  | 'radio' | 'radio-group' | 'radio-button' | 'radio-button-group'
-  | 'switch'
-  | 'rate'
-  | 'select'
-  | 'slider'
-  | 'switch'
-  | 'time' | 'time-picker'
-  | 'transfer'
-  | 'tree-select'
-  | 'upload'
-
+export type FieldAs = InputElement
 export type FieldLabel = string | undefined | null
 export type FieldKey = string
 export interface FieldProps {
@@ -30,10 +12,16 @@ export interface FieldProps {
   children?: FieldProps[]
   [key: string]: any
 }
-export interface LiteFieldGroupOptions { grid?: GridProps, [key: string]: any }
-
-export type LiteFieldProps = [FieldLabel, FieldKey, FieldProps?]
-export type LiteFieldGroupProps = [FieldLabel, LiteFieldProps[], LiteFieldGroupOptions?]
+export interface LiteFieldRestProps {
+  as?: FieldAs
+  children?: LiteFieldDefinition[]
+  [key: string]: any
+}
+export interface LiteFieldGroupOptions extends LiteFieldRestProps {
+  grid?: GridProps
+}
+export type LiteFieldProps = [FieldLabel, FieldKey, LiteFieldRestProps?]
+export type LiteFieldGroupProps = [FieldLabel, FieldKey, LiteFieldGroupOptions?]
 export type LiteFieldDefinition = LiteFieldProps | LiteFieldGroupProps
 export type FieldInputProps = Omit<FieldProps, 'label' | 'key' | 'children'>
 

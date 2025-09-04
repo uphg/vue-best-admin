@@ -1,4 +1,4 @@
-export type FormElement = 'auto-complete'
+export type InputElement = 'auto-complete'
   | 'cascader'
   | 'color-picker'
   | 'checkbox' | 'checkbox-button' | 'checkbox-group' | 'checkbox-button-group'

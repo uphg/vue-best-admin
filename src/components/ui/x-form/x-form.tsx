@@ -1,6 +1,6 @@
 import type { FormInst, FormItemProps, InputProps } from 'naive-ui'
 import type { PropType } from 'vue'
-import { pick } from 'lodash-es'
+import { merge, pick } from 'lodash-es'
 import { NForm, formProps as nFormProps } from 'naive-ui'
 import { nFormPropNames } from './common'
 
@@ -21,6 +21,7 @@ const formProps = {
     default: false,
   },
   defaultProps: { type: Object, default: () => ({}) },
+  formItemContentClass: { type: [String, Object, Array], default: '' },
 
   // NForm Props
   ...nFormProps,
@@ -33,11 +34,14 @@ const XForm = defineComponent({
   setup(props, { slots, expose }) {
     // 表单实例引用
     const formRef = ref<FormInst>()
-    const rules = ref(props.rules || {})
+    const _rules = ref(props.rules || {})
+
+    const rules = computed(() => merge({}, props.rules, _rules.value))
 
     // 提供给子组件的上下文
     const formContext = {
-      rules,
+      rules: _rules,
+      formItemContentClass: toRef(props, 'formItemContentClass'),
       autoRules: toRef(props, 'autoRules'),
       defaultProps: toRef(props, 'defaultProps'),
     }
@@ -54,15 +58,22 @@ const XForm = defineComponent({
       return formRef.value?.restoreValidation()
     }
 
+    function reset() {
+      // 重置表单验证状态
+      formRef.value?.restoreValidation()
+    }
+
     expose({
       validate,
       restoreValidation,
+      reset,
       formRef,
     })
 
     return () => (
       <NForm
         ref={formRef}
+        rules={rules.value}
         {...formProps.value}
       >
         {slots.default?.()}

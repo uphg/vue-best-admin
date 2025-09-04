@@ -9,14 +9,15 @@ export function useFormLite(liteFields: LiteFieldProps[], options: FormProps = {
 
 function convertLiteFieldsToFields(liteFields: LiteFieldDefinition[]): FieldProps[] {
   const fields: FieldProps[] = []
-
   for (const liteField of liteFields) {
     if (isLiteFieldGroup(liteField)) {
-      const [label, children, options] = liteField
+      const [label, key, options] = liteField
+      const { children } = options ?? {}
+      if (!children) continue
       const convertedChildren = convertLiteFieldsToFields(children)
       fields.push({
         label,
-        key: '',
+        key,
         children: convertedChildren,
         ...(options as object || {}),
       })
@@ -34,5 +35,5 @@ function convertLiteFieldsToFields(liteFields: LiteFieldDefinition[]): FieldProp
 }
 
 function isLiteFieldGroup(field: LiteFieldDefinition): field is LiteFieldGroupProps {
-  return Array.isArray(field) && field.length >= 2 && Array.isArray(field[1])
+  return Array.isArray(field) && field?.[2]?.children.length
 }

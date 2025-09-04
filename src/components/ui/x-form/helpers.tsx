@@ -2,10 +2,10 @@ import type { FormRules } from 'naive-ui'
 import type { PlaceholderConfig, XFormComponentType } from './types'
 import { merge } from 'lodash-es'
 import { selectTypes } from '@/constants/form'
-import { getFieldRuleConfig, setNestedRule } from '@/utils/form'
+import { getFieldRuleConfig, hasNestedRule, setNestedRule } from '@/utils/form'
 
 export function mergeProps<T extends Record<string, any>>(props: T, defaultProps: T, provideDefaultProps: T): T {
-  return merge(defaultProps, provideDefaultProps, props)
+  return merge({}, defaultProps, provideDefaultProps, props)
 }
 
 export function genPlaceholder(
@@ -40,8 +40,7 @@ export function genPlaceholder(
 
 export function genFormItemRule(props: Record<string, any>, rules: FormRules, autoRules: boolean | string[] = false) {
   const { path, label, type } = props
-
-  if (!path || !label) {
+  if (!path || !label || hasNestedRule(rules, path)) {
     return
   }
 

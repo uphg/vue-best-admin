@@ -21,7 +21,7 @@ export const boolUndef = {
 //   disabled: Boolean,
 //   inline: Boolean,
 // }
-export const nFormPropNames = Object.keys(nFormProps)
+export const nFormPropNames = Object.keys(nFormProps).filter(key => key !== 'rules')
 
 export const nFormItemProps = {
   label: String,

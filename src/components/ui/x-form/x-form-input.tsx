@@ -17,19 +17,23 @@ const XFormInput = defineComponent({
   props: xInputProps,
   emits: ['update:value'],
   setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules } = inject<Record<string, Ref<any>>>(xFormContextProviderKey, {
-      autoRules: ref(),
-      defaultProps: ref({}),
-      rules: ref<Record<string, any>>({}),
+    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
+
+    const formItemProps = computed(() => {
+      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
+      const formItem = pick(rawProps, nFormItemPropNames)
+      console.log('formItem')
+      console.log(formItem)
+      console.log('nFormItemDefaultProps')
+      console.log(nFormItemDefaultProps)
+      console.log('result')
+      console.log(result)
+      return result
     })
-
-    rules.value = autoRules.value || autoRules.value
-
-    const formItemProps = computed(() => mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {}))
     const inputProps = computed(() => mergeProps(pick(rawProps, nInputPropNames), nInputDefaultProps, defaultProps.value?.input ?? {}))
     const placeholder = computed(() => genPlaceholder('input', { label: formItemProps.value.label, placeholder: inputProps.value.placeholder }))
 
-    genFormItemRule(formItemProps.value, rules.value, Array.isArray(autoRules.value) ? autoRules.value : [])
+    genFormItemRule(formItemProps.value, rules.value, autoRules.value)
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
@@ -37,8 +41,9 @@ const XFormInput = defineComponent({
 
     return () => (
       <NFormItem {...formItemProps.value}>
-        <div class={mergeClass('w-full', rawProps.contentClass)}>
+        <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
+          <span>{formItemProps.value.label}</span>
           <NInput
             class="w-full"
             {...inputProps.value}
