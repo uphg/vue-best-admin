@@ -1,31 +1,48 @@
-import type { 
-  InputProps, 
-  SelectProps, 
-  CheckboxGroupProps, 
-  AutoCompleteProps, 
-  CascaderProps, 
-  ColorPickerProps, 
-  DatePickerProps, 
-  DynamicInputProps, 
-  DynamicTagsProps, 
-  InputNumberProps, 
-  RadioGroupProps, 
-  RateProps, 
-  SliderProps, 
-  SwitchProps, 
-  TimePickerProps, 
-  TransferProps, 
-  TreeSelectProps, 
+import type {
+  AutoCompleteProps,
+  CascaderProps,
+  CheckboxGroupProps,
+  ColorPickerProps,
+  DatePickerProps,
+  DynamicInputProps,
+  DynamicTagsProps,
+  FormProps,
+  InputNumberProps,
+  InputProps,
+  MentionProps,
+  RadioGroupProps,
+  RateProps,
+  SelectProps,
+  SliderProps,
+  SwitchProps,
+  TimePickerProps,
+  TransferProps,
+  TreeSelectProps,
   UploadProps,
-  MentionProps
 } from 'naive-ui'
 import type { InputOtpProps } from 'naive-ui/es/input-otp'
 import type { LabelHTMLAttributes, PropType } from 'vue'
-import { formProps as nFormProps } from 'naive-ui'
 
 export const boolUndef = {
   type: Boolean,
   default: void 0,
+}
+
+export const nFormProps = {
+  inline: boolUndef,
+  labelWidth: [String, Number] as PropType<FormProps['labelWidth']>,
+  labelAlign: String as PropType<FormProps['labelAlign']>,
+  labelPlacement: String as PropType<FormProps['labelPlacement']>,
+  model: Object as PropType<FormProps['model']>,
+  rules: Object as PropType<FormProps['rules']>,
+  disabled: boolUndef,
+  size: String as PropType<FormProps['size']>,
+  showRequireMark: boolUndef,
+  requireMarkPlacement: String as PropType<FormProps['requireMarkPlacement']>,
+  showFeedback: boolUndef,
+  onSubmit: Function as PropType<FormProps['onSubmit']>,
+  showLabel: boolUndef,
+  validateMessages: Object as PropType<FormProps['validateMessages']>,
 }
 
 // export const nFormProps = {

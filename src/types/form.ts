@@ -1,3 +1,5 @@
+import type { KebabToCamelCase } from './base'
+
 export type InputElement = 'auto-complete'
   | 'cascader'
   | 'color-picker'
@@ -17,3 +19,5 @@ export type InputElement = 'auto-complete'
   | 'transfer'
   | 'tree-select'
   | 'upload'
+
+export type camelInputElement = KebabToCamelCase<InputElement>
