@@ -1,5 +1,6 @@
 import type { FormRules } from 'naive-ui'
 import type { PlaceholderConfig, XFormComponentType, XFormContext } from './types'
+
 import { merge, pick } from 'lodash-es'
 import { NFormItem } from 'naive-ui'
 import { selectTypes } from '@/constants/form'

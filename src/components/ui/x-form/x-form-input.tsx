@@ -1,6 +1,7 @@
+import type { Ref } from 'vue'
 import { pick } from 'lodash-es'
 import { NFormItem, NInput } from 'naive-ui'
-import { computed, defineComponent, inject, type Ref } from 'vue'
+import { computed, defineComponent, inject } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nInputDefaultProps, nInputPropNames, nInputProps } from './common'
 import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
@@ -19,17 +20,7 @@ const XFormInput = defineComponent({
   setup(rawProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
 
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      const formItem = pick(rawProps, nFormItemPropNames)
-      console.log('formItem')
-      console.log(formItem)
-      console.log('nFormItemDefaultProps')
-      console.log(nFormItemDefaultProps)
-      console.log('result')
-      console.log(result)
-      return result
-    })
+    const formItemProps = computed(() => mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {}))
     const inputProps = computed(() => mergeProps(pick(rawProps, nInputPropNames), nInputDefaultProps, defaultProps.value?.input ?? {}))
     const placeholder = computed(() => genPlaceholder('input', { label: formItemProps.value.label, placeholder: inputProps.value.placeholder }))
 
