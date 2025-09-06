@@ -31,7 +31,7 @@
 ### 1. 统一的设计模式
 所有组件都遵循相同的设计模式：
 - 继承 `nFormItemProps` 和对应的 Naive UI 组件 props
-- 使用 `mergeProps` 合并默认属性和用户属性
+- 使用 `resolveProps` 合并默认属性和用户属性
 - 支持自动生成 placeholder
 - 统一的事件处理机制
 
@@ -92,7 +92,7 @@ src/components/ui/x-form/
 ### 1. 属性合并机制
 ```typescript
 const formItemProps = computed(() => {
-  const result = mergeProps(
+  const result = resolveProps(
     pick(rawProps, nFormItemPropNames), 
     nFormItemDefaultProps, 
     defaultProps.value?.formItem ?? {}
@@ -100,7 +100,7 @@ const formItemProps = computed(() => {
   return result
 })
 
-const componentProps = computed(() => mergeProps(
+const componentProps = computed(() => resolveProps(
   pick(rawProps, nComponentPropNames), 
   nComponentDefaultProps, 
   defaultProps.value?.component ?? {}

@@ -28,11 +28,11 @@ export function createFormFieldComponent(
       const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
 
       const formItemProps = computed(() =>
-        mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {}),
+        resolveProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {}),
       )
 
       const fieldProps = computed(() =>
-        mergeProps(pick(rawProps, fieldPropNames), fieldDefaultProps, defaultProps.value?.[placeholderType] ?? {}),
+        resolveProps(pick(rawProps, fieldPropNames), fieldDefaultProps, defaultProps.value?.[placeholderType] ?? {}),
       )
 
       const placeholder = computed(() =>
@@ -69,8 +69,13 @@ export function createFormFieldComponent(
   })
 }
 
-export function mergeProps<T extends Record<string, any>>(props: T, defaultProps: T, provideDefaultProps?: T): T {
+export function resolveProps<T extends Record<string, any>>(props: T, defaultProps: T, provideDefaultProps?: T): T {
   const result = {} as T
+  console.log('resolveProps')
+  console.log('props', props)
+  console.log('defaultProps', defaultProps)
+  console.log('provideDefaultProps', provideDefaultProps)
+  //
   Object.assign(result, defaultProps)
   for (const key in defaultProps) {
     if (provideDefaultProps && !isNil(provideDefaultProps[key])) {

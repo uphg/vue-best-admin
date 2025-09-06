@@ -3,7 +3,7 @@ import type { InputOtpProps } from 'naive-ui/es/input-otp'
 import type { LabelHTMLAttributes, PropType } from 'vue'
 
 export const boolUndef = {
-  type: Boolean,
+  type: Boolean as PropType<boolean | undefined>,
   default: void 0,
 }
 
@@ -581,13 +581,19 @@ export const nSliderPropNames = Object.keys(nSliderProps).filter(key => key !== 
 
 // === Switch ===
 export const nSwitchProps = {
-  value: Boolean as PropType<SwitchProps['value']>,
-  defaultValue: Boolean as PropType<SwitchProps['defaultValue']>,
+  value: boolUndef,
+  defaultValue: boolUndef,
   size: String as PropType<SwitchProps['size']>,
   disabled: boolUndef,
   loading: boolUndef,
-  checkedValue: [String, Number, Boolean] as PropType<SwitchProps['checkedValue']>,
-  uncheckedValue: [String, Number, Boolean] as PropType<SwitchProps['uncheckedValue']>,
+  checkedValue: {
+    type: [String, Number, Boolean] as PropType<SwitchProps['checkedValue']>,
+    default: void 0
+  },
+  uncheckedValue: {
+    type: [String, Number, Boolean] as PropType<SwitchProps['uncheckedValue']>,
+    default: void 0
+  },
   railStyle: Function as PropType<SwitchProps['railStyle']>,
   onUpdateValue: [Function, Array] as PropType<SwitchProps['onUpdateValue']>,
 }

@@ -3,7 +3,7 @@ import type { XFormContext } from './types'
 import type { CamelInputElement } from '@/types/form'
 import { assign, pick } from 'lodash-es'
 import { ref, watch } from 'vue'
-import { genFormItemRule } from './helpers'
+import { genFormItemRule, resolveProps } from './helpers'
 
 export interface UseFormFieldOptions {
   fieldType: CamelInputElement
@@ -17,18 +17,17 @@ export function useFormProps<T extends Record<string, any>>(rawProps: Record<str
   const { fieldType, fieldPropNames, fieldDefaultProps, formItemPropNames, formItemDefaultProps } = options
 
   // 一次性合并默认值
+  console.log(rawProps.label)
   const staticDefaults = {
-    formItem: assign(
-      {},
+    formItem: resolveProps(
+      pick(rawProps, formItemPropNames),
       formItemDefaultProps,
       context.defaultProps.value?.formItem ?? {},
-      pick(rawProps, formItemPropNames),
     ),
-    field: assign(
-      {},
+    field: resolveProps(
+      pick(rawProps, fieldPropNames),
       fieldDefaultProps,
       context.defaultProps.value?.[fieldType] ?? {},
-      pick(rawProps, fieldPropNames),
     ),
   }
 
