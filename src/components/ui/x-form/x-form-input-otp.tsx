@@ -13,6 +13,8 @@ const xInputOTPProps = {
   ...nInputOTPProps,
 }
 
+const fieldType = 'input-otp'
+
 const XFormInputOTP = defineComponent({
   name: 'XFormInputOTP',
   props: xInputOTPProps,
@@ -21,7 +23,7 @@ const XFormInputOTP = defineComponent({
     const context = useFormContext()
 
     const [fieldProps, formItemProps] = useFormProps<InputOtpProps>(rawProps, context, {
-      fieldType: 'inputOtp' as any,
+      fieldType: fieldType,
       fieldPropNames: nInputOTPPropNames,
       fieldDefaultProps: nInputOTPDefaultProps,
       formItemPropNames: nFormItemPropNames,

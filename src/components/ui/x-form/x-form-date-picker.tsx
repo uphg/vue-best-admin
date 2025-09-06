@@ -15,6 +15,8 @@ const xDatePickerProps = {
 
 type XDatePickerProps = ExtractPublicPropTypes<typeof xDatePickerProps>
 
+const fieldType = 'date-picker'
+
 const XFormDatePicker = defineComponent({
   name: 'XFormDatePicker',
   props: xDatePickerProps,
@@ -22,13 +24,13 @@ const XFormDatePicker = defineComponent({
   setup(rawProps: XDatePickerProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
     const [fieldProps, formItemProps] = useFormProps<DatePickerProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
-      fieldType: 'datePicker',
+      fieldType: fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nDatePickerPropNames,
       formItemDefaultProps: nFormItemDefaultProps,
       fieldDefaultProps: nDatePickerDefaultProps,
     })
-    const placeholder = ref(genPlaceholder('datePicker', { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
+    const placeholder = ref(genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }

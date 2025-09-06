@@ -14,6 +14,8 @@ const xColorPickerProps = {
 
 type XColorPickerProps = ExtractPublicPropTypes<typeof xColorPickerProps>
 
+const fieldType = 'color-picker'
+
 const XFormColorPicker = defineComponent({
   name: 'XFormColorPicker',
   props: xColorPickerProps,
@@ -21,7 +23,7 @@ const XFormColorPicker = defineComponent({
   setup(rawProps: XColorPickerProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
     const [fieldProps, formItemProps] = useFormProps<ColorPickerProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
-      fieldType: 'colorPicker',
+      fieldType: fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nColorPickerPropNames,
       formItemDefaultProps: nFormItemDefaultProps,

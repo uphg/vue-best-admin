@@ -15,6 +15,8 @@ const xCascaderProps = {
 
 type XCascaderProps = ExtractPublicPropTypes<typeof xCascaderProps>
 
+const fieldType = 'cascader'
+
 const XFormCascader = defineComponent({
   name: 'XFormCascader',
   props: xCascaderProps,
@@ -22,13 +24,13 @@ const XFormCascader = defineComponent({
   setup(rawProps: XCascaderProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
     const [fieldProps, formItemProps] = useFormProps<CascaderProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
-      fieldType: 'cascader',
+      fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nCascaderPropNames,
       formItemDefaultProps: nFormItemDefaultProps,
       fieldDefaultProps: nCascaderDefaultProps,
     })
-    const placeholder = ref(genPlaceholder('cascader', { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
+    const placeholder = ref(genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }

@@ -13,6 +13,8 @@ const xTransferProps = {
   ...nTransferProps,
 }
 
+const fieldType = 'transfer'
+
 const XFormTransfer = defineComponent({
   name: 'XFormTransfer',
   props: xTransferProps,
@@ -21,7 +23,7 @@ const XFormTransfer = defineComponent({
     const context = useFormContext()
 
     const [fieldProps, formItemProps] = useFormProps<TransferProps>(rawProps, context, {
-      fieldType: 'transfer',
+      fieldType,
       fieldPropNames: nTransferPropNames,
       fieldDefaultProps: nTransferDefaultProps,
       formItemPropNames: nFormItemPropNames,

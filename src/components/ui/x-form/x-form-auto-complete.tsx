@@ -1,6 +1,7 @@
 import type { AutoCompleteProps } from 'naive-ui'
+import type { ExtractPublicPropTypes } from 'vue'
 import { NAutoComplete, NFormItem } from 'naive-ui'
-import { defineComponent, ref, type ExtractPublicPropTypes } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nAutoCompleteDefaultProps, nAutoCompletePropNames, nAutoCompleteProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
 import { genPlaceholder } from './helpers'
@@ -15,6 +16,8 @@ const xAutoCompleteProps = {
 
 type XAutoCompleteProps = ExtractPublicPropTypes<typeof xAutoCompleteProps>
 
+const fieldType = 'auto-complete'
+
 const XFormAutoComplete = defineComponent({
   name: 'XFormAutoComplete',
   props: xAutoCompleteProps,
@@ -22,13 +25,13 @@ const XFormAutoComplete = defineComponent({
   setup(rawProps: XAutoCompleteProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
     const [fieldProps, formItemProps] = useFormProps<AutoCompleteProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
-      fieldType: 'autoComplete',
+      fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nAutoCompletePropNames,
       formItemDefaultProps: nFormItemDefaultProps,
       fieldDefaultProps: nAutoCompleteDefaultProps,
     })
-    const placeholder = ref(genPlaceholder('autoComplete', { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
+    const placeholder = ref(genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }

@@ -1,12 +1,13 @@
 import type { FormItemProps } from 'naive-ui'
 import type { XFormContext } from './types'
-import type { CamelInputElement } from '@/types/form'
+import type { CamelInputElement, InputElement } from '@/types/form'
+import { camelize } from '@vue/shared'
 import { assign, pick } from 'lodash-es'
 import { ref, watch } from 'vue'
 import { genFormItemRule, resolveProps } from './helpers'
 
 export interface UseFormFieldOptions {
-  fieldType: CamelInputElement
+  fieldType: InputElement
   formItemPropNames: string[]
   fieldPropNames: string[]
   formItemDefaultProps: Partial<FormItemProps>
@@ -17,7 +18,6 @@ export function useFormProps<T extends Record<string, any>>(rawProps: Record<str
   const { fieldType, fieldPropNames, fieldDefaultProps, formItemPropNames, formItemDefaultProps } = options
 
   // 一次性合并默认值
-  console.log(rawProps.label)
   const staticDefaults = {
     formItem: resolveProps(
       pick(rawProps, formItemPropNames),
@@ -27,7 +27,7 @@ export function useFormProps<T extends Record<string, any>>(rawProps: Record<str
     field: resolveProps(
       pick(rawProps, fieldPropNames),
       fieldDefaultProps,
-      context.defaultProps.value?.[fieldType] ?? {},
+      context.defaultProps.value?.[camelize(fieldType) as CamelInputElement] ?? {},
     ),
   }
 
@@ -54,7 +54,9 @@ export function useFormProps<T extends Record<string, any>>(rawProps: Record<str
 
   // 生成表单规则
   watchEffect(() => {
-    genFormItemRule(formItemProps.value, context.rules.value, context.autoRules.value)
+    console.log('context.rules.value')
+    console.log(context.rules.value)
+    genFormItemRule(fieldType, { props: formItemProps.value, rules: context.rules.value, autoRules: context.autoRules.value })
   })
 
   return [fieldProps, formItemProps] as [Ref<T>, Ref<FormItemProps>]

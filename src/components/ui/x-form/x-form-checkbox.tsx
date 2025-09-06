@@ -15,6 +15,8 @@ const xCheckboxProps = {
 
 type XCheckboxProps = ExtractPublicPropTypes<typeof xCheckboxProps>
 
+const fieldType = 'checkbox'
+
 const XFormCheckbox = defineComponent({
   name: 'XFormCheckbox',
   props: xCheckboxProps,
@@ -22,7 +24,7 @@ const XFormCheckbox = defineComponent({
   setup(rawProps: XCheckboxProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
     const [fieldProps, formItemProps] = useFormProps<CheckboxGroupProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
-      fieldType: 'checkbox',
+      fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nCheckboxGroupPropNames,
       formItemDefaultProps: nFormItemDefaultProps,

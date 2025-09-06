@@ -13,6 +13,8 @@ const xDynamicTagsProps = {
   ...nDynamicTagsProps,
 }
 
+const fieldType = 'dynamic-tags'
+
 const XFormDynamicTags = defineComponent({
   name: 'XFormDynamicTags',
   props: xDynamicTagsProps,
@@ -21,7 +23,7 @@ const XFormDynamicTags = defineComponent({
     const context = useFormContext()
 
     const [fieldProps, formItemProps] = useFormProps<DynamicTagsProps>(rawProps, context, {
-      fieldType: 'dynamicTags',
+      fieldType: fieldType,
       fieldPropNames: nDynamicTagsPropNames,
       fieldDefaultProps: nDynamicTagsDefaultProps,
       formItemPropNames: nFormItemPropNames,

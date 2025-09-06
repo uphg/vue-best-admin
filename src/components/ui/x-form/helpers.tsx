@@ -1,81 +1,12 @@
 import type { FormRules } from 'naive-ui'
 import type { PlaceholderConfig } from './types'
-import type { CamelInputElement } from '@/types/form'
+import type { CamelInputElement, InputElement } from '@/types/form'
 import { assign, isNil, pick } from 'lodash-es'
-import { NFormItem } from 'naive-ui'
 import { selectTypes } from '@/constants/form'
 import { getFieldRuleConfig, hasNestedRule, setNestedRule } from '@/utils/form'
-import { mergeClass } from '@/utils/merge-class'
-import { useFormContext } from './use-form-context'
-import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
-
-export function createFormFieldComponent(
-  componentName: string,
-  FieldComponent: any,
-  fieldPropNames: string[],
-  fieldDefaultProps: any,
-  placeholderType: CamelInputElement,
-) {
-  return defineComponent({
-    name: componentName,
-    props: {
-      contentClass: [String, Object, Array],
-      ...nFormItemProps,
-      ...FieldComponent.props,
-    },
-    emits: ['update:value'],
-    setup(rawProps: Record<string, any>, { emit, slots }) {
-      const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
-
-      const formItemProps = computed(() =>
-        resolveProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {}),
-      )
-
-      const fieldProps = computed(() =>
-        resolveProps(pick(rawProps, fieldPropNames), fieldDefaultProps, defaultProps.value?.[placeholderType] ?? {}),
-      )
-
-      const placeholder = computed(() =>
-        genPlaceholder(placeholderType, {
-          label: formItemProps.value.label,
-          placeholder: fieldProps.value.placeholder,
-        }),
-      )
-
-      genFormItemRule(formItemProps.value, rules.value, autoRules.value)
-
-      function handleUpdateValue(...args: any[]) {
-        emit('update:value', ...args)
-      }
-
-      return () => (
-        <NFormItem {...formItemProps.value}>
-          <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
-            {slots.itemPrefix?.()}
-            <FieldComponent
-              class="w-full"
-              {...fieldProps.value}
-              value={rawProps.value}
-              placeholder={placeholder.value}
-              onUpdate:value={handleUpdateValue}
-            >
-              {slots}
-            </FieldComponent>
-            {slots.itemSuffix?.()}
-          </div>
-        </NFormItem>
-      )
-    },
-  })
-}
 
 export function resolveProps<T extends Record<string, any>>(props: T, defaultProps: T, provideDefaultProps?: T): T {
   const result = {} as T
-  console.log('resolveProps')
-  console.log('props', props)
-  console.log('defaultProps', defaultProps)
-  console.log('provideDefaultProps', provideDefaultProps)
-  //
   Object.assign(result, defaultProps)
   for (const key in defaultProps) {
     if (provideDefaultProps && !isNil(provideDefaultProps[key])) {
@@ -89,7 +20,7 @@ export function resolveProps<T extends Record<string, any>>(props: T, defaultPro
 }
 
 export function genPlaceholder(
-  type: CamelInputElement = 'input',
+  type: InputElement = 'input',
   options: {
     label?: string | null
     placeholder?: string
@@ -118,8 +49,12 @@ export function genPlaceholder(
   return `${placeholderPrefix}${label}`
 }
 
-export function genFormItemRule(props: Record<string, any>, rules: FormRules, autoRules: boolean | string[] = false) {
-  const { path, label, type } = props
+export function genFormItemRule(type: InputElement, { props, rules, autoRules }: { props: Record<string, any>, rules: FormRules, autoRules: boolean | string[] }) {
+  const { path, label } = props
+  console.log(label)
+  console.log('path:', path)
+  console.log('rules')
+  console.log({ ...rules })
   if (!path || !label || hasNestedRule(rules, path)) {
     return
   }
@@ -130,7 +65,8 @@ export function genFormItemRule(props: Record<string, any>, rules: FormRules, au
     if (!autoRules?.includes(path)) return
   }
 
-  const rule = getFieldRuleConfig(type || 'input', label)
+  const rule = getFieldRuleConfig(type || 'input', { label })
+  console.log(rule)
   if (rule) {
     if (path.includes('.')) {
       setNestedRule(rules, path, rule)

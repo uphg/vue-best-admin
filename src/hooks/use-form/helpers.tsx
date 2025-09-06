@@ -399,12 +399,16 @@ export function createItemNodeMap(fields: FieldProps[], form: Ref<Record<string,
 export function createDefaultField(flattenedFields: FieldProps[]) {
   const defaultField: Record<string, any> = {}
   flattenedFields.forEach(({ label, key, ...props }) => {
+    if (!key) return
+    // 已经手动设置了默认值的字段不再处理
+    if (props?.defaultValue !== void 0) {
+      defaultField[key] = props.defaultValue
+      return
+    }
     const tag = props?.as || 'input'
     switch (tag) {
       case 'checkbox':
       case 'checkbox-group':
-      case 'checkbox-button':
-      case 'checkbox-button-group':
       case 'transfer':
       case 'dynamic-tags':
       case 'upload':
@@ -443,6 +447,7 @@ export function createFormRules(fields: FieldProps[], options: UseFormProps = {}
 
   fields.forEach(({ label, key, ...props }) => {
     // 优先使用手动传入的规则
+    if (!key) return
     if (isObject(props?.rules)) {
       rules[key] = props.rules
       return
@@ -454,7 +459,7 @@ export function createFormRules(fields: FieldProps[], options: UseFormProps = {}
     }
 
     const tag = props?.as || 'input'
-    const ruleConfig = getFieldRuleConfig(tag, label)
+    const ruleConfig = getFieldRuleConfig(tag, { label })
 
     if (ruleConfig) {
       // 处理嵌套字段

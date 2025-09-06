@@ -15,6 +15,8 @@ const xSelectProps = {
 
 type XSelectProps = ExtractPublicPropTypes<typeof xSelectProps>
 
+const fieldType = 'select'
+
 const XFormSelect = defineComponent({
   name: 'XFormSelect',
   props: xSelectProps,
@@ -22,13 +24,13 @@ const XFormSelect = defineComponent({
   setup(rawProps: XSelectProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
     const [fieldProps, formItemProps] = useFormProps<SelectProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
-      fieldType: 'select',
+      fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nSelectPropNames,
       formItemDefaultProps: nFormItemDefaultProps,
       fieldDefaultProps: nSelectDefaultProps,
     })
-    const placeholder = ref(genPlaceholder('select', { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
+    const placeholder = ref(genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }

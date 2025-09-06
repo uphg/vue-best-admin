@@ -13,6 +13,8 @@ const xDynamicInputProps = {
   ...nDynamicInputProps,
 }
 
+const fieldType = 'dynamic-input'
+
 const XFormDynamicInput = defineComponent({
   name: 'XFormDynamicInput',
   props: xDynamicInputProps,
@@ -21,7 +23,7 @@ const XFormDynamicInput = defineComponent({
     const context = useFormContext()
 
     const [fieldProps, formItemProps] = useFormProps<DynamicInputProps>(rawProps, context, {
-      fieldType: 'dynamicInput',
+      fieldType: fieldType,
       fieldPropNames: nDynamicInputPropNames,
       fieldDefaultProps: nDynamicInputDefaultProps,
       formItemPropNames: nFormItemPropNames,

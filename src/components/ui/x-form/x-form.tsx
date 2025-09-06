@@ -36,6 +36,9 @@ const XForm = defineComponent({
       defaultProps: toRef(props, 'defaultProps'),
     }
 
+    console.log('rules')
+    console.log(rules)
+
     provide(xFormContextProviderKey, formContext)
 
     const formProps = computed(() => pick(props, nFormPropNames))

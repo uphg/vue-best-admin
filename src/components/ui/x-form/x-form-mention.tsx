@@ -14,6 +14,8 @@ const xMentionProps = {
   ...nMentionProps,
 }
 
+const fieldType = 'mention'
+
 const XFormMention = defineComponent({
   name: 'XFormMention',
   props: xMentionProps,
@@ -22,14 +24,14 @@ const XFormMention = defineComponent({
     const context = useFormContext()
 
     const [fieldProps, formItemProps] = useFormProps<MentionProps>(rawProps, context, {
-      fieldType: 'mention' as any,
+      fieldType: fieldType,
       fieldPropNames: nMentionPropNames,
       fieldDefaultProps: nMentionDefaultProps,
       formItemPropNames: nFormItemPropNames,
       formItemDefaultProps: nFormItemDefaultProps,
     })
 
-    const placeholder = computed(() => genPlaceholder('mention' as any, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
+    const placeholder = computed(() => genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)

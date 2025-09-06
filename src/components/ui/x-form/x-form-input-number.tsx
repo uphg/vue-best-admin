@@ -15,6 +15,8 @@ const xInputNumberProps = {
 
 type XInputNumberProps = ExtractPublicPropTypes<typeof xInputNumberProps>
 
+const fieldType = 'input-number'
+
 const XFormInputNumber = defineComponent({
   name: 'XFormInputNumber',
   props: xInputNumberProps,
@@ -22,13 +24,13 @@ const XFormInputNumber = defineComponent({
   setup(rawProps: XInputNumberProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
     const [fieldProps, formItemProps] = useFormProps<InputNumberProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
-      fieldType: 'inputNumber',
+      fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nInputNumberPropNames,
       formItemDefaultProps: nFormItemDefaultProps,
       fieldDefaultProps: nInputNumberDefaultProps,
     })
-    const placeholder = ref(genPlaceholder('inputNumber', { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
+    const placeholder = ref(genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }

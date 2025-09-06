@@ -1,8 +1,8 @@
 import type { FormRules } from 'naive-ui'
-import type { InputElement } from '@/types/form'
+import type { CamelInputElement, InputElement } from '@/types/form'
 import { selectTypes } from '@/constants/form'
 
-export function getFieldRuleConfig(tag: InputElement, label?: string | null) {
+export function getFieldRuleConfig(tag: InputElement | CamelInputElement, { label, multiple }: { label?: string | null, multiple?: boolean }) {
   const baseRule = {
     required: true,
     message: selectTypes.includes(tag) ? `请选择${label}` : `请输入${label}`,
@@ -10,13 +10,16 @@ export function getFieldRuleConfig(tag: InputElement, label?: string | null) {
 
   switch (tag) {
     case 'input':
-    case 'auto-complete':
     case 'dynamic-input':
       return {
         ...baseRule,
         trigger: ['blur', 'input'],
       }
-
+    case 'auto-complete':
+      return {
+        ...baseRule,
+        trigger: ['input', 'change', 'blur', 'focus'],
+      }
     case 'select':
     case 'tree-select':
     case 'cascader':
@@ -41,8 +44,6 @@ export function getFieldRuleConfig(tag: InputElement, label?: string | null) {
 
     case 'checkbox':
     case 'checkbox-group':
-    case 'checkbox-button':
-    case 'checkbox-button-group':
     case 'dynamic-tags':
     case 'transfer':
     case 'upload':

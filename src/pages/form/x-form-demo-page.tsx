@@ -15,6 +15,8 @@ const XFormDemo = defineComponent(() => {
     rating: 0,
     birthday: null,
     workTime: null,
+    autoComplete: null,
+    treeSelect: null,
     favoriteColor: null,
     skills: [],
     city: null,

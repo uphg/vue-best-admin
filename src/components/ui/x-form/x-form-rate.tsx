@@ -13,6 +13,8 @@ const xRateProps = {
   ...nRateProps,
 }
 
+const fieldType = 'rate'
+
 const XFormRate = defineComponent({
   name: 'XFormRate',
   props: xRateProps,
@@ -21,7 +23,7 @@ const XFormRate = defineComponent({
     const context = useFormContext()
 
     const [fieldProps, formItemProps] = useFormProps<RateProps>(rawProps, context, {
-      fieldType: 'rate',
+      fieldType,
       fieldPropNames: nRatePropNames,
       fieldDefaultProps: nRateDefaultProps,
       formItemPropNames: nFormItemPropNames,

@@ -1,5 +1,6 @@
 import { NButton, NSpace } from 'naive-ui'
 import { useForm } from '@/hooks/use-form/use-form'
+import { useFormLite } from '@/hooks/use-form/use-form-lite'
 
 interface FormData {
   name: string
@@ -10,7 +11,7 @@ interface FormData {
 }
 
 const FormPage = defineComponent(() => {
-  const [Form, formData, { resetForm, validate }] = useForm([
+  const [Form, formData, { resetForm, validate }] = useFormLite([
     ['活动名称', 'name', {}],
     ['活动名称', [
       [null, 'name1', { showFeedback: false }],

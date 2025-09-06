@@ -15,6 +15,8 @@ const xRadioProps = {
 
 type XRadioProps = ExtractPublicPropTypes<typeof xRadioProps>
 
+const fieldType = 'radio'
+
 const XFormRadio = defineComponent({
   name: 'XFormRadio',
   props: xRadioProps,
@@ -22,7 +24,7 @@ const XFormRadio = defineComponent({
   setup(rawProps: XRadioProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
     const [fieldProps, formItemProps] = useFormProps<RadioGroupProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
-      fieldType: 'radio',
+      fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nRadioGroupPropNames,
       formItemDefaultProps: nFormItemDefaultProps,

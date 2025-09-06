@@ -13,6 +13,8 @@ const xSliderProps = {
   ...nSliderProps,
 }
 
+const fieldType = 'slider'
+
 const XFormSlider = defineComponent({
   name: 'XFormSlider',
   props: xSliderProps,
@@ -21,7 +23,7 @@ const XFormSlider = defineComponent({
     const context = useFormContext()
 
     const [fieldProps, formItemProps] = useFormProps<SliderProps>(rawProps, context, {
-      fieldType: 'slider',
+      fieldType,
       fieldPropNames: nSliderPropNames,
       fieldDefaultProps: nSliderDefaultProps,
       formItemPropNames: nFormItemPropNames,

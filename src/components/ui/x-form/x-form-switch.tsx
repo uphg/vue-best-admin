@@ -14,6 +14,8 @@ const xSwitchProps = {
 
 type XSwitchProps = ExtractPublicPropTypes<typeof xSwitchProps>
 
+const fieldType = 'switch'
+
 const XFormSwitch = defineComponent({
   name: 'XFormSwitch',
   props: xSwitchProps,
@@ -21,7 +23,7 @@ const XFormSwitch = defineComponent({
   setup(rawProps: XSwitchProps, { emit, slots }) {
     const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
     const [fieldProps, formItemProps] = useFormProps<SwitchProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
-      fieldType: 'switch',
+      fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nSwitchPropNames,
       formItemDefaultProps: nFormItemDefaultProps,
@@ -38,7 +40,7 @@ const XFormSwitch = defineComponent({
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NSwitch
-            class="w-full"
+            class="flex-1"
             {...fieldProps.value as any}
             value={rawProps.value}
             onUpdate:value={handleUpdateValue}

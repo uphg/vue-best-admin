@@ -13,6 +13,8 @@ const xUploadProps = {
   ...nUploadProps,
 }
 
+const fieldType = 'upload'
+
 const XFormUpload = defineComponent({
   name: 'XFormUpload',
   props: xUploadProps,
@@ -21,7 +23,7 @@ const XFormUpload = defineComponent({
     const context = useFormContext()
 
     const [fieldProps, formItemProps] = useFormProps<UploadProps>(rawProps, context, {
-      fieldType: 'upload',
+      fieldType,
       fieldPropNames: nUploadPropNames,
       fieldDefaultProps: nUploadDefaultProps,
       formItemPropNames: nFormItemPropNames,
