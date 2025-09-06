@@ -1,11 +1,11 @@
-import type { Ref } from 'vue'
-import { pick } from 'lodash-es'
+import type { InputProps } from 'naive-ui'
 import { NFormItem, NInput } from 'naive-ui'
-import { computed, defineComponent, inject } from 'vue'
+import { defineComponent, ref, type ExtractPublicPropTypes } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nInputDefaultProps, nInputPropNames, nInputProps } from './common'
-import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { genPlaceholder } from './helpers'
+import { useFormProps } from './use-form-props'
+import { useFormContext } from './use-form-context'
 
 const xInputProps = {
   contentClass: [String, Object, Array],
@@ -13,31 +13,33 @@ const xInputProps = {
   ...nInputProps,
 }
 
+type XInputProps = ExtractPublicPropTypes<typeof xInputProps>
+
 const XFormInput = defineComponent({
   name: 'XFormInput',
   props: xInputProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
-
-    const formItemProps = computed(() => mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {}))
-    const inputProps = computed(() => mergeProps(pick(rawProps, nInputPropNames), nInputDefaultProps, defaultProps.value?.input ?? {}))
-    const placeholder = computed(() => genPlaceholder('input', { label: formItemProps.value.label, placeholder: inputProps.value.placeholder }))
-
-    genFormItemRule(formItemProps.value, rules.value, autoRules.value)
-
+  setup(rawProps: XInputProps, { emit, slots }) {
+    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<InputProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
+      fieldType: 'input',
+      formItemPropNames: nFormItemPropNames,
+      fieldPropNames: nInputPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
+      fieldDefaultProps: nInputDefaultProps,
+    })
+    const placeholder = ref(genPlaceholder('input', { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
+      <NFormItem {...formItemProps.value as any}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
-          <span>{formItemProps.value.label}</span>
           <NInput
             class="w-full"
-            {...inputProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             placeholder={placeholder.value}
             onUpdate:value={handleUpdateValue}

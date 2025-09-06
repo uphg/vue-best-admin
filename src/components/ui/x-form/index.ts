@@ -1,10 +1,7 @@
 // 导出类型
 export type * from './types'
-// 导出工具函数
-// export * from './utils'
 // 导出所有组件
 export { default as XForm } from './x-form'
-export { default as XFormInput } from './x-form-input'
 export { default as XFormAutoComplete } from './x-form-auto-complete'
 export { default as XFormCascader } from './x-form-cascader'
 export { default as XFormCheckbox } from './x-form-checkbox'
@@ -12,6 +9,7 @@ export { default as XFormColorPicker } from './x-form-color-picker'
 export { default as XFormDatePicker } from './x-form-date-picker'
 export { default as XFormDynamicInput } from './x-form-dynamic-input'
 export { default as XFormDynamicTags } from './x-form-dynamic-tags'
+export { default as XFormInput } from './x-form-input'
 export { default as XFormInputNumber } from './x-form-input-number'
 export { default as XFormInputOTP } from './x-form-input-otp'
 export { default as XFormMention } from './x-form-mention'

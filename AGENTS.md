@@ -45,6 +45,7 @@ pnpm lint         # Code linting
 - Semicolon-free
 - Linux line endings (LF)
 - Avoid unnecessary formatting (format only modified code)
+- `import { foo, bar } from 'xxx'` Import related code `{}` with all content indented into one line regardless of quantity
 
 ### Code Organization Principles
 

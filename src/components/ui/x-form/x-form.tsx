@@ -1,20 +1,10 @@
 import type { FormInst, FormItemProps, InputProps } from 'naive-ui'
 import type { PropType } from 'vue'
-import { merge, pick } from 'lodash-es'
+import { assign, pick } from 'lodash-es'
 import { NForm, formProps as nFormProps } from 'naive-ui'
 import { computed, defineComponent, provide, ref, toRef } from 'vue'
 import { nFormPropNames } from './common'
-
-export const xFormContextProviderKey = Symbol('xFormContext')
-
-interface formDefaultProps {
-  formItem: Partial<FormItemProps>
-  input: Partial<InputProps>
-}
-
-export interface XFormContext {
-  defaultProps: formDefaultProps
-}
+import { xFormContextProviderKey } from './provider'
 
 const formProps = {
   autoRules: {
@@ -24,7 +14,6 @@ const formProps = {
   defaultProps: { type: Object, default: () => ({}) },
   formItemContentClass: { type: [String, Object, Array], default: '' },
 
-  // NForm Props
   ...nFormProps,
 }
 
@@ -37,7 +26,7 @@ const XForm = defineComponent({
     const formRef = ref<FormInst>()
     const _rules = ref(props.rules || {})
 
-    const rules = computed(() => merge({}, props.rules, _rules.value))
+    const rules = computed(() => assign({}, props.rules, _rules.value))
 
     // 提供给子组件的上下文
     const formContext = {

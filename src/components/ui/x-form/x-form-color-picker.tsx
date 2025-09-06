@@ -1,10 +1,10 @@
-import { pick } from 'lodash-es'
+import type { ColorPickerProps } from 'naive-ui'
 import { NColorPicker, NFormItem } from 'naive-ui'
-import { computed, defineComponent, inject, type Ref } from 'vue'
+import { defineComponent, type ExtractPublicPropTypes } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nColorPickerDefaultProps, nColorPickerPropNames, nColorPickerProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
-import { genFormItemRule, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xColorPickerProps = {
   contentClass: [String, Object, Array],
@@ -12,32 +12,33 @@ const xColorPickerProps = {
   ...nColorPickerProps,
 }
 
+type XColorPickerProps = ExtractPublicPropTypes<typeof xColorPickerProps>
+
 const XFormColorPicker = defineComponent({
   name: 'XFormColorPicker',
   props: xColorPickerProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
-
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+  setup(rawProps: XColorPickerProps, { emit, slots }) {
+    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<ColorPickerProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
+      fieldType: 'colorPicker',
+      formItemPropNames: nFormItemPropNames,
+      fieldPropNames: nColorPickerPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
+      fieldDefaultProps: nColorPickerDefaultProps,
     })
-    const colorPickerProps = computed(() => mergeProps(pick(rawProps, nColorPickerPropNames), nColorPickerDefaultProps, defaultProps.value?.colorPicker ?? {}))
-
-    genFormItemRule({ ...formItemProps.value, type: 'color-picker' }, rules.value, autoRules.value)
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
+      <NFormItem {...formItemProps.value as any}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NColorPicker
             class="w-full"
-            {...colorPickerProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             onUpdate:value={handleUpdateValue}
           >

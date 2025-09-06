@@ -1,10 +1,11 @@
-import { pick } from 'lodash-es'
+import type { AutoCompleteProps } from 'naive-ui'
 import { NAutoComplete, NFormItem } from 'naive-ui'
-import { computed, defineComponent, inject, type Ref } from 'vue'
+import { defineComponent, ref, type ExtractPublicPropTypes } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nAutoCompleteDefaultProps, nAutoCompletePropNames, nAutoCompleteProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
-import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { genPlaceholder } from './helpers'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xAutoCompleteProps = {
   contentClass: [String, Object, Array],
@@ -12,33 +13,33 @@ const xAutoCompleteProps = {
   ...nAutoCompleteProps,
 }
 
+type XAutoCompleteProps = ExtractPublicPropTypes<typeof xAutoCompleteProps>
+
 const XFormAutoComplete = defineComponent({
   name: 'XFormAutoComplete',
   props: xAutoCompleteProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
-
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+  setup(rawProps: XAutoCompleteProps, { emit, slots }) {
+    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<AutoCompleteProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
+      fieldType: 'autoComplete',
+      formItemPropNames: nFormItemPropNames,
+      fieldPropNames: nAutoCompletePropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
+      fieldDefaultProps: nAutoCompleteDefaultProps,
     })
-    const autoCompleteProps = computed(() => mergeProps(pick(rawProps, nAutoCompletePropNames), nAutoCompleteDefaultProps, defaultProps.value?.autoComplete ?? {}))
-    const placeholder = computed(() => genPlaceholder('auto-complete', { label: formItemProps.value.label, placeholder: autoCompleteProps.value.placeholder }))
-
-    genFormItemRule({ ...formItemProps.value, type: 'auto-complete' }, rules.value, autoRules.value)
-
+    const placeholder = ref(genPlaceholder('autoComplete', { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
+      <NFormItem {...formItemProps.value as any}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NAutoComplete
             class="w-full"
-            {...autoCompleteProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             placeholder={placeholder.value}
             onUpdate:value={handleUpdateValue}

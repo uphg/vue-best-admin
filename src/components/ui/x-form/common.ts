@@ -1,25 +1,4 @@
-import type {
-  AutoCompleteProps,
-  CascaderProps,
-  CheckboxGroupProps,
-  ColorPickerProps,
-  DatePickerProps,
-  DynamicInputProps,
-  DynamicTagsProps,
-  FormProps,
-  InputNumberProps,
-  InputProps,
-  MentionProps,
-  RadioGroupProps,
-  RateProps,
-  SelectProps,
-  SliderProps,
-  SwitchProps,
-  TimePickerProps,
-  TransferProps,
-  TreeSelectProps,
-  UploadProps,
-} from 'naive-ui'
+import type { AutoCompleteProps, CascaderProps, CheckboxGroupProps, ColorPickerProps, DatePickerProps, DynamicInputProps, DynamicTagsProps, FormProps, InputNumberProps, InputProps, MentionProps, RadioGroupProps, RateProps, SelectProps, SliderProps, SwitchProps, TimePickerProps, TransferProps, TreeSelectProps, UploadProps } from 'naive-ui'
 import type { InputOtpProps } from 'naive-ui/es/input-otp'
 import type { LabelHTMLAttributes, PropType } from 'vue'
 
@@ -45,20 +24,6 @@ export const nFormProps = {
   validateMessages: Object as PropType<FormProps['validateMessages']>,
 }
 
-// export const nFormProps = {
-//   model: { type: Object, default: () => ({}) },
-//   rules: Object,
-//   labelPlacement: String,
-//   labelWidth: [String, Number],
-//   labelAlign: String,
-//   showFeedback: { type: Boolean, default: true },
-//   showLabel: { type: Boolean, default: true },
-//   showRequireMark: Boolean,
-//   requireMarkPlacement: String,
-//   size: String,
-//   disabled: Boolean,
-//   inline: Boolean,
-// }
 export const nFormPropNames = Object.keys(nFormProps).filter(key => key !== 'rules')
 
 export const nFormItemProps = {
@@ -89,7 +54,7 @@ export const nFormItemProps = {
   feedbackClass: String,
   feedbackStyle: [String, Object],
   validationStatus: String,
-}
+} as const
 
 export const nFormItemDefaultProps = {
   feedback: undefined,
@@ -109,8 +74,8 @@ export const nFormItemDefaultProps = {
   showFeedback: true,
   showLabel: true,
   showRequireMark: undefined,
-  requireMarkPlacement: 'right',
-  size: 'medium',
+  requireMarkPlacement: 'right' as const,
+  size: 'medium' as const,
   validationStatus: undefined,
 }
 
@@ -172,7 +137,7 @@ export const nInputProps = {
   /** deprecated */
   showPasswordToggle: boolUndef,
   themeOverrides: Object as PropType<InputProps['themeOverrides']>,
-}
+} as const
 
 export const nInputDefaultProps = {
   allowInput: undefined,
@@ -196,9 +161,9 @@ export const nInputDefaultProps = {
   separator: undefined,
   showCount: false,
   showPasswordOn: undefined,
-  size: 'medium',
+  size: 'medium' as const,
   status: undefined,
-  type: 'text',
+  type: 'text' as const,
   value: undefined,
   onBlur: undefined,
   onChange: undefined,
@@ -209,7 +174,7 @@ export const nInputDefaultProps = {
 }
 
 export const nFormItemPropNames = Object.keys(nFormItemProps)
-export const nInputPropNames = Object.keys(nInputProps).filter(key => key !== 'value' && key !== 'placeholder')
+export const nInputPropNames = Object.keys(nInputProps).filter(key => !['value', 'placeholder'].includes(key))
 
 // === Select ===
 export const nSelectProps = {

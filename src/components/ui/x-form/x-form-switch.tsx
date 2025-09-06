@@ -1,10 +1,10 @@
-import { pick } from 'lodash-es'
+import type { SwitchProps } from 'naive-ui'
 import { NFormItem, NSwitch } from 'naive-ui'
-import { computed, defineComponent, inject, type Ref } from 'vue'
+import { defineComponent, type ExtractPublicPropTypes } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nSwitchDefaultProps, nSwitchPropNames, nSwitchProps } from './common'
-import { genFormItemRule, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xSwitchProps = {
   contentClass: [String, Object, Array],
@@ -12,32 +12,34 @@ const xSwitchProps = {
   ...nSwitchProps,
 }
 
+type XSwitchProps = ExtractPublicPropTypes<typeof xSwitchProps>
+
 const XFormSwitch = defineComponent({
   name: 'XFormSwitch',
   props: xSwitchProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
-
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+  setup(rawProps: XSwitchProps, { emit, slots }) {
+    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<SwitchProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
+      fieldType: 'switch',
+      formItemPropNames: nFormItemPropNames,
+      fieldPropNames: nSwitchPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
+      fieldDefaultProps: nSwitchDefaultProps,
     })
-    const switchProps = computed(() => mergeProps(pick(rawProps, nSwitchPropNames), nSwitchDefaultProps, defaultProps.value?.switch ?? {}))
-
-    genFormItemRule({ ...formItemProps.value, type: 'switch' }, rules.value, autoRules.value)
 
     function handleUpdateValue(...args: any[]) {
+      console.log('XFormSwitch handleUpdateValue', ...args)
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
+      <NFormItem {...formItemProps.value as any}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NSwitch
             class="w-full"
-            {...switchProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             onUpdate:value={handleUpdateValue}
           >

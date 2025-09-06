@@ -1,20 +1,20 @@
 import type { FormRules } from 'naive-ui'
-import type { PlaceholderConfig, XFormComponentType, XFormContext } from './types'
-
-import { merge, pick } from 'lodash-es'
+import type { PlaceholderConfig } from './types'
+import type { CamelInputElement } from '@/types/form'
+import { assign, isNil, pick } from 'lodash-es'
 import { NFormItem } from 'naive-ui'
 import { selectTypes } from '@/constants/form'
 import { getFieldRuleConfig, hasNestedRule, setNestedRule } from '@/utils/form'
 import { mergeClass } from '@/utils/merge-class'
+import { useFormContext } from './use-form-context'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
-import { xFormContextProviderKey } from './x-form'
 
 export function createFormFieldComponent(
   componentName: string,
   FieldComponent: any,
   fieldPropNames: string[],
   fieldDefaultProps: any,
-  placeholderType: XFormComponentType,
+  placeholderType: CamelInputElement,
 ) {
   return defineComponent({
     name: componentName,
@@ -25,7 +25,7 @@ export function createFormFieldComponent(
     },
     emits: ['update:value'],
     setup(rawProps: Record<string, any>, { emit, slots }) {
-      const { defaultProps, rules, autoRules, formItemContentClass } = inject<XFormContext>(xFormContextProviderKey)!
+      const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
 
       const formItemProps = computed(() =>
         mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {}),
@@ -69,14 +69,24 @@ export function createFormFieldComponent(
   })
 }
 
-export function mergeProps<T extends Record<string, any>>(props: T, defaultProps: T, provideDefaultProps: T): T {
-  return merge({}, defaultProps, provideDefaultProps, props)
+export function mergeProps<T extends Record<string, any>>(props: T, defaultProps: T, provideDefaultProps?: T): T {
+  const result = {} as T
+  Object.assign(result, defaultProps)
+  for (const key in defaultProps) {
+    if (provideDefaultProps && !isNil(provideDefaultProps[key])) {
+      result[key] = provideDefaultProps[key]
+    }
+    if (!isNil(props[key])) {
+      result[key] = props[key]
+    }
+  }
+  return assign({}, defaultProps, provideDefaultProps, props)
 }
 
 export function genPlaceholder(
-  type: XFormComponentType = 'input',
+  type: CamelInputElement = 'input',
   options: {
-    label?: string
+    label?: string | null
     placeholder?: string
     prefixConfig?: Partial<PlaceholderConfig>
   },

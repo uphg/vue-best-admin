@@ -1,8 +1,7 @@
-import type { FormProps } from 'naive-ui'
-import type { FieldProps, LiteFieldDefinition, LiteFieldGroupProps, LiteFieldProps } from './types'
+import type { FieldProps, LiteFieldDefinition, LiteFieldGroupProps, LiteFieldProps, UseFormProps } from './types'
 import { useForm } from './use-form'
 
-export function useFormLite(liteFields: LiteFieldProps[], options: FormProps = {}) {
+export function useFormLite(liteFields: LiteFieldProps[], options: UseFormProps = {}) {
   const fields = convertLiteFieldsToFields(liteFields)
   return useForm(fields, options)
 }
@@ -35,5 +34,5 @@ function convertLiteFieldsToFields(liteFields: LiteFieldDefinition[]): FieldProp
 }
 
 function isLiteFieldGroup(field: LiteFieldDefinition): field is LiteFieldGroupProps {
-  return Array.isArray(field) && field?.[2]?.children.length
+  return Array.isArray(field) && !!field?.[2]?.children?.length
 }

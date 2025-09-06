@@ -1,10 +1,11 @@
-import { pick } from 'lodash-es'
+import type { SelectProps } from 'naive-ui'
 import { NFormItem, NSelect } from 'naive-ui'
-import { computed, defineComponent, inject, type Ref } from 'vue'
+import { defineComponent, ref, type ExtractPublicPropTypes } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nSelectDefaultProps, nSelectPropNames, nSelectProps } from './common'
-import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { genPlaceholder } from './helpers'
+import { useFormProps } from './use-form-props'
+import { useFormContext } from './use-form-context'
 
 const xSelectProps = {
   contentClass: [String, Object, Array],
@@ -12,33 +13,33 @@ const xSelectProps = {
   ...nSelectProps,
 }
 
+type XSelectProps = ExtractPublicPropTypes<typeof xSelectProps>
+
 const XFormSelect = defineComponent({
   name: 'XFormSelect',
   props: xSelectProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
-
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+  setup(rawProps: XSelectProps, { emit, slots }) {
+    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<SelectProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
+      fieldType: 'select',
+      formItemPropNames: nFormItemPropNames,
+      fieldPropNames: nSelectPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
+      fieldDefaultProps: nSelectDefaultProps,
     })
-    const selectProps = computed(() => mergeProps(pick(rawProps, nSelectPropNames), nSelectDefaultProps, defaultProps.value?.select ?? {}))
-    const placeholder = computed(() => genPlaceholder('select', { label: formItemProps.value.label, placeholder: selectProps.value.placeholder }))
-
-    genFormItemRule(formItemProps.value, rules.value, autoRules.value)
-
+    const placeholder = ref(genPlaceholder('select', { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
+      <NFormItem {...formItemProps.value as any}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NSelect
             class="w-full"
-            {...selectProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             placeholder={placeholder.value}
             onUpdate:value={handleUpdateValue}

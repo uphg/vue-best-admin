@@ -1,10 +1,10 @@
-import { pick } from 'lodash-es'
+import type { CheckboxGroupProps } from 'naive-ui'
 import { NCheckbox, NCheckboxGroup, NFormItem } from 'naive-ui'
-import { computed, defineComponent, inject, type PropType, type Ref } from 'vue'
+import { defineComponent, type ExtractPublicPropTypes, type PropType } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nCheckboxGroupDefaultProps, nCheckboxGroupPropNames, nCheckboxGroupProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
-import { genFormItemRule, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xCheckboxProps = {
   contentClass: [String, Object, Array],
@@ -13,32 +13,33 @@ const xCheckboxProps = {
   ...nCheckboxGroupProps,
 }
 
+type XCheckboxProps = ExtractPublicPropTypes<typeof xCheckboxProps>
+
 const XFormCheckbox = defineComponent({
   name: 'XFormCheckbox',
   props: xCheckboxProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
-
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+  setup(rawProps: XCheckboxProps, { emit, slots }) {
+    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<CheckboxGroupProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
+      fieldType: 'checkbox',
+      formItemPropNames: nFormItemPropNames,
+      fieldPropNames: nCheckboxGroupPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
+      fieldDefaultProps: nCheckboxGroupDefaultProps,
     })
-    const checkboxGroupProps = computed(() => mergeProps(pick(rawProps, nCheckboxGroupPropNames), nCheckboxGroupDefaultProps, defaultProps.value?.checkboxGroup ?? {}))
-
-    genFormItemRule({ ...formItemProps.value, type: 'checkbox' }, rules.value, autoRules.value)
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
+      <NFormItem {...formItemProps.value as any}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NCheckboxGroup
             class="w-full"
-            {...checkboxGroupProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             onUpdate:value={handleUpdateValue}
           >

@@ -1,10 +1,11 @@
-import { pick } from 'lodash-es'
+import type { DynamicTagsProps } from 'naive-ui'
+import type { ExtractPublicPropTypes } from 'vue'
 import { NDynamicTags, NFormItem } from 'naive-ui'
-import { computed, defineComponent, inject, type Ref } from 'vue'
+import { defineComponent } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nDynamicTagsDefaultProps, nDynamicTagsPropNames, nDynamicTagsProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
-import { genFormItemRule, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xDynamicTagsProps = {
   contentClass: [String, Object, Array],
@@ -16,28 +17,28 @@ const XFormDynamicTags = defineComponent({
   name: 'XFormDynamicTags',
   props: xDynamicTagsProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
+  setup(rawProps: XDynamicTagsProps, { emit, slots }) {
+    const context = useFormContext()
 
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+    const [fieldProps, formItemProps] = useFormProps<DynamicTagsProps>(rawProps, context, {
+      fieldType: 'dynamicTags',
+      fieldPropNames: nDynamicTagsPropNames,
+      fieldDefaultProps: nDynamicTagsDefaultProps,
+      formItemPropNames: nFormItemPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
     })
-    const dynamicTagsProps = computed(() => mergeProps(pick(rawProps, nDynamicTagsPropNames), nDynamicTagsDefaultProps, defaultProps.value?.dynamicTags ?? {}))
-
-    genFormItemRule({ ...formItemProps.value, type: 'dynamic-tags' }, rules.value, autoRules.value)
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
-        <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
+      <NFormItem {...formItemProps.value as any}>
+        <div class={mergeClass('w-full', context.formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NDynamicTags
             class="w-full"
-            {...dynamicTagsProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             onUpdate:value={handleUpdateValue}
           >
@@ -49,5 +50,7 @@ const XFormDynamicTags = defineComponent({
     )
   },
 })
+
+type XDynamicTagsProps = ExtractPublicPropTypes<typeof xDynamicTagsProps>
 
 export default XFormDynamicTags

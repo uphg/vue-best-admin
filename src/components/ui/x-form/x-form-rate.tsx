@@ -1,10 +1,11 @@
-import { pick } from 'lodash-es'
+import type { RateProps } from 'naive-ui'
+import type { ExtractPublicPropTypes } from 'vue'
 import { NFormItem, NRate } from 'naive-ui'
-import { computed, defineComponent, inject, type Ref } from 'vue'
+import { defineComponent } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nRateDefaultProps, nRatePropNames, nRateProps } from './common'
-import { genFormItemRule, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xRateProps = {
   contentClass: [String, Object, Array],
@@ -16,28 +17,28 @@ const XFormRate = defineComponent({
   name: 'XFormRate',
   props: xRateProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
+  setup(rawProps: XRateProps, { emit, slots }) {
+    const context = useFormContext()
 
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+    const [fieldProps, formItemProps] = useFormProps<RateProps>(rawProps, context, {
+      fieldType: 'rate',
+      fieldPropNames: nRatePropNames,
+      fieldDefaultProps: nRateDefaultProps,
+      formItemPropNames: nFormItemPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
     })
-    const rateProps = computed(() => mergeProps(pick(rawProps, nRatePropNames), nRateDefaultProps, defaultProps.value?.rate ?? {}))
-
-    genFormItemRule({ ...formItemProps.value, type: 'rate' }, rules.value, autoRules.value)
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
-        <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
+      <NFormItem {...formItemProps.value as any}>
+        <div class={mergeClass('w-full', context.formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NRate
             class="w-full"
-            {...rateProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             onUpdate:value={handleUpdateValue}
           >
@@ -49,5 +50,7 @@ const XFormRate = defineComponent({
     )
   },
 })
+
+type XRateProps = ExtractPublicPropTypes<typeof xRateProps>
 
 export default XFormRate

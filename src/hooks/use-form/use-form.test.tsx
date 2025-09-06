@@ -1,3 +1,4 @@
+import type { FormItemRule } from 'naive-ui'
 import { describe, expect, it } from 'vitest'
 import { useForm } from './use-form'
 
@@ -626,7 +627,7 @@ describe('useForm', () => {
         ], { autoRules: ['select'] })
 
         const rulesValue = rules.value
-        const validator = rulesValue.select.validator
+        const validator = (rulesValue.select as FormItemRule).validator!
 
         // Test null value
         expect(validator(null, null)).toBeInstanceOf(Error)

@@ -13,11 +13,13 @@
 ## 组件列表
 
 ### 基础输入组件
+
 - `XFormInput` - 文本输入框
 - `XFormInputNumber` - 数字输入框
 - `XFormInputOTP` - OTP 验证码输入框（基于 Naive UI 的 NInputOtp）
 
 ### 选择组件
+
 - `XFormSelect` - 下拉选择器
 - `XFormCheckbox` - 复选框组
 - `XFormRadio` - 单选框组
@@ -26,10 +28,12 @@
 - `XFormAutoComplete` - 自动完成
 
 ### 日期时间组件
+
 - `XFormDatePicker` - 日期选择器
 - `XFormTimePicker` - 时间选择器
 
 ### 其他组件
+
 - `XFormSwitch` - 开关
 - `XFormSlider` - 滑块
 - `XFormRate` - 评分
@@ -43,7 +47,7 @@
 ## 基础用法
 
 ```tsx
-import { XForm, XFormInput, XFormSelect, XFormInputOTP } from '@/components/ui/x-form'
+import { XForm, XFormInput, XFormInputOTP, XFormSelect } from '@/components/ui/x-form'
 
 const Demo = defineComponent(() => {
   const formRef = ref()
@@ -74,7 +78,7 @@ const Demo = defineComponent(() => {
         path="username"
         placeholder="请输入用户名"
       />
-      
+
       <XFormSelect
         v-model:value={formData.value.gender}
         label="性别"
@@ -82,7 +86,7 @@ const Demo = defineComponent(() => {
         options={genderOptions}
         placeholder="请选择性别"
       />
-      
+
       <XFormInputOTP
         v-model:value={formData.value.otpCode}
         label="验证码"
@@ -90,7 +94,7 @@ const Demo = defineComponent(() => {
         length={6}
         placeholder="请输入验证码"
       />
-      
+
       <NButton type="primary" onClick={handleSubmit}>
         提交
       </NButton>
@@ -179,43 +183,43 @@ const defaultProps = {
 
 ### XForm Props
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| model | `object` | `{}` | 表单数据对象 |
-| rules | `FormRules` | `{}` | 验证规则 |
-| autoRules | `boolean \| string[]` | `false` | 自动生成验证规则 |
-| defaultProps | `object` | `{}` | 默认属性配置 |
-| formItemContentClass | `string \| object \| array` | `''` | 表单项内容样式类 |
+| 属性                 | 类型                        | 默认值  | 说明             |
+| -------------------- | --------------------------- | ------- | ---------------- |
+| model                | `object`                    | `{}`    | 表单数据对象     |
+| rules                | `FormRules`                 | `{}`    | 验证规则         |
+| autoRules            | `boolean \| string[]`       | `false` | 自动生成验证规则 |
+| defaultProps         | `object`                    | `{}`    | 默认属性配置     |
+| formItemContentClass | `string \| object \| array` | `''`    | 表单项内容样式类 |
 
 ### XForm Methods
 
-| 方法名 | 说明 | 参数 |
-|--------|------|------|
-| validate | 验证表单 | `(callback?: Function, shouldRuleBeApplied?: Function) => Promise` |
-| restoreValidation | 恢复验证状态 | `() => void` |
-| reset | 重置表单 | `() => void` |
+| 方法名            | 说明         | 参数                                                               |
+| ----------------- | ------------ | ------------------------------------------------------------------ |
+| validate          | 验证表单     | `(callback?: Function, shouldRuleBeApplied?: Function) => Promise` |
+| restoreValidation | 恢复验证状态 | `() => void`                                                       |
+| reset             | 重置表单     | `() => void`                                                       |
 
 ### 通用 Props
 
 所有表单组件都支持以下通用属性：
 
-| 属性 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| label | `string` | - | 表单项标签 |
-| path | `string` | - | 表单项路径 |
-| value | `any` | - | 表单项值 |
-| contentClass | `string \| object \| array` | - | 内容容器样式类 |
+| 属性         | 类型                        | 默认值 | 说明           |
+| ------------ | --------------------------- | ------ | -------------- |
+| label        | `string`                    | -      | 表单项标签     |
+| path         | `string`                    | -      | 表单项路径     |
+| value        | `any`                       | -      | 表单项值       |
+| contentClass | `string \| object \| array` | -      | 内容容器样式类 |
 
 ### 通用 Events
 
-| 事件名 | 说明 | 参数 |
-|--------|------|------|
+| 事件名       | 说明       | 参数                   |
+| ------------ | ---------- | ---------------------- |
 | update:value | 值更新事件 | `(value: any) => void` |
 
 ### 通用 Slots
 
-| 插槽名 | 说明 |
-|--------|------|
+| 插槽名     | 说明           |
+| ---------- | -------------- |
 | itemPrefix | 表单项前缀内容 |
 | itemSuffix | 表单项后缀内容 |
 
@@ -223,8 +227,7 @@ const defaultProps = {
 
 ```typescript
 // 表单组件类型
-export type XFormComponentType = 
-  | 'input'
+export type CamelInputElement = 'input'
   | 'select'
   | 'checkbox'
   | 'radio'
@@ -256,12 +259,12 @@ export interface XFormItemProps extends NFormItemProps {
 // XFormInputOTP 特有属性
 export interface XFormInputOTPProps {
   value?: string[] | null
-  length?: number  // 验证码位数，默认 6
-  block?: boolean  // 是否块级显示
-  mask?: boolean   // 是否隐藏输入内容
-  gap?: string | number  // 输入框间距
+  length?: number // 验证码位数，默认 6
+  block?: boolean // 是否块级显示
+  mask?: boolean // 是否隐藏输入内容
+  gap?: string | number // 输入框间距
   allowInput?: (char: string, index: number, currentValue: string[]) => boolean
-  onFinish?: (value: string[]) => void  // 输入完成回调
+  onFinish?: (value: string[]) => void // 输入完成回调
 }
 ```
 

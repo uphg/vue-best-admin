@@ -1,30 +1,6 @@
 import type { AutoCompleteProps, CascaderProps, CheckboxGroupProps, ColorPickerProps, DatePickerProps, DynamicInputProps, DynamicTagsProps, FormItemProps, InputNumberProps, InputProps, MentionProps, RadioGroupProps, RateProps, SelectProps, SliderProps, SwitchProps, TimePickerProps, TransferProps, TreeSelectProps, UploadProps } from 'naive-ui'
 import type { InputOtpProps } from 'naive-ui/es/input-otp'
 
-// 组件类型枚举
-export type XFormComponentType = 'input'
-  | 'select'
-  | 'autoComplete'
-  | 'cascader'
-  | 'checkboxGroup'
-  | 'colorPicker'
-  | 'date'
-  | 'datePicker'
-  | 'dynamicInput'
-  | 'dynamicTags'
-  | 'inputNumber'
-  | 'inputOtp'
-  | 'radioGroup'
-  | 'rate'
-  | 'slider'
-  | 'switch'
-  | 'time'
-  | 'timePicker'
-  | 'transfer'
-  | 'treeSelect'
-  | 'upload'
-  | 'mention'
-
 // 定义更明确的类型
 export interface XFormContext {
   rules: Ref<Record<string, any>>
@@ -40,6 +16,7 @@ export interface FormDefaultProps {
   select?: Partial<SelectProps>
   autoComplete?: Partial<AutoCompleteProps>
   cascader?: Partial<CascaderProps>
+  checkbox?: Partial<CheckboxGroupProps>
   checkboxGroup?: Partial<CheckboxGroupProps>
   colorPicker?: Partial<ColorPickerProps>
   date?: Partial<DatePickerProps>
@@ -48,6 +25,9 @@ export interface FormDefaultProps {
   dynamicTags?: Partial<DynamicTagsProps>
   inputNumber?: Partial<InputNumberProps>
   inputOtp?: Partial<InputOtpProps>
+  radio?: Partial<RadioGroupProps>
+  radioButton?: Partial<RadioGroupProps>
+  radioButtonGroup?: Partial<RadioGroupProps>
   radioGroup?: Partial<RadioGroupProps>
   rate?: Partial<RateProps>
   slider?: Partial<SliderProps>

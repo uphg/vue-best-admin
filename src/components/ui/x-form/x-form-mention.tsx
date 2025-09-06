@@ -1,10 +1,12 @@
-import { pick } from 'lodash-es'
+import type { MentionProps } from 'naive-ui'
+import type { ExtractPublicPropTypes } from 'vue'
 import { NFormItem, NMention } from 'naive-ui'
-import { computed, defineComponent, inject, type Ref } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nMentionDefaultProps, nMentionPropNames, nMentionProps } from './common'
-import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { genPlaceholder } from './helpers'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xMentionProps = {
   contentClass: [String, Object, Array],
@@ -16,29 +18,30 @@ const XFormMention = defineComponent({
   name: 'XFormMention',
   props: xMentionProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
+  setup(rawProps: XMentionProps, { emit, slots }) {
+    const context = useFormContext()
 
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+    const [fieldProps, formItemProps] = useFormProps<MentionProps>(rawProps, context, {
+      fieldType: 'mention' as any,
+      fieldPropNames: nMentionPropNames,
+      fieldDefaultProps: nMentionDefaultProps,
+      formItemPropNames: nFormItemPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
     })
-    const mentionProps = computed(() => mergeProps(pick(rawProps, nMentionPropNames), nMentionDefaultProps, defaultProps.value?.mention ?? {}))
-    const placeholder = computed(() => genPlaceholder('mention', { label: formItemProps.value.label, placeholder: mentionProps.value.placeholder }))
 
-    genFormItemRule({ ...formItemProps.value, type: 'mention' }, rules.value, autoRules.value)
+    const placeholder = computed(() => genPlaceholder('mention' as any, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
-        <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
+      <NFormItem {...formItemProps.value as any}>
+        <div class={mergeClass('w-full', context.formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NMention
             class="w-full"
-            {...mentionProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             placeholder={placeholder.value}
             onUpdate:value={handleUpdateValue}
@@ -51,5 +54,7 @@ const XFormMention = defineComponent({
     )
   },
 })
+
+type XMentionProps = ExtractPublicPropTypes<typeof xMentionProps>
 
 export default XFormMention

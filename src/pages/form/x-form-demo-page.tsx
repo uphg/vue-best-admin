@@ -1,25 +1,6 @@
-import { NButton } from 'naive-ui'
+import { NButton, NRadio, NRadioGroup } from 'naive-ui'
 import { computed, defineComponent, ref, shallowRef } from 'vue'
-import {
-  XForm,
-  XFormInput,
-  XFormSelect,
-  XFormCheckbox,
-  XFormRadio,
-  XFormSwitch,
-  XFormInputNumber,
-  XFormSlider,
-  XFormRate,
-  XFormDatePicker,
-  XFormTimePicker,
-  XFormColorPicker,
-  XFormAutoComplete,
-  XFormCascader,
-  XFormTreeSelect,
-  XFormDynamicTags,
-  XFormUpload,
-  XFormInputOTP,
-} from '@/components/ui/x-form'
+import { XForm, XFormAutoComplete, XFormCascader, XFormCheckbox, XFormColorPicker, XFormDatePicker, XFormDynamicTags, XFormInput, XFormInputNumber, XFormInputOTP, XFormRadio, XFormRate, XFormSelect, XFormSlider, XFormSwitch, XFormTimePicker, XFormTreeSelect, XFormUpload } from '@/components/ui/x-form'
 
 const XFormDemo = defineComponent(() => {
   const basicFormRef = shallowRef<InstanceType<typeof XForm> | null>(null)
@@ -104,6 +85,11 @@ const XFormDemo = defineComponent(() => {
       }
     })
   }
+  const config = ref([])
+  const configOptions = [
+    { label: 'clearable', value: 'clearable' },
+    { label: 'label-left', value: 'label-left' },
+  ]
 
   return () => (
     <div class="p-6">
@@ -113,6 +99,16 @@ const XFormDemo = defineComponent(() => {
         {/* 基础表单示例 */}
         <div class="mb-8">
           <h3 class="text-lg font-semibold mb-4">完整表单组件演示</h3>
+          <div>
+            <h3>自定义设置</h3>
+            <div>
+              <XFormCheckbox
+                v-model:value={config.value}
+                label="配置"
+                options={configOptions}
+              />
+            </div>
+          </div>
           <XForm
             ref={basicFormRef}
             model={basicForm.value}
@@ -120,136 +116,140 @@ const XFormDemo = defineComponent(() => {
             labelWidth="auto"
             autoRules
           >
-            <XFormInput 
-              v-model:value={basicForm.value.username} 
-              label="用户名" 
-              path="username" 
+            <XFormInput
+              v-model:value={basicForm.value.username}
+              label="用户名"
+              labelAlign={config.value.includes('label-left') ? 'left' : 'right'}
+              path="username"
               placeholder="请输入用户名"
+              clearable={config.value.includes('clearable')}
             />
-            
-            <XFormInput 
-              v-model:value={basicForm.value.email} 
-              label="邮箱" 
-              path="email" 
+            <div>{basicForm.value.username}</div>
+
+            <XFormInput
+              v-model:value={basicForm.value.email}
+              label="邮箱"
+              path="email"
               placeholder="请输入邮箱地址"
             />
-            
-            <XFormSelect 
-              v-model:value={basicForm.value.gender} 
-              label="性别" 
-              path="gender" 
+
+            <XFormSelect
+              v-model:value={basicForm.value.gender}
+              label="性别"
+              path="gender"
               options={genderOptions}
               placeholder="请选择性别"
             />
-            
-            <XFormCheckbox 
-              v-model:value={basicForm.value.hobbies} 
-              label="爱好" 
-              path="hobbies" 
+
+            <XFormCheckbox
+              v-model:value={basicForm.value.hobbies}
+              label="爱好"
+              path="hobbies"
               options={hobbyOptions}
             />
-            
-            <XFormRadio 
-              v-model:value={basicForm.value.gender} 
-              label="性别（单选）" 
-              path="gender2" 
+
+            <XFormRadio
+              v-model:value={basicForm.value.gender}
+              label="性别（单选）"
+              path="gender2"
               options={genderOptions}
             />
-            
-            <XFormSwitch 
-              v-model:value={basicForm.value.isVip} 
-              label="VIP会员" 
+
+            <XFormSwitch
+              v-model:value={basicForm.value.isVip}
+              label="VIP会员"
               path="isVip"
             />
-            
-            <XFormInputNumber 
-              v-model:value={basicForm.value.age} 
-              label="年龄" 
-              path="age" 
+            <div>{typeof basicForm.value.isVip}</div>
+
+            <XFormInputNumber
+              v-model:value={basicForm.value.age}
+              label="年龄"
+              path="age"
               min={0}
               max={120}
               placeholder="请输入年龄"
             />
-            
-            <XFormSlider 
-              v-model:value={basicForm.value.score} 
-              label="分数" 
-              path="score" 
+
+            <XFormSlider
+              v-model:value={basicForm.value.score}
+              label="分数"
+              path="score"
               min={0}
               max={100}
             />
-            
-            <XFormRate 
-              v-model:value={basicForm.value.rating} 
-              label="评分" 
-              path="rating" 
+
+            <XFormRate
+              v-model:value={basicForm.value.rating}
+              label="评分"
+              path="rating"
               count={5}
               allowHalf
             />
-            
-            <XFormDatePicker 
-              v-model:value={basicForm.value.birthday} 
-              label="生日" 
-              path="birthday" 
+
+            <XFormDatePicker
+              v-model:value={basicForm.value.birthday}
+              label="生日"
+              path="birthday"
               type="date"
               placeholder="请选择生日"
             />
-            
-            <XFormTimePicker 
-              v-model:value={basicForm.value.workTime} 
-              label="工作时间" 
-              path="workTime" 
+
+            <XFormTimePicker
+              v-model:value={basicForm.value.workTime}
+              label="工作时间"
+              path="workTime"
               placeholder="请选择时间"
             />
-            
-            <XFormColorPicker 
-              v-model:value={basicForm.value.favoriteColor} 
-              label="喜欢的颜色" 
+
+            <XFormColorPicker
+              v-model:value={basicForm.value.favoriteColor}
+              label="喜欢的颜色"
               path="favoriteColor"
             />
-            
-            <XFormAutoComplete 
-              v-model:value={basicForm.value.username} 
-              label="自动完成" 
-              path="autoComplete" 
+
+            <XFormAutoComplete
+              v-model:value={basicForm.value.username}
+              label="自动完成"
+              path="autoComplete"
               options={skillOptions}
               placeholder="请输入技能"
             />
-            
-            <XFormCascader 
-              v-model:value={basicForm.value.city} 
-              label="城市" 
-              path="city" 
+
+            <XFormCascader
+              v-model:value={basicForm.value.city}
+              label="城市"
+              path="city"
               options={cityOptions}
               placeholder="请选择城市"
             />
-            
-            <XFormTreeSelect 
-              v-model:value={basicForm.value.city} 
-              label="树形选择" 
-              path="treeSelect" 
+
+            <XFormTreeSelect
+              v-model:value={basicForm.value.city}
+              label="树形选择"
+              path="treeSelect"
               options={cityOptions}
               placeholder="请选择"
             />
-            
-            <XFormDynamicTags 
-              v-model:value={basicForm.value.tags} 
-              label="标签" 
+
+            <XFormDynamicTags
+              v-model:value={basicForm.value.tags}
+              label="标签"
               path="tags"
             />
-            
-            <XFormUpload 
-              v-model:fileList={basicForm.value.fileList} 
-              label="文件上传" 
-              path="fileList" 
+
+            <XFormUpload
+              v-model:fileList={basicForm.value.fileList}
+              label="文件上传"
+              path="fileList"
               action="/api/upload"
               multiple
             />
-            
-            <XFormInputOTP 
-              v-model:value={basicForm.value.otpCode} 
-              label="验证码" 
-              path="otpCode" 
+
+            <XFormInputOTP
+              v-model:value={basicForm.value.otpCode}
+              label="验证码"
+              path="otpCode"
               length={6}
               placeholder="请输入验证码"
             />

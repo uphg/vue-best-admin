@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import { ref } from 'vue'
-import { useForm } from './use-form'
 import { useFormLite } from './use-form-lite'
 
 describe('useForm with reactive options', () => {
@@ -35,7 +34,7 @@ describe('useForm with reactive options', () => {
       { label: '选项B', value: 'B' },
     ])
 
-    const [, form] = useForm([
+    const [, form] = useFormLite([
       ['复选框组', 'checkboxField', { as: 'checkbox-group', options: checkboxOptions }],
     ])
 
@@ -59,7 +58,7 @@ describe('useForm with reactive options', () => {
       { label: '选项乙', value: 'Yi' },
     ])
 
-    const [, form] = useForm([
+    const [, form] = useFormLite([
       ['单选框组', 'radioField', { as: 'radio-group', options: radioOptions }],
     ])
 
@@ -85,7 +84,7 @@ describe('useForm with reactive options', () => {
     // 使用 getter 函数
     const optionsGetter = () => optionsData
 
-    const [, form] = useForm([
+    const [, form] = useFormLite([
       ['选择器', 'selectField', { as: 'select', options: optionsGetter }],
     ])
 

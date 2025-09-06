@@ -1,10 +1,10 @@
-import { pick } from 'lodash-es'
+import type { RadioGroupProps } from 'naive-ui'
 import { NFormItem, NRadio, NRadioGroup } from 'naive-ui'
-import { computed, defineComponent, inject, type PropType, type Ref } from 'vue'
+import { defineComponent, type ExtractPublicPropTypes, type PropType } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nRadioGroupDefaultProps, nRadioGroupPropNames, nRadioGroupProps } from './common'
-import { genFormItemRule, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xRadioProps = {
   contentClass: [String, Object, Array],
@@ -13,32 +13,33 @@ const xRadioProps = {
   ...nRadioGroupProps,
 }
 
+type XRadioProps = ExtractPublicPropTypes<typeof xRadioProps>
+
 const XFormRadio = defineComponent({
   name: 'XFormRadio',
   props: xRadioProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
-
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+  setup(rawProps: XRadioProps, { emit, slots }) {
+    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<RadioGroupProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
+      fieldType: 'radio',
+      formItemPropNames: nFormItemPropNames,
+      fieldPropNames: nRadioGroupPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
+      fieldDefaultProps: nRadioGroupDefaultProps,
     })
-    const radioGroupProps = computed(() => mergeProps(pick(rawProps, nRadioGroupPropNames), nRadioGroupDefaultProps, defaultProps.value?.radioGroup ?? {}))
-
-    genFormItemRule({ ...formItemProps.value, type: 'radio' }, rules.value, autoRules.value)
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
+      <NFormItem {...formItemProps.value as any}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NRadioGroup
             class="w-full"
-            {...radioGroupProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             onUpdate:value={handleUpdateValue}
           >

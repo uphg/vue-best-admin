@@ -1,10 +1,11 @@
-import { pick } from 'lodash-es'
+import type { CascaderProps } from 'naive-ui'
 import { NCascader, NFormItem } from 'naive-ui'
-import { computed, defineComponent, inject, type Ref } from 'vue'
+import { defineComponent, ref, type ExtractPublicPropTypes } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nCascaderDefaultProps, nCascaderPropNames, nCascaderProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
-import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { genPlaceholder } from './helpers'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xCascaderProps = {
   contentClass: [String, Object, Array],
@@ -12,33 +13,33 @@ const xCascaderProps = {
   ...nCascaderProps,
 }
 
+type XCascaderProps = ExtractPublicPropTypes<typeof xCascaderProps>
+
 const XFormCascader = defineComponent({
   name: 'XFormCascader',
   props: xCascaderProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
-
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+  setup(rawProps: XCascaderProps, { emit, slots }) {
+    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<CascaderProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
+      fieldType: 'cascader',
+      formItemPropNames: nFormItemPropNames,
+      fieldPropNames: nCascaderPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
+      fieldDefaultProps: nCascaderDefaultProps,
     })
-    const cascaderProps = computed(() => mergeProps(pick(rawProps, nCascaderPropNames), nCascaderDefaultProps, defaultProps.value?.cascader ?? {}))
-    const placeholder = computed(() => genPlaceholder('cascader', { label: formItemProps.value.label, placeholder: cascaderProps.value.placeholder }))
-
-    genFormItemRule({ ...formItemProps.value, type: 'cascader' }, rules.value, autoRules.value)
-
+    const placeholder = ref(genPlaceholder('cascader', { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
+      <NFormItem {...formItemProps.value as any}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NCascader
             class="w-full"
-            {...cascaderProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             placeholder={placeholder.value}
             onUpdate:value={handleUpdateValue}

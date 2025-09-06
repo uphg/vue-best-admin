@@ -1,10 +1,12 @@
-import { pick } from 'lodash-es'
+import type { TimePickerProps } from 'naive-ui'
+import type { ExtractPublicPropTypes } from 'vue'
 import { NFormItem, NTimePicker } from 'naive-ui'
-import { computed, defineComponent, inject, type Ref } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nTimePickerDefaultProps, nTimePickerPropNames, nTimePickerProps } from './common'
-import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { genPlaceholder } from './helpers'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xTimePickerProps = {
   contentClass: [String, Object, Array],
@@ -16,29 +18,30 @@ const XFormTimePicker = defineComponent({
   name: 'XFormTimePicker',
   props: xTimePickerProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
+  setup(rawProps: XTimePickerProps, { emit, slots }) {
+    const context = useFormContext()
 
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+    const [fieldProps, formItemProps] = useFormProps<TimePickerProps>(rawProps, context, {
+      fieldType: 'timePicker' as any,
+      fieldPropNames: nTimePickerPropNames,
+      fieldDefaultProps: nTimePickerDefaultProps,
+      formItemPropNames: nFormItemPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
     })
-    const timePickerProps = computed(() => mergeProps(pick(rawProps, nTimePickerPropNames), nTimePickerDefaultProps, defaultProps.value?.timePicker ?? {}))
-    const placeholder = computed(() => genPlaceholder('time-picker', { label: formItemProps.value.label, placeholder: timePickerProps.value.placeholder }))
 
-    genFormItemRule({ ...formItemProps.value, type: 'time-picker' }, rules.value, autoRules.value)
+    const placeholder = computed(() => genPlaceholder('time-picker' as any, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
-        <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
+      <NFormItem {...formItemProps.value as any}>
+        <div class={mergeClass('w-full', context.formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NTimePicker
             class="w-full"
-            {...timePickerProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             placeholder={placeholder.value}
             onUpdate:value={handleUpdateValue}
@@ -51,5 +54,7 @@ const XFormTimePicker = defineComponent({
     )
   },
 })
+
+type XTimePickerProps = ExtractPublicPropTypes<typeof xTimePickerProps>
 
 export default XFormTimePicker

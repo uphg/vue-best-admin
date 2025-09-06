@@ -1,10 +1,11 @@
-import { pick } from 'lodash-es'
+import type { DatePickerProps } from 'naive-ui'
 import { NDatePicker, NFormItem } from 'naive-ui'
-import { computed, defineComponent, inject, type Ref } from 'vue'
+import { defineComponent, ref, type ExtractPublicPropTypes } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nDatePickerDefaultProps, nDatePickerPropNames, nDatePickerProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
-import { genFormItemRule, genPlaceholder, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { genPlaceholder } from './helpers'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xDatePickerProps = {
   contentClass: [String, Object, Array],
@@ -12,33 +13,33 @@ const xDatePickerProps = {
   ...nDatePickerProps,
 }
 
+type XDatePickerProps = ExtractPublicPropTypes<typeof xDatePickerProps>
+
 const XFormDatePicker = defineComponent({
   name: 'XFormDatePicker',
   props: xDatePickerProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
-
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+  setup(rawProps: XDatePickerProps, { emit, slots }) {
+    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<DatePickerProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
+      fieldType: 'datePicker',
+      formItemPropNames: nFormItemPropNames,
+      fieldPropNames: nDatePickerPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
+      fieldDefaultProps: nDatePickerDefaultProps,
     })
-    const datePickerProps = computed(() => mergeProps(pick(rawProps, nDatePickerPropNames), nDatePickerDefaultProps, defaultProps.value?.datePicker ?? {}))
-    const placeholder = computed(() => genPlaceholder('date-picker', { label: formItemProps.value.label, placeholder: datePickerProps.value.placeholder }))
-
-    genFormItemRule({ ...formItemProps.value, type: 'date-picker' }, rules.value, autoRules.value)
-
+    const placeholder = ref(genPlaceholder('datePicker', { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder as string }))
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
+      <NFormItem {...formItemProps.value as any}>
         <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NDatePicker
             class="w-full"
-            {...datePickerProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             placeholder={placeholder.value}
             onUpdate:value={handleUpdateValue}

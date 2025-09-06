@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { h } from 'vue'
 import { useForm } from './use-form'
+import { useFormLite } from './use-form-lite'
 
 // Mock NaiveUI components inline
 vi.mock('naive-ui', () => ({
@@ -47,7 +48,7 @@ describe('useForm component rendering', () => {
 
   describe('input components', () => {
     it('should render NInput for input type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['用户名', 'username', { as: 'input' }],
       ])
 
@@ -65,7 +66,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NAutoComplete for auto-complete type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['搜索', 'search', { as: 'auto-complete' }],
       ])
 
@@ -78,7 +79,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NInputNumber for input-number type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['年龄', 'age', { as: 'input-number' }],
       ])
 
@@ -93,7 +94,7 @@ describe('useForm component rendering', () => {
 
   describe('selection components', () => {
     it('should render NSelect for select type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['城市', 'city', { as: 'select', options: [{ label: '北京', value: 'beijing' }] }],
       ])
 
@@ -106,7 +107,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NCascader for cascader type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['地区', 'region', { as: 'cascader' }],
       ])
 
@@ -119,7 +120,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NTreeSelect for tree-select type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['部门', 'department', { as: 'tree-select' }],
       ])
 
@@ -134,7 +135,7 @@ describe('useForm component rendering', () => {
 
   describe('date/time components', () => {
     it('should render NDatePicker for date-picker type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['生日', 'birthday', { as: 'date-picker' }],
       ])
 
@@ -147,7 +148,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NTimePicker for time-picker type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['时间', 'time', { as: 'time-picker' }],
       ])
 
@@ -162,7 +163,7 @@ describe('useForm component rendering', () => {
 
   describe('boolean components', () => {
     it('should render NSwitch for switch type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['启用', 'enabled', { as: 'switch' }],
       ])
 
@@ -177,7 +178,7 @@ describe('useForm component rendering', () => {
 
   describe('range components', () => {
     it('should render NSlider for slider type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['音量', 'volume', { as: 'slider' }],
       ])
 
@@ -190,7 +191,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NRate for rate type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['评分', 'rating', { as: 'rate' }],
       ])
 
@@ -205,7 +206,7 @@ describe('useForm component rendering', () => {
 
   describe('multiple selection components', () => {
     it('should render NCheckboxGroup and NCheckbox for checkbox-group type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['爱好', 'hobbies', {
           as: 'checkbox-group',
           options: [
@@ -225,7 +226,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NRadioGroup and NRadio for radio-group type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['性别', 'gender', {
           as: 'radio-group',
           options: [
@@ -245,7 +246,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NRadioGroup and NRadioButton for radio-button-group type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['类型', 'type', {
           as: 'radio-button-group',
           options: [
@@ -267,7 +268,7 @@ describe('useForm component rendering', () => {
 
   describe('special components', () => {
     it('should render NColorPicker for color-picker type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['颜色', 'color', { as: 'color-picker' }],
       ])
 
@@ -280,7 +281,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NTransfer for transfer type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['权限', 'permissions', { as: 'transfer' }],
       ])
 
@@ -293,7 +294,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NUpload for upload type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['文件', 'file', { as: 'upload' }],
       ])
 
@@ -306,7 +307,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NDynamicInput for dynamic-input type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['标签', 'tags', { as: 'dynamic-input' }],
       ])
 
@@ -319,7 +320,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NDynamicTags for dynamic-tags type', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['动态标签', 'dynamicTags', { as: 'dynamic-tags' }],
       ])
 
@@ -334,7 +335,7 @@ describe('useForm component rendering', () => {
 
   describe('default behavior', () => {
     it('should render NInput for unknown component type (fallback)', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['未知', 'unknown', { as: 'unknown-type' as any }],
       ])
 
@@ -347,7 +348,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render NInput when no as property is provided', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['默认', 'default', {}],
       ])
 
@@ -362,7 +363,7 @@ describe('useForm component rendering', () => {
 
   describe('comprehensive component coverage', () => {
     it('should render all supported component types', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         // Input types
         ['输入框', 'input', { as: 'input' }],
         ['自动完成', 'autoComplete', { as: 'auto-complete' }],
@@ -430,11 +431,14 @@ describe('useForm component rendering', () => {
 
   describe('nested fields', () => {
     it('should render nested fields with NGrid layout', async () => {
-      const [Form] = useForm([
-        ['活动名称', [
-          [null, 'name1', {}],
-          [null, 'name2', {}],
-        ], { grid: { cols: 2, xGap: 24 } }],
+      const [Form] = useFormLite([
+        ['活动名称', null, {
+          grid: { cols: 2, xGap: 24 },
+          children: [
+            [null, 'name1', {}],
+            [null, 'name2', {}],
+          ],
+        }],
         ['活动区域', 'region', {
           as: 'select',
           options: [
@@ -474,11 +478,14 @@ describe('useForm component rendering', () => {
     })
 
     it('should properly flatten nested fields for form data', async () => {
-      const [_, form] = useForm([
-        ['联系方式', [
-          [null, 'phone', {}],
-          [null, 'email', { as: 'input' }],
-        ], { cols: 2 }],
+      const [_, form] = useFormLite([
+        ['联系方式', null, {
+          grid: { cols: 2 },
+          children: [
+            [null, 'phone', {}],
+            [null, 'email', { as: 'input' }],
+          ],
+        }],
         ['备注', 'note', {}],
       ])
 
@@ -496,7 +503,7 @@ describe('useForm component rendering', () => {
 
   describe('grid layout', () => {
     it('should render with NGrid when grid option is enabled', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['用户名', 'username', { as: 'input', span: 12 }],
         ['邮箱', 'email', { as: 'input', span: 12 }],
         ['备注', 'note', { as: 'input', span: 24 }],
@@ -524,7 +531,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should render without NGrid when grid option is disabled', async () => {
-      const [Form] = useForm([
+      const [Form] = useFormLite([
         ['用户名', 'username', { as: 'input', span: 12 }],
         ['邮箱', 'email', { as: 'input', span: 12 }],
       ])
@@ -541,11 +548,14 @@ describe('useForm component rendering', () => {
     })
 
     it('should handle nested fields with grid layout', async () => {
-      const [Form] = useForm([
-        ['个人信息', [
-          ['姓名', 'name', { as: 'input', span: 12 }],
-          ['年龄', 'age', { as: 'input-number', span: 12 }],
-        ], { grid: { cols: 24, xGap: 16, yGap: 8 } }],
+      const [Form] = useFormLite([
+        ['个人信息', null, {
+          grid: { cols: 24, xGap: 16, yGap: 8 },
+          children: [
+            ['姓名', 'name', { as: 'input', span: 12 }],
+            ['年龄', 'age', { as: 'input-number', span: 12 }],
+          ],
+        }],
       ], { grid: true })
 
       render(h(Form))

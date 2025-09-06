@@ -1,17 +1,18 @@
 import type { FormValidateCallback, ShouldRuleBeApplied } from 'naive-ui/es/form/src/interface'
-import type { FieldProps, FormProps } from './types'
+import type { FieldProps, UseFormProps } from './types'
 import { isObject } from '@vueuse/core'
-import { assign, omit } from 'lodash-es'
+import { assign, isNil, omit } from 'lodash-es'
 import { NForm, NGrid } from 'naive-ui'
 import { customOptionNames, defaultFormProps } from './common'
 import { createDefaultField, createFormRules, createItemNodeMap, renderFields } from './helpers'
 
-export function useForm(fields: FieldProps[], options: FormProps = {}) {
+export function useForm(fields: FieldProps[], options: UseFormProps = {}) {
   const form = ref<Record<string, any>>({})
   const formRef = shallowRef<InstanceType<typeof NForm>>()
   const { itemsNodeMap, flattenedFields } = createItemNodeMap(fields, form)
   const defaultField = createDefaultField(flattenedFields)
   flattenedFields.forEach(({ key }) => {
+    if (isNil(key)) return
     form.value[key] = defaultField[key]
   })
 

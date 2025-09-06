@@ -1,11 +1,11 @@
-import type { Ref } from 'vue'
-import { pick } from 'lodash-es'
+import type { TransferProps } from 'naive-ui'
+import type { ExtractPublicPropTypes } from 'vue'
 import { NFormItem, NTransfer } from 'naive-ui'
-import { computed, defineComponent, inject } from 'vue'
+import { defineComponent } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nTransferDefaultProps, nTransferPropNames, nTransferProps } from './common'
-import { genFormItemRule, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xTransferProps = {
   contentClass: [String, Object, Array],
@@ -17,28 +17,28 @@ const XFormTransfer = defineComponent({
   name: 'XFormTransfer',
   props: xTransferProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
+  setup(rawProps: XTransferProps, { emit, slots }) {
+    const context = useFormContext()
 
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+    const [fieldProps, formItemProps] = useFormProps<TransferProps>(rawProps, context, {
+      fieldType: 'transfer',
+      fieldPropNames: nTransferPropNames,
+      fieldDefaultProps: nTransferDefaultProps,
+      formItemPropNames: nFormItemPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
     })
-    const transferProps = computed(() => mergeProps(pick(rawProps, nTransferPropNames), nTransferDefaultProps, defaultProps.value?.transfer ?? {}))
-
-    genFormItemRule({ ...formItemProps.value, type: 'transfer' }, rules.value, autoRules.value)
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
-        <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
+      <NFormItem {...formItemProps.value as any}>
+        <div class={mergeClass('w-full', context.formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NTransfer
             class="w-full"
-            {...transferProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             onUpdate:value={handleUpdateValue}
           >
@@ -50,5 +50,7 @@ const XFormTransfer = defineComponent({
     )
   },
 })
+
+type XTransferProps = ExtractPublicPropTypes<typeof xTransferProps>
 
 export default XFormTransfer

@@ -1,6 +1,6 @@
 import type { MaybeRefOrGetter } from '@vueuse/core'
 import type { FormRules, SelectOption } from 'naive-ui'
-import type { FieldProps, FormProps } from './types'
+import type { FieldProps, UseFormProps } from './types'
 import { isObject } from '@vueuse/core'
 import { omit, pick } from 'lodash-es'
 import { NAutoComplete, NCascader, NCheckbox, NCheckboxGroup, NColorPicker, NDatePicker, NDynamicInput, NDynamicTags, NFormItem, NFormItemGi, NGrid, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSwitch, NTimePicker, NTransfer, NTreeSelect, NUpload } from 'naive-ui'
@@ -438,7 +438,7 @@ export function createDefaultField(flattenedFields: FieldProps[]) {
   return defaultField
 }
 
-export function createFormRules(fields: FieldProps[], options: FormProps = {}) {
+export function createFormRules(fields: FieldProps[], options: UseFormProps = {}) {
   const rules: FormRules = {}
 
   fields.forEach(({ label, key, ...props }) => {

@@ -4,7 +4,7 @@ import type { InputElement } from '@/types/form'
 
 export type FieldAs = InputElement
 export type FieldLabel = string | undefined | null
-export type FieldKey = string
+export type FieldKey = string | null
 export interface FieldProps {
   label: FieldLabel
   key: FieldKey
@@ -17,15 +17,16 @@ export interface LiteFieldRestProps {
   children?: LiteFieldDefinition[]
   [key: string]: any
 }
+
 export interface LiteFieldGroupOptions extends LiteFieldRestProps {
   grid?: GridProps
 }
+export type LiteFieldGroupProps = [FieldLabel, FieldKey | null, LiteFieldGroupOptions?]
 export type LiteFieldProps = [FieldLabel, FieldKey, LiteFieldRestProps?]
-export type LiteFieldGroupProps = [FieldLabel, FieldKey, LiteFieldGroupOptions?]
 export type LiteFieldDefinition = LiteFieldProps | LiteFieldGroupProps
 export type FieldInputProps = Omit<FieldProps, 'label' | 'key' | 'children'>
 
-export interface FormProps {
+export interface UseFormProps {
   autoRules?: string[]
   grid?: GridProps
   [key: string]: any

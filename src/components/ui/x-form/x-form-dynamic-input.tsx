@@ -1,10 +1,11 @@
-import { pick } from 'lodash-es'
+import type { DynamicInputProps } from 'naive-ui'
+import type { ExtractPublicPropTypes } from 'vue'
 import { NDynamicInput, NFormItem } from 'naive-ui'
-import { computed, defineComponent, inject, type Ref } from 'vue'
+import { defineComponent } from 'vue'
 import { mergeClass } from '@/utils/merge-class'
 import { nDynamicInputDefaultProps, nDynamicInputPropNames, nDynamicInputProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
-import { genFormItemRule, mergeProps } from './helpers'
-import { xFormContextProviderKey } from './x-form'
+import { useFormContext } from './use-form-context'
+import { useFormProps } from './use-form-props'
 
 const xDynamicInputProps = {
   contentClass: [String, Object, Array],
@@ -16,28 +17,28 @@ const XFormDynamicInput = defineComponent({
   name: 'XFormDynamicInput',
   props: xDynamicInputProps,
   emits: ['update:value'],
-  setup(rawProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = inject<Record<string, Ref<any>>>(xFormContextProviderKey)!
+  setup(rawProps: XDynamicInputProps, { emit, slots }) {
+    const context = useFormContext()
 
-    const formItemProps = computed(() => {
-      const result = mergeProps(pick(rawProps, nFormItemPropNames), nFormItemDefaultProps, defaultProps.value?.formItem ?? {})
-      return result
+    const [fieldProps, formItemProps] = useFormProps<DynamicInputProps>(rawProps, context, {
+      fieldType: 'dynamicInput',
+      fieldPropNames: nDynamicInputPropNames,
+      fieldDefaultProps: nDynamicInputDefaultProps,
+      formItemPropNames: nFormItemPropNames,
+      formItemDefaultProps: nFormItemDefaultProps,
     })
-    const dynamicInputProps = computed(() => mergeProps(pick(rawProps, nDynamicInputPropNames), nDynamicInputDefaultProps, defaultProps.value?.dynamicInput ?? {}))
-
-    genFormItemRule({ ...formItemProps.value, type: 'dynamic-input' }, rules.value, autoRules.value)
 
     function handleUpdateValue(...args: any[]) {
       emit('update:value', ...args)
     }
 
     return () => (
-      <NFormItem {...formItemProps.value}>
-        <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
+      <NFormItem {...formItemProps.value as any}>
+        <div class={mergeClass('w-full', context.formItemContentClass.value, rawProps.contentClass)}>
           {slots.itemPrefix ? slots.itemPrefix() : null}
           <NDynamicInput
             class="w-full"
-            {...dynamicInputProps.value}
+            {...fieldProps.value as any}
             value={rawProps.value}
             onUpdate:value={handleUpdateValue}
           >
@@ -49,5 +50,7 @@ const XFormDynamicInput = defineComponent({
     )
   },
 })
+
+type XDynamicInputProps = ExtractPublicPropTypes<typeof xDynamicInputProps>
 
 export default XFormDynamicInput
