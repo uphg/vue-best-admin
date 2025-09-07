@@ -79,17 +79,22 @@ export function useTable(
     refresh()
   }
 
-  return [
-    () => (
-      <div>
-        <NDataTable {...nTableProps} class={rawProps.tableClass} data={data.value} columns={columns.value} loading={loading.value}>
-          {slots}
-        </NDataTable>
-        <div class={mergeClass('mt-3 flex', pagingJustifyMap[rawProps.pagingJustify!], rawProps.pagingWrapClass)}>
-          <NPagination {...rawProps.pagination} item-count={total.value} page={page.value} pageSize={pageSize.value} onUpdate:page={onPageChange} onUpdate:pageSize={onPageSizeChange} />
+  const Table = defineComponent({
+    inheritAttrs: false,
+
+    setup(_, { attrs }) {
+      return () => (
+        <div {...attrs} class={mergeClass('flex flex-col gap-3', attrs.class as string)}>
+          <NDataTable {...nTableProps} class={rawProps.tableClass} data={data.value} columns={columns.value} loading={loading.value}>
+            {slots}
+          </NDataTable>
+          <div class={mergeClass('flex', pagingJustifyMap[rawProps.pagingJustify!], rawProps.pagingWrapClass)}>
+            <NPagination {...rawProps.pagination} item-count={total.value} page={page.value} pageSize={pageSize.value} onUpdate:page={onPageChange} onUpdate:pageSize={onPageSizeChange} />
+          </div>
         </div>
-      </div>
-    ),
-    { data, columns, page, pageSize, sorter, refresh },
-  ] as const
+      )
+    },
+  })
+
+  return [Table, { data, columns, page, pageSize, sorter, refresh }] as const
 }

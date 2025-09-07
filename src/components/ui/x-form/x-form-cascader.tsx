@@ -1,14 +1,16 @@
 import type { CascaderProps } from 'naive-ui'
+import type { ExtractPublicPropTypes } from 'vue'
 import { NCascader, NFormItem } from 'naive-ui'
-import { defineComponent, ref, type ExtractPublicPropTypes } from 'vue'
-import { mergeClass } from '@/utils/merge-class'
+import { defineComponent, ref } from 'vue'
 import { nCascaderDefaultProps, nCascaderPropNames, nCascaderProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
 import { genPlaceholder } from './helpers'
 import { useFormContext } from './use-form-context'
 import { useFormProps } from './use-form-props'
+import { xFormItemProps } from './props'
+import XFormItemWrap from './x-form-item-wrap'
 
 const xCascaderProps = {
-  contentClass: [String, Object, Array],
+  ...xFormItemProps,
   ...nFormItemProps,
   ...nCascaderProps,
 }
@@ -22,8 +24,8 @@ const XFormCascader = defineComponent({
   props: xCascaderProps,
   emits: ['update:value'],
   setup(rawProps: XCascaderProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
-    const [fieldProps, formItemProps] = useFormProps<CascaderProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
+    const { defaultProps, rules, autoRules, formItemWrapClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<CascaderProps>(rawProps, { defaultProps, rules, autoRules, formItemWrapClass }, {
       fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nCascaderPropNames,
@@ -36,20 +38,27 @@ const XFormCascader = defineComponent({
     }
 
     return () => (
-      <NFormItem {...formItemProps.value as any}>
-        <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
-          {slots.itemPrefix ? slots.itemPrefix() : null}
-          <NCascader
-            class="w-full"
-            {...fieldProps.value as any}
-            value={rawProps.value}
-            placeholder={placeholder.value}
-            onUpdate:value={handleUpdateValue}
-          >
-            {slots}
-          </NCascader>
-          {slots.itemSuffix ? slots.itemSuffix() : null}
-        </div>
+      <NFormItem {...formItemProps.value}>
+        <XFormItemWrap
+          wrap={rawProps.wrap}
+          wrapClass={rawProps.wrapClass}
+          provideWrapClass={formItemWrapClass.value}
+          v-slots={{
+            itemPrefix: slots.itemPrefix,
+            default: () => (
+              <NCascader
+                class="w-full"
+                {...fieldProps.value as any}
+                value={rawProps.value}
+                placeholder={placeholder.value}
+                onUpdate:value={handleUpdateValue}
+              >
+                {slots}
+              </NCascader>
+            ),
+            itemSuffix: slots.itemSuffix,
+          }}
+        />
       </NFormItem>
     )
   },

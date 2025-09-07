@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { useForm } from './use-form'
+import { useFormLite } from './use-form-lite'
 
 describe('form rules generation', () => {
   describe('input type rules', () => {
     it('should generate correct rules for input components', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['文本输入', 'input', { as: 'input' }],
         ['自动完成', 'autoComplete', { as: 'auto-complete' }],
         ['动态输入', 'dynamicInput', { as: 'dynamic-input' }],
@@ -32,7 +33,7 @@ describe('form rules generation', () => {
 
   describe('selection type rules', () => {
     it('should generate correct rules for select components', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['下拉选择', 'select', { as: 'select' }],
         ['树选择', 'treeSelect', { as: 'tree-select' }],
         ['级联选择', 'cascader', { as: 'cascader' }],
@@ -62,7 +63,7 @@ describe('form rules generation', () => {
     })
 
     it('should generate correct rules for date/time components', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['日期', 'date', { as: 'date' }],
         ['日期选择', 'datePicker', { as: 'date-picker' }],
         ['时间', 'time', { as: 'time' }],
@@ -93,7 +94,7 @@ describe('form rules generation', () => {
     })
 
     it('should generate correct rules for radio components', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['单选', 'radio', { as: 'radio' }],
         ['单选组', 'radioGroup', { as: 'radio-group' }],
         ['单选按钮', 'radioButton', { as: 'radio-button' }],
@@ -126,7 +127,7 @@ describe('form rules generation', () => {
 
   describe('array type rules', () => {
     it('should generate correct rules for array components', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['复选框', 'checkbox', { as: 'checkbox' }],
         ['复选框组', 'checkboxGroup', { as: 'checkbox-group' }],
         ['复选框按钮', 'checkboxButton', { as: 'checkbox-button' }],
@@ -186,7 +187,7 @@ describe('form rules generation', () => {
 
   describe('number type rules', () => {
     it('should generate correct rules for number components', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['数字输入', 'inputNumber', { as: 'input-number' }],
         ['滑块', 'slider', { as: 'slider' }],
         ['评分', 'rate', { as: 'rate' }],
@@ -218,7 +219,7 @@ describe('form rules generation', () => {
 
   describe('boolean type rules', () => {
     it('should generate correct rules for switch component', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['开关', 'switch', { as: 'switch' }],
       ], { autoRules: ['switch'] })
 
@@ -234,7 +235,7 @@ describe('form rules generation', () => {
 
   describe('other type rules', () => {
     it('should generate correct rules for color-picker component', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['颜色选择', 'colorPicker', { as: 'color-picker' }],
       ], { autoRules: ['colorPicker'] })
 
@@ -247,7 +248,7 @@ describe('form rules generation', () => {
     })
 
     it('should generate default rules for unknown component types', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['未知类型', 'unknown', { as: 'unknown-type' as any }],
       ], { autoRules: ['unknown'] })
 
@@ -262,7 +263,7 @@ describe('form rules generation', () => {
 
   describe('auto rules configuration', () => {
     it('should only generate rules for fields specified in autoRules', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['文本1', 'text1', { as: 'input' }],
         ['文本2', 'text2', { as: 'input' }],
         ['数字', 'number', { as: 'input-number' }],
@@ -275,7 +276,7 @@ describe('form rules generation', () => {
     })
 
     it('should not generate rules when autoRules is not provided', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['文本', 'text', { as: 'input' }],
         ['数字', 'number', { as: 'input-number' }],
       ])
@@ -285,7 +286,7 @@ describe('form rules generation', () => {
     })
 
     it('should not generate rules when autoRules is empty', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['文本', 'text', { as: 'input' }],
         ['数字', 'number', { as: 'input-number' }],
       ], { autoRules: [] })
@@ -303,7 +304,7 @@ describe('form rules generation', () => {
         trigger: 'input',
       }
 
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['文本', 'text', { as: 'input', rules: customRule }],
       ], { autoRules: ['text'] })
 
@@ -316,7 +317,7 @@ describe('form rules generation', () => {
 
   describe('validator functionality', () => {
     it('should validate null, undefined and empty string values correctly for select types', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [, { formRef, rules: _rules }] = useFormLite([
         ['选择', 'select', { as: 'select' }],
       ], { autoRules: ['select'] })
 
@@ -336,7 +337,7 @@ describe('form rules generation', () => {
 
   describe('nested field rules', () => {
     it('should handle nested field paths correctly', () => {
-      const [, , { formRef, rules: _rules }] = useForm([
+      const [,{ formRef, rules: _rules }] = useFormLite([
         ['嵌套字段', 'user.name', { as: 'input' }],
         ['深层嵌套', 'user.profile.email', { as: 'input' }],
       ], { autoRules: ['user.name', 'user.profile.email'] })

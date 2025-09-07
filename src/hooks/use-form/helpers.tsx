@@ -4,7 +4,7 @@ import type { FieldProps, UseFormProps } from './types'
 import { isObject } from '@vueuse/core'
 import { omit, pick } from 'lodash-es'
 import { NAutoComplete, NCascader, NCheckbox, NCheckboxGroup, NColorPicker, NDatePicker, NDynamicInput, NDynamicTags, NFormItem, NFormItemGi, NGrid, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSwitch, NTimePicker, NTransfer, NTreeSelect, NUpload } from 'naive-ui'
-import { getFieldRuleConfig, setNestedRule } from '@/utils/form'
+import { getDefaultValue, getFieldRuleConfig, setNestedRule } from '@/utils/form'
 import { nFormItemPropNames } from './common'
 
 export function renderFields(fields: FieldProps[], itemsNodeMap: Map<string, any>, isGrid: boolean) {
@@ -406,38 +406,7 @@ export function createDefaultField(flattenedFields: FieldProps[]) {
       return
     }
     const tag = props?.as || 'input'
-    switch (tag) {
-      case 'checkbox':
-      case 'checkbox-group':
-      case 'transfer':
-      case 'dynamic-tags':
-      case 'upload':
-      case 'dynamic-input':
-        defaultField[key] = []
-        break
-      case 'switch':
-        defaultField[key] = false
-        break
-      case 'select':
-      case 'tree-select':
-      case 'cascader':
-        defaultField[key] = props?.multiple ? [] : null
-        break
-      case 'input-number':
-      case 'slider':
-      case 'rate':
-        defaultField[key] = props?.min || 0
-        break
-      case 'date':
-      case 'date-picker':
-      case 'time':
-      case 'time-picker':
-      case 'color-picker':
-        defaultField[key] = null
-        break
-      default:
-        defaultField[key] = null
-    }
+    defaultField[key] = getDefaultValue(tag, props)
   })
   return defaultField
 }

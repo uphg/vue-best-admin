@@ -1,13 +1,15 @@
 import type { RadioGroupProps } from 'naive-ui'
+import type { ExtractPublicPropTypes, PropType } from 'vue'
 import { NFormItem, NRadio, NRadioGroup } from 'naive-ui'
-import { defineComponent, type ExtractPublicPropTypes, type PropType } from 'vue'
-import { mergeClass } from '@/utils/merge-class'
+import { defineComponent } from 'vue'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nRadioGroupDefaultProps, nRadioGroupPropNames, nRadioGroupProps } from './common'
 import { useFormContext } from './use-form-context'
 import { useFormProps } from './use-form-props'
+import { xFormItemProps } from './props'
+import XFormItemWrap from './x-form-item-wrap'
 
 const xRadioProps = {
-  contentClass: [String, Object, Array],
+  ...xFormItemProps,
   options: Array as PropType<Array<{ label: string, value: any, disabled?: boolean }>>,
   ...nFormItemProps,
   ...nRadioGroupProps,
@@ -22,8 +24,8 @@ const XFormRadio = defineComponent({
   props: xRadioProps,
   emits: ['update:value'],
   setup(rawProps: XRadioProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
-    const [fieldProps, formItemProps] = useFormProps<RadioGroupProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
+    const { defaultProps, rules, autoRules, formItemWrapClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<RadioGroupProps>(rawProps, { defaultProps, rules, autoRules, formItemWrapClass }, {
       fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nRadioGroupPropNames,
@@ -36,24 +38,31 @@ const XFormRadio = defineComponent({
     }
 
     return () => (
-      <NFormItem {...formItemProps.value as any}>
-        <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
-          {slots.itemPrefix ? slots.itemPrefix() : null}
-          <NRadioGroup
-            class="w-full"
-            {...fieldProps.value as any}
-            value={rawProps.value}
-            onUpdate:value={handleUpdateValue}
-          >
-            {rawProps.options?.map(option => (
-              <NRadio key={option.value} value={option.value} disabled={option.disabled}>
-                {option.label}
-              </NRadio>
-            ))}
-            {slots.default?.()}
-          </NRadioGroup>
-          {slots.itemSuffix ? slots.itemSuffix() : null}
-        </div>
+      <NFormItem {...formItemProps.value}>
+        <XFormItemWrap
+          wrap={rawProps.wrap}
+          wrapClass={rawProps.wrapClass}
+          provideWrapClass={formItemWrapClass.value}
+          v-slots={{
+            itemPrefix: slots.itemPrefix,
+            default: () => (
+              <NRadioGroup
+                class="w-full"
+                {...fieldProps.value as any}
+                value={rawProps.value}
+                onUpdate:value={handleUpdateValue}
+              >
+                {rawProps.options?.map(option => (
+                  <NRadio key={option.value} value={option.value} disabled={option.disabled}>
+                    {option.label}
+                  </NRadio>
+                ))}
+                {slots.default?.()}
+              </NRadioGroup>
+            ),
+            itemSuffix: slots.itemSuffix,
+          }}
+        />
       </NFormItem>
     )
   },

@@ -7,6 +7,6 @@ export function useFormContext() {
     defaultProps: ref({}),
     rules: ref({}),
     autoRules: ref(false),
-    formItemContentClass: ref(''),
+    formItemWrapClass: ref(''),
   })!
 }

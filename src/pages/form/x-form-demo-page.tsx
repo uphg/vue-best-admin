@@ -1,4 +1,4 @@
-import { NButton, NRadio, NRadioGroup } from 'naive-ui'
+import { NButton, NFormItem, NRadio, NRadioGroup } from 'naive-ui'
 import { computed, defineComponent, ref, shallowRef } from 'vue'
 import { XForm, XFormAutoComplete, XFormCascader, XFormCheckbox, XFormColorPicker, XFormDatePicker, XFormDynamicTags, XFormInput, XFormInputNumber, XFormInputOTP, XFormRadio, XFormRate, XFormSelect, XFormSlider, XFormSwitch, XFormTimePicker, XFormTreeSelect, XFormUpload } from '@/components/ui/x-form'
 
@@ -95,7 +95,7 @@ const XFormDemo = defineComponent(() => {
 
   return () => (
     <div class="p-6">
-      <div class="mx-auto w-2xl">
+      <div class="mx-auto w-7xl">
         <h2 class="text-2xl font-bold mb-6">XForm 组件演示</h2>
 
         {/* 基础表单示例 */}
@@ -211,7 +211,7 @@ const XFormDemo = defineComponent(() => {
             />
 
             <XFormAutoComplete
-              v-model:value={basicForm.value.username}
+              v-model:value={basicForm.value.autoComplete}
               label="自动完成"
               path="autoComplete"
               options={skillOptions}
@@ -227,9 +227,10 @@ const XFormDemo = defineComponent(() => {
             />
 
             <XFormTreeSelect
-              v-model:value={basicForm.value.city}
+              v-model:value={basicForm.value.treeSelect}
               label="树形选择"
               path="treeSelect"
+              keyField="value"
               options={cityOptions}
               placeholder="请选择"
             />
@@ -253,7 +254,6 @@ const XFormDemo = defineComponent(() => {
               label="验证码"
               path="otpCode"
               length={6}
-              placeholder="请输入验证码"
             />
           </XForm>
 
@@ -270,6 +270,53 @@ const XFormDemo = defineComponent(() => {
           </div>
         </div>
 
+        {/* 内联表单示例 */}
+        <div class="w-full">
+          <XForm
+            ref={basicFormRef}
+            model={basicForm.value}
+            labelPlacement="left"
+            labelWidth="auto"
+            autoRules
+            inline
+          >
+            <XFormInput
+              v-model:value={basicForm.value.username}
+              label="用户名"
+              labelAlign={config.value.includes('label-left') ? 'left' : 'right'}
+              path="username"
+              placeholder="请输入用户名"
+              clearable={config.value.includes('clearable')}
+            />
+            <div>{basicForm.value.username}</div>
+
+            <XFormInput
+              v-model:value={basicForm.value.email}
+              label="邮箱"
+              path="email"
+              placeholder="请输入邮箱地址"
+            />
+
+            <XFormSelect
+              v-model:value={basicForm.value.gender}
+              label="性别"
+              path="gender"
+              options={genderOptions}
+              placeholder="请选择性别"
+            />
+            <NFormItem>
+              <NButton type="primary" onClick={handleBasicSubmit}>
+                提交
+              </NButton>
+              <NButton onClick={handleBasicReset}>
+                重置
+              </NButton>
+              <NButton onClick={handleBasicValidate}>
+                验证
+              </NButton>
+            </NFormItem>
+          </XForm>
+        </div>
       </div>
     </div>
   )

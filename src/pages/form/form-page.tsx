@@ -13,10 +13,13 @@ interface FormData {
 const FormPage = defineComponent(() => {
   const [Form, formData, { resetForm, validate }] = useFormLite([
     ['活动名称', 'name', {}],
-    ['活动名称', [
-      [null, 'name1', { showFeedback: false }],
-      [null, 'name2', { showFeedback: false }],
-    ], { grid: { cols: 2, xGap: 24 } }],
+    ['活动名称', null, {
+      grid: { cols: 2, xGap: 24 },
+      children: [
+        [null, 'name1', { showFeedback: false }],
+        [null, 'name2', { showFeedback: false }],
+      ],
+    }],
     ['活动区域', 'region', {
       as: 'select',
       options: [

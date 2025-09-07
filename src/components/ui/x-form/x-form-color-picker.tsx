@@ -1,13 +1,15 @@
 import type { ColorPickerProps } from 'naive-ui'
+import type { ExtractPublicPropTypes } from 'vue'
 import { NColorPicker, NFormItem } from 'naive-ui'
-import { defineComponent, type ExtractPublicPropTypes } from 'vue'
-import { mergeClass } from '@/utils/merge-class'
+import { defineComponent } from 'vue'
 import { nColorPickerDefaultProps, nColorPickerPropNames, nColorPickerProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
 import { useFormContext } from './use-form-context'
 import { useFormProps } from './use-form-props'
+import { xFormItemProps } from './props'
+import XFormItemWrap from './x-form-item-wrap'
 
 const xColorPickerProps = {
-  contentClass: [String, Object, Array],
+  ...xFormItemProps,
   ...nFormItemProps,
   ...nColorPickerProps,
 }
@@ -21,9 +23,9 @@ const XFormColorPicker = defineComponent({
   props: xColorPickerProps,
   emits: ['update:value'],
   setup(rawProps: XColorPickerProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
-    const [fieldProps, formItemProps] = useFormProps<ColorPickerProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
-      fieldType: fieldType,
+    const { defaultProps, rules, autoRules, formItemWrapClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<ColorPickerProps>(rawProps, { defaultProps, rules, autoRules, formItemWrapClass }, {
+      fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nColorPickerPropNames,
       formItemDefaultProps: nFormItemDefaultProps,
@@ -35,19 +37,26 @@ const XFormColorPicker = defineComponent({
     }
 
     return () => (
-      <NFormItem {...formItemProps.value as any}>
-        <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
-          {slots.itemPrefix ? slots.itemPrefix() : null}
-          <NColorPicker
-            class="w-full"
-            {...fieldProps.value as any}
-            value={rawProps.value}
-            onUpdate:value={handleUpdateValue}
-          >
-            {slots}
-          </NColorPicker>
-          {slots.itemSuffix ? slots.itemSuffix() : null}
-        </div>
+      <NFormItem {...formItemProps.value}>
+        <XFormItemWrap
+          wrap={rawProps.wrap}
+          wrapClass={rawProps.wrapClass}
+          provideWrapClass={formItemWrapClass.value}
+          v-slots={{
+            itemPrefix: slots.itemPrefix,
+            default: () => (
+              <NColorPicker
+                class="w-full"
+                {...fieldProps.value as any}
+                value={rawProps.value}
+                onUpdate:value={handleUpdateValue}
+              >
+                {slots}
+              </NColorPicker>
+            ),
+            itemSuffix: slots.itemSuffix,
+          }}
+        />
       </NFormItem>
     )
   },

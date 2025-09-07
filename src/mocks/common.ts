@@ -64,6 +64,14 @@ export const routeDate = [
     },
     children: [
       {
+        path: 'n-base',
+        component: 'form/form-demo-page',
+        meta: {
+          title: 'Naive表单示例',
+          icon: 'table',
+        },
+      },
+      {
         path: 'base',
         component: 'form/form-page',
         meta: {

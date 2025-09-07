@@ -61,5 +61,5 @@ export function useForm(fields: FieldProps[], options: UseFormProps = {}) {
     formRef.value?.restoreValidation()
   }
 
-  return [Form, form, { formRef, rules: formRules, resetForm, setFields, resetFields, validate, resetValidation }] as const
+  return [Form, { form, formRef, rules: formRules, resetForm, setFields, resetFields, validate, resetValidation }] as const
 }

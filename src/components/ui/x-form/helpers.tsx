@@ -51,10 +51,7 @@ export function genPlaceholder(
 
 export function genFormItemRule(type: InputElement, { props, rules, autoRules }: { props: Record<string, any>, rules: FormRules, autoRules: boolean | string[] }) {
   const { path, label } = props
-  console.log(label)
-  console.log('path:', path)
-  console.log('rules')
-  console.log({ ...rules })
+
   if (!path || !label || hasNestedRule(rules, path)) {
     return
   }

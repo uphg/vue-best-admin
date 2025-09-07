@@ -2,13 +2,14 @@ import type { RateProps } from 'naive-ui'
 import type { ExtractPublicPropTypes } from 'vue'
 import { NFormItem, NRate } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nRateDefaultProps, nRatePropNames, nRateProps } from './common'
 import { useFormContext } from './use-form-context'
 import { useFormProps } from './use-form-props'
+import { xFormItemProps } from './props'
+import XFormItemWrap from './x-form-item-wrap'
 
 const xRateProps = {
-  contentClass: [String, Object, Array],
+  ...xFormItemProps,
   ...nFormItemProps,
   ...nRateProps,
 }
@@ -35,19 +36,26 @@ const XFormRate = defineComponent({
     }
 
     return () => (
-      <NFormItem {...formItemProps.value as any}>
-        <div class={mergeClass('w-full', context.formItemContentClass.value, rawProps.contentClass)}>
-          {slots.itemPrefix ? slots.itemPrefix() : null}
-          <NRate
-            class="w-full"
-            {...fieldProps.value as any}
-            value={rawProps.value}
-            onUpdate:value={handleUpdateValue}
-          >
-            {slots}
-          </NRate>
-          {slots.itemSuffix ? slots.itemSuffix() : null}
-        </div>
+      <NFormItem {...formItemProps.value}>
+        <XFormItemWrap
+          wrap={rawProps.wrap}
+          wrapClass={rawProps.wrapClass}
+          provideWrapClass={context.formItemWrapClass.value}
+          v-slots={{
+            itemPrefix: slots.itemPrefix,
+            default: () => (
+              <NRate
+                class="w-full"
+                {...fieldProps.value as any}
+                value={rawProps.value}
+                onUpdate:value={handleUpdateValue}
+              >
+                {slots}
+              </NRate>
+            ),
+            itemSuffix: slots.itemSuffix,
+          }}
+        />
       </NFormItem>
     )
   },

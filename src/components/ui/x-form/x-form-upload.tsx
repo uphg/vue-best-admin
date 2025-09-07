@@ -2,13 +2,14 @@ import type { UploadProps } from 'naive-ui'
 import type { ExtractPublicPropTypes } from 'vue'
 import { NFormItem, NUpload } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nUploadDefaultProps, nUploadPropNames, nUploadProps } from './common'
 import { useFormContext } from './use-form-context'
 import { useFormProps } from './use-form-props'
+import { xFormItemProps } from './props'
+import XFormItemWrap from './x-form-item-wrap'
 
 const xUploadProps = {
-  contentClass: [String, Object, Array],
+  ...xFormItemProps,
   ...nFormItemProps,
   ...nUploadProps,
 }
@@ -35,19 +36,26 @@ const XFormUpload = defineComponent({
     }
 
     return () => (
-      <NFormItem {...formItemProps.value as any}>
-        <div class={mergeClass('w-full', context.formItemContentClass.value, rawProps.contentClass)}>
-          {slots.itemPrefix ? slots.itemPrefix() : null}
-          <NUpload
-            class="w-full"
-            {...fieldProps.value as any}
-            fileList={rawProps.fileList}
-            onUpdate:fileList={handleUpdateFileList}
-          >
-            {slots.default?.() || <div>点击或拖拽文件到此区域上传</div>}
-          </NUpload>
-          {slots.itemSuffix ? slots.itemSuffix() : null}
-        </div>
+      <NFormItem {...formItemProps.value}>
+        <XFormItemWrap
+          wrap={rawProps.wrap}
+          wrapClass={rawProps.wrapClass}
+          provideWrapClass={context.formItemWrapClass.value}
+          v-slots={{
+            itemPrefix: slots.itemPrefix,
+            default: () => (
+              <NUpload
+                class="w-full"
+                {...fieldProps.value as any}
+                fileList={rawProps.fileList}
+                onUpdate:fileList={handleUpdateFileList}
+              >
+                {slots.default?.() || <div>点击或拖拽文件到此区域上传</div>}
+              </NUpload>
+            ),
+            itemSuffix: slots.itemSuffix,
+          }}
+        />
       </NFormItem>
     )
   },

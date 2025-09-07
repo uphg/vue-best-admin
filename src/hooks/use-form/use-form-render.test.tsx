@@ -478,7 +478,7 @@ describe('useForm component rendering', () => {
     })
 
     it('should properly flatten nested fields for form data', async () => {
-      const [_, form] = useFormLite([
+      const [_, { form }] = useFormLite([
         ['联系方式', null, {
           grid: { cols: 2 },
           children: [

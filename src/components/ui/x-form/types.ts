@@ -4,7 +4,7 @@ import type { InputOtpProps } from 'naive-ui/es/input-otp'
 // 定义更明确的类型
 export interface XFormContext {
   rules: Ref<Record<string, any>>
-  formItemContentClass: Ref<any>
+  formItemWrapClass: Ref<any>
   autoRules: Ref<boolean | string[]>
   defaultProps: Ref<FormDefaultProps>
 }

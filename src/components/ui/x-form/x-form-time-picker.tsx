@@ -2,14 +2,15 @@ import type { TimePickerProps } from 'naive-ui'
 import type { ExtractPublicPropTypes } from 'vue'
 import { NFormItem, NTimePicker } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nTimePickerDefaultProps, nTimePickerPropNames, nTimePickerProps } from './common'
 import { genPlaceholder } from './helpers'
 import { useFormContext } from './use-form-context'
 import { useFormProps } from './use-form-props'
+import { xFormItemProps } from './props'
+import XFormItemWrap from './x-form-item-wrap'
 
 const xTimePickerProps = {
-  contentClass: [String, Object, Array],
+  ...xFormItemProps,
   ...nFormItemProps,
   ...nTimePickerProps,
 }
@@ -24,7 +25,7 @@ const XFormTimePicker = defineComponent({
     const context = useFormContext()
 
     const [fieldProps, formItemProps] = useFormProps<TimePickerProps>(rawProps, context, {
-      fieldType: fieldType,
+      fieldType,
       fieldPropNames: nTimePickerPropNames,
       fieldDefaultProps: nTimePickerDefaultProps,
       formItemPropNames: nFormItemPropNames,
@@ -38,20 +39,27 @@ const XFormTimePicker = defineComponent({
     }
 
     return () => (
-      <NFormItem {...formItemProps.value as any}>
-        <div class={mergeClass('w-full', context.formItemContentClass.value, rawProps.contentClass)}>
-          {slots.itemPrefix ? slots.itemPrefix() : null}
-          <NTimePicker
-            class="w-full"
-            {...fieldProps.value as any}
-            value={rawProps.value}
-            placeholder={placeholder.value}
-            onUpdate:value={handleUpdateValue}
-          >
-            {slots}
-          </NTimePicker>
-          {slots.itemSuffix ? slots.itemSuffix() : null}
-        </div>
+      <NFormItem {...formItemProps.value}>
+        <XFormItemWrap
+          wrap={rawProps.wrap}
+          wrapClass={rawProps.wrapClass}
+          provideWrapClass={context.formItemWrapClass.value}
+          v-slots={{
+            itemPrefix: slots.itemPrefix,
+            default: () => (
+              <NTimePicker
+                class="w-full"
+                {...fieldProps.value as any}
+                value={rawProps.value}
+                placeholder={placeholder.value}
+                onUpdate:value={handleUpdateValue}
+              >
+                {slots}
+              </NTimePicker>
+            ),
+            itemSuffix: slots.itemSuffix,
+          }}
+        />
       </NFormItem>
     )
   },

@@ -2,6 +2,8 @@ import type { FormRules } from 'naive-ui'
 import type { CamelInputElement, InputElement } from '@/types/form'
 import { selectTypes } from '@/constants/form'
 
+const arrDateTypes = ['daterange', 'datetimerange', 'monthrange', 'yearrange', 'quarterrange']
+
 export function getFieldRuleConfig(tag: InputElement | CamelInputElement, { label, multiple }: { label?: string | null, multiple?: boolean }) {
   const baseRule = {
     required: true,
@@ -11,14 +13,10 @@ export function getFieldRuleConfig(tag: InputElement | CamelInputElement, { labe
   switch (tag) {
     case 'input':
     case 'dynamic-input':
-      return {
-        ...baseRule,
-        trigger: ['blur', 'input'],
-      }
     case 'auto-complete':
       return {
         ...baseRule,
-        trigger: ['input', 'change', 'blur', 'focus'],
+        trigger: ['blur', 'input'],
       }
     case 'select':
     case 'tree-select':
@@ -118,4 +116,53 @@ export function hasNestedRule(rules: FormRules, path: string): boolean {
   }
 
   return true
+}
+
+interface DefaultValueProps {
+  multiple?: boolean
+  min?: number
+  length?: number
+  defaultValue?: any
+  type?: string
+  [key: string]: any
+}
+
+export function getDefaultValue(tag: InputElement, props?: DefaultValueProps) {
+  if (props?.defaultValue) return props.defaultValue
+  switch (tag) {
+    case 'checkbox':
+    case 'checkbox-group':
+    case 'transfer':
+    case 'dynamic-tags':
+    case 'upload':
+    case 'dynamic-input':
+      return []
+    case 'switch':
+      return false
+    case 'select':
+    case 'tree-select':
+    case 'cascader':
+      return props?.multiple ? [] : null
+    case 'input-number':
+    case 'slider':
+    case 'rate':
+      return props?.min || 0
+    case 'input-otp':
+      return Array.from({ length: props?.length ?? 6 }).fill('')
+    case 'date':
+    case 'date-picker':
+      return arrDateTypes.includes(props!.type!) ? [] : null
+    default:
+    // default value：
+    // 'input'
+    // 'radio'
+    // 'mention'
+    // 'date'
+    // 'date-picker'
+    // 'time'
+    // 'time-picker'
+    // 'color-picker'
+    // 'auto-complete'
+      return null
+  }
 }

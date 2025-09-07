@@ -1,13 +1,16 @@
 import type { CheckboxGroupProps } from 'naive-ui'
+import type { ExtractPublicPropTypes, PropType } from 'vue'
 import { NCheckbox, NCheckboxGroup, NFormItem } from 'naive-ui'
-import { defineComponent, type ExtractPublicPropTypes, type PropType } from 'vue'
-import { mergeClass } from '@/utils/merge-class'
+import { defineComponent } from 'vue'
+
 import { nCheckboxGroupDefaultProps, nCheckboxGroupPropNames, nCheckboxGroupProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
+import { xFormItemProps } from './props'
 import { useFormContext } from './use-form-context'
 import { useFormProps } from './use-form-props'
+import XFormItemWrap from './x-form-item-wrap'
 
 const xCheckboxProps = {
-  contentClass: [String, Object, Array],
+  ...xFormItemProps,
   options: Array as PropType<Array<{ label: string, value: any, disabled?: boolean }>>,
   ...nFormItemProps,
   ...nCheckboxGroupProps,
@@ -22,8 +25,8 @@ const XFormCheckbox = defineComponent({
   props: xCheckboxProps,
   emits: ['update:value'],
   setup(rawProps: XCheckboxProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemContentClass } = useFormContext()
-    const [fieldProps, formItemProps] = useFormProps<CheckboxGroupProps>(rawProps, { defaultProps, rules, autoRules, formItemContentClass }, {
+    const { defaultProps, rules, autoRules, formItemWrapClass } = useFormContext()
+    const [fieldProps, formItemProps] = useFormProps<CheckboxGroupProps>(rawProps, { defaultProps, rules, autoRules, formItemWrapClass }, {
       fieldType,
       formItemPropNames: nFormItemPropNames,
       fieldPropNames: nCheckboxGroupPropNames,
@@ -36,24 +39,31 @@ const XFormCheckbox = defineComponent({
     }
 
     return () => (
-      <NFormItem {...formItemProps.value as any}>
-        <div class={mergeClass('w-full', formItemContentClass.value, rawProps.contentClass)}>
-          {slots.itemPrefix ? slots.itemPrefix() : null}
-          <NCheckboxGroup
-            class="w-full"
-            {...fieldProps.value as any}
-            value={rawProps.value}
-            onUpdate:value={handleUpdateValue}
-          >
-            {rawProps.options?.map(option => (
-              <NCheckbox key={option.value} value={option.value} disabled={option.disabled}>
-                {option.label}
-              </NCheckbox>
-            ))}
-            {slots.default?.()}
-          </NCheckboxGroup>
-          {slots.itemSuffix ? slots.itemSuffix() : null}
-        </div>
+      <NFormItem {...formItemProps.value}>
+        <XFormItemWrap
+          wrap={rawProps.wrap}
+          wrapClass={rawProps.wrapClass}
+          provideWrapClass={formItemWrapClass.value}
+          v-slots={{
+            itemPrefix: slots.itemPrefix,
+            default: () => (
+              <NCheckboxGroup
+                class="w-full"
+                {...fieldProps.value as any}
+                value={rawProps.value}
+                onUpdate:value={handleUpdateValue}
+              >
+                {rawProps.options?.map(option => (
+                  <NCheckbox key={option.value} value={option.value} disabled={option.disabled}>
+                    {option.label}
+                  </NCheckbox>
+                ))}
+                {slots.default?.()}
+              </NCheckboxGroup>
+            ),
+            itemSuffix: slots.itemSuffix,
+          }}
+        />
       </NFormItem>
     )
   },

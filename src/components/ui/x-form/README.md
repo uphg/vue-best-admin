@@ -183,13 +183,13 @@ const defaultProps = {
 
 ### XForm Props
 
-| 属性                 | 类型                        | 默认值  | 说明             |
-| -------------------- | --------------------------- | ------- | ---------------- |
-| model                | `object`                    | `{}`    | 表单数据对象     |
-| rules                | `FormRules`                 | `{}`    | 验证规则         |
-| autoRules            | `boolean \| string[]`       | `false` | 自动生成验证规则 |
-| defaultProps         | `object`                    | `{}`    | 默认属性配置     |
-| formItemContentClass | `string \| object \| array` | `''`    | 表单项内容样式类 |
+| 属性              | 类型                        | 默认值  | 说明             |
+| ----------------- | --------------------------- | ------- | ---------------- |
+| model             | `object`                    | `{}`    | 表单数据对象     |
+| rules             | `FormRules`                 | `{}`    | 验证规则         |
+| autoRules         | `boolean \| string[]`       | `false` | 自动生成验证规则 |
+| defaultProps      | `object`                    | `{}`    | 默认属性配置     |
+| formItemWrapClass | `string \| object \| array` | `''`    | 表单项内容样式类 |
 
 ### XForm Methods
 
@@ -203,12 +203,12 @@ const defaultProps = {
 
 所有表单组件都支持以下通用属性：
 
-| 属性         | 类型                        | 默认值 | 说明           |
-| ------------ | --------------------------- | ------ | -------------- |
-| label        | `string`                    | -      | 表单项标签     |
-| path         | `string`                    | -      | 表单项路径     |
-| value        | `any`                       | -      | 表单项值       |
-| contentClass | `string \| object \| array` | -      | 内容容器样式类 |
+| 属性      | 类型                        | 默认值 | 说明           |
+| --------- | --------------------------- | ------ | -------------- |
+| label     | `string`                    | -      | 表单项标签     |
+| path      | `string`                    | -      | 表单项路径     |
+| value     | `any`                       | -      | 表单项值       |
+| wrapClass | `string \| object \| array` | -      | 内容容器样式类 |
 
 ### 通用 Events
 

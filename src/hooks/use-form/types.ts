@@ -28,7 +28,7 @@ export type FieldInputProps = Omit<FieldProps, 'label' | 'key' | 'children'>
 
 export interface UseFormProps {
   autoRules?: string[]
-  grid?: GridProps
+  grid?: GridProps | boolean
   [key: string]: any
 }
 

@@ -12,8 +12,7 @@ const formProps = {
     default: false,
   },
   defaultProps: { type: Object, default: () => ({}) },
-  formItemContentClass: { type: [String, Object, Array], default: '' },
-
+  formItemWrapClass: { type: [String, Object, Array], default: '' },
   ...nFormProps,
 }
 
@@ -31,13 +30,10 @@ const XForm = defineComponent({
     // 提供给子组件的上下文
     const formContext = {
       rules: _rules,
-      formItemContentClass: toRef(props, 'formItemContentClass'),
+      formItemWrapClass: toRef(props, 'formItemWrapClass'),
       autoRules: toRef(props, 'autoRules'),
       defaultProps: toRef(props, 'defaultProps'),
     }
-
-    console.log('rules')
-    console.log(rules)
 
     provide(xFormContextProviderKey, formContext)
 

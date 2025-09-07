@@ -2,14 +2,15 @@ import type { MentionProps } from 'naive-ui'
 import type { ExtractPublicPropTypes } from 'vue'
 import { NFormItem, NMention } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nMentionDefaultProps, nMentionPropNames, nMentionProps } from './common'
 import { genPlaceholder } from './helpers'
 import { useFormContext } from './use-form-context'
 import { useFormProps } from './use-form-props'
+import { xFormItemProps } from './props'
+import XFormItemWrap from './x-form-item-wrap'
 
 const xMentionProps = {
-  contentClass: [String, Object, Array],
+  ...xFormItemProps,
   ...nFormItemProps,
   ...nMentionProps,
 }
@@ -24,7 +25,7 @@ const XFormMention = defineComponent({
     const context = useFormContext()
 
     const [fieldProps, formItemProps] = useFormProps<MentionProps>(rawProps, context, {
-      fieldType: fieldType,
+      fieldType,
       fieldPropNames: nMentionPropNames,
       fieldDefaultProps: nMentionDefaultProps,
       formItemPropNames: nFormItemPropNames,
@@ -38,20 +39,27 @@ const XFormMention = defineComponent({
     }
 
     return () => (
-      <NFormItem {...formItemProps.value as any}>
-        <div class={mergeClass('w-full', context.formItemContentClass.value, rawProps.contentClass)}>
-          {slots.itemPrefix ? slots.itemPrefix() : null}
-          <NMention
-            class="w-full"
-            {...fieldProps.value as any}
-            value={rawProps.value}
-            placeholder={placeholder.value}
-            onUpdate:value={handleUpdateValue}
-          >
-            {slots}
-          </NMention>
-          {slots.itemSuffix ? slots.itemSuffix() : null}
-        </div>
+      <NFormItem {...formItemProps.value}>
+        <XFormItemWrap
+          wrap={rawProps.wrap}
+          wrapClass={rawProps.wrapClass}
+          provideWrapClass={context.formItemWrapClass.value}
+          v-slots={{
+            itemPrefix: slots.itemPrefix,
+            default: () => (
+              <NMention
+                class="w-full"
+                {...fieldProps.value as any}
+                value={rawProps.value}
+                placeholder={placeholder.value}
+                onUpdate:value={handleUpdateValue}
+              >
+                {slots}
+              </NMention>
+            ),
+            itemSuffix: slots.itemSuffix,
+          }}
+        />
       </NFormItem>
     )
   },

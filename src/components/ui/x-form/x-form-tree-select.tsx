@@ -2,14 +2,15 @@ import type { TreeSelectProps } from 'naive-ui'
 import type { ExtractPublicPropTypes } from 'vue'
 import { NFormItem, NTreeSelect } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { mergeClass } from '@/utils/merge-class'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nTreeSelectDefaultProps, nTreeSelectPropNames, nTreeSelectProps } from './common'
 import { genPlaceholder } from './helpers'
 import { useFormContext } from './use-form-context'
 import { useFormProps } from './use-form-props'
+import { xFormItemProps } from './props'
+import XFormItemWrap from './x-form-item-wrap'
 
 const xTreeSelectProps = {
-  contentClass: [String, Object, Array],
+  ...xFormItemProps,
   ...nFormItemProps,
   ...nTreeSelectProps,
 }
@@ -24,7 +25,7 @@ const XFormTreeSelect = defineComponent({
     const context = useFormContext()
 
     const [fieldProps, formItemProps] = useFormProps<TreeSelectProps>(rawProps, context, {
-      fieldType: fieldType,
+      fieldType,
       fieldPropNames: nTreeSelectPropNames,
       fieldDefaultProps: nTreeSelectDefaultProps,
       formItemPropNames: nFormItemPropNames,
@@ -38,20 +39,27 @@ const XFormTreeSelect = defineComponent({
     }
 
     return () => (
-      <NFormItem {...formItemProps.value as any}>
-        <div class={mergeClass('w-full', context.formItemContentClass.value, rawProps.contentClass)}>
-          {slots.itemPrefix ? slots.itemPrefix() : null}
-          <NTreeSelect
-            class="w-full"
-            {...fieldProps.value as any}
-            value={rawProps.value}
-            placeholder={placeholder.value}
-            onUpdate:value={handleUpdateValue}
-          >
-            {slots}
-          </NTreeSelect>
-          {slots.itemSuffix ? slots.itemSuffix() : null}
-        </div>
+      <NFormItem {...formItemProps.value}>
+        <XFormItemWrap
+          wrap={rawProps.wrap}
+          wrapClass={rawProps.wrapClass}
+          provideWrapClass={context.formItemWrapClass.value}
+          v-slots={{
+            itemPrefix: slots.itemPrefix,
+            default: () => (
+              <NTreeSelect
+                class="w-full"
+                {...fieldProps.value as any}
+                value={rawProps.value}
+                placeholder={placeholder.value}
+                onUpdate:value={handleUpdateValue}
+              >
+                {slots}
+              </NTreeSelect>
+            ),
+            itemSuffix: slots.itemSuffix,
+          }}
+        />
       </NFormItem>
     )
   },
