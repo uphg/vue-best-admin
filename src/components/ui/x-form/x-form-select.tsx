@@ -1,8 +1,9 @@
 import type { SelectProps } from 'naive-ui'
 import type { ExtractPublicPropTypes } from 'vue'
+import { omit } from 'lodash-es'
 import { NFormItem, NSelect } from 'naive-ui'
-import { defineComponent, ref } from 'vue'
 
+import { defineComponent, ref } from 'vue'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nSelectDefaultProps, nSelectPropNames, nSelectProps } from './common'
 import { genPlaceholder } from './helpers'
 import { xFormItemProps } from './props'
@@ -25,6 +26,7 @@ const XFormSelect = defineComponent({
   props: xSelectProps,
   emits: ['update:value'],
   setup(rawProps: XSelectProps, { emit, slots }) {
+    const inputSlots = computed(() => omit(slots, 'itemPrefix', 'itemSuffix'))
     const { defaultProps, rules, autoRules, formItemWrapClass } = useFormContext()
     const [fieldProps, formItemProps] = useFormProps<SelectProps>(rawProps, { defaultProps, rules, autoRules, formItemWrapClass }, {
       fieldType,
@@ -53,7 +55,7 @@ const XFormSelect = defineComponent({
                 placeholder={placeholder.value}
                 onUpdate:value={handleUpdateValue}
               >
-                {slots}
+                {inputSlots.value}
               </NSelect>
             ),
             itemSuffix: slots.itemSuffix,

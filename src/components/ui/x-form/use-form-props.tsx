@@ -54,8 +54,6 @@ export function useFormProps<T extends Record<string, any>>(rawProps: Record<str
 
   // 生成表单规则
   watchEffect(() => {
-    console.log('context.rules.value')
-    console.log(context.rules.value)
     genFormItemRule(fieldType, { props: formItemProps.value, rules: context.rules.value, autoRules: context.autoRules.value })
   })
 

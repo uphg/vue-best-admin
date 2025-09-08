@@ -1,7 +1,7 @@
 import type { FormRules } from 'naive-ui'
 import type { PlaceholderConfig } from './types'
-import type { CamelInputElement, InputElement } from '@/types/form'
-import { assign, isNil, pick } from 'lodash-es'
+import type { InputElement } from '@/types/form'
+import { assign, isNil } from 'lodash-es'
 import { selectTypes } from '@/constants/form'
 import { getFieldRuleConfig, hasNestedRule, setNestedRule } from '@/utils/form'
 
@@ -49,7 +49,7 @@ export function genPlaceholder(
   return `${placeholderPrefix}${label}`
 }
 
-export function genFormItemRule(type: InputElement, { props, rules, autoRules }: { props: Record<string, any>, rules: FormRules, autoRules: boolean | string[] }) {
+export function genFormItemRule(type: InputElement, { props, rules, autoRules }: { props: Record<string, any>, rules: FormRules, autoRules?: boolean | string[] }) {
   const { path, label } = props
 
   if (!path || !label || hasNestedRule(rules, path)) {
@@ -63,7 +63,6 @@ export function genFormItemRule(type: InputElement, { props, rules, autoRules }:
   }
 
   const rule = getFieldRuleConfig(type || 'input', { label })
-  console.log(rule)
   if (rule) {
     if (path.includes('.')) {
       setNestedRule(rules, path, rule)

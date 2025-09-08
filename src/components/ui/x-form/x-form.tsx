@@ -1,4 +1,4 @@
-import type { FormInst, FormItemProps, InputProps } from 'naive-ui'
+import type { FormInst } from 'naive-ui'
 import type { PropType } from 'vue'
 import { assign, pick } from 'lodash-es'
 import { NForm, formProps as nFormProps } from 'naive-ui'
@@ -15,6 +15,8 @@ const formProps = {
   formItemWrapClass: { type: [String, Object, Array], default: '' },
   ...nFormProps,
 }
+
+export type XFormProps = ExtractPublicPropTypes<typeof formProps>
 
 const XForm = defineComponent({
   name: 'XForm',

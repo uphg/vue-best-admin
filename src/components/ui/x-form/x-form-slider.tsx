@@ -3,9 +3,9 @@ import type { ExtractPublicPropTypes } from 'vue'
 import { NFormItem, NSlider } from 'naive-ui'
 import { defineComponent } from 'vue'
 import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nSliderDefaultProps, nSliderPropNames, nSliderProps } from './common'
+import { xFormItemProps } from './props'
 import { useFormContext } from './use-form-context'
 import { useFormProps } from './use-form-props'
-import { xFormItemProps } from './props'
 import XFormItemWrap from './x-form-item-wrap'
 
 const xSliderProps = {
