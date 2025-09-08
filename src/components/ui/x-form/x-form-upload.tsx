@@ -1,12 +1,11 @@
-import type { UploadProps } from 'naive-ui'
 import type { ExtractPublicPropTypes } from 'vue'
-import { NFormItem, NUpload } from 'naive-ui'
+import { NUpload } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nUploadDefaultProps, nUploadPropNames, nUploadProps } from './common'
-import { useFormContext } from './use-form-context'
-import { useFormProps } from './use-form-props'
+import { nFormItemProps, nUploadDefaultProps, nUploadPropNames, nUploadProps } from './common'
 import { xFormItemProps } from './props'
-import XFormItemWrap from './x-form-item-wrap'
+import { useFormContext } from './use-form-context'
+import { useFormItemWrap } from './use-form-item-wrap'
+import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xUploadProps = {
   ...xFormItemProps,
@@ -20,44 +19,28 @@ const XFormUpload = defineComponent({
   name: 'XFormUpload',
   props: xUploadProps,
   emits: ['update:fileList'],
-  setup(rawProps: XUploadProps, { emit, slots }) {
-    const context = useFormContext()
-
-    const [fieldProps, formItemProps] = useFormProps<UploadProps>(rawProps, context, {
-      fieldType,
-      fieldPropNames: nUploadPropNames,
-      fieldDefaultProps: nUploadDefaultProps,
-      formItemPropNames: nFormItemPropNames,
-      formItemDefaultProps: nFormItemDefaultProps,
-    })
+  setup(rawProps: XUploadProps, context) {
+    const formContext = useFormContext()
+    const fieldProps = useMergeDefaultProps({ rawProps, propNames: nUploadPropNames, defaultProps: nUploadDefaultProps, provideProps: formContext.defaultProps.value.upload })
+    const [FormUpload, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
 
     function handleUpdateFileList(...args: any[]) {
-      emit('update:fileList', ...args)
+      context.emit('update:fileList', ...args)
     }
 
-    return () => (
-      <NFormItem {...formItemProps.value}>
-        <XFormItemWrap
-          wrap={rawProps.wrap}
-          wrapClass={rawProps.wrapClass}
-          provideWrapClass={context.formItemWrapClass.value}
-          v-slots={{
-            itemPrefix: slots.itemPrefix,
-            default: () => (
-              <NUpload
-                class="w-full"
-                {...fieldProps.value as any}
-                fileList={rawProps.fileList}
-                onUpdate:fileList={handleUpdateFileList}
-              >
-                {slots.default?.() || <div>点击或拖拽文件到此区域上传</div>}
-              </NUpload>
-            ),
-            itemSuffix: slots.itemSuffix,
-          }}
-        />
-      </NFormItem>
-    )
+    function render() {
+      return (
+        <NUpload
+          class="w-full"
+          {...fieldProps.value}
+          fileList={rawProps.fileList}
+          onUpdate:fileList={handleUpdateFileList}
+        >
+          {context.slots.default?.() || <div>点击或拖拽文件到此区域上传</div>}
+        </NUpload>
+      )
+    }
+    return FormUpload
   },
 })
 

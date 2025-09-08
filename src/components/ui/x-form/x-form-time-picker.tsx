@@ -1,13 +1,12 @@
-import type { TimePickerProps } from 'naive-ui'
 import type { ExtractPublicPropTypes } from 'vue'
-import { NFormItem, NTimePicker } from 'naive-ui'
+import { NTimePicker } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nTimePickerDefaultProps, nTimePickerPropNames, nTimePickerProps } from './common'
+import { nFormItemProps, nTimePickerDefaultProps, nTimePickerPropNames, nTimePickerProps } from './common'
 import { genPlaceholder } from './helpers'
 import { xFormItemProps } from './props'
 import { useFormContext } from './use-form-context'
-import { useFormProps } from './use-form-props'
-import XFormItemWrap from './x-form-item-wrap'
+import { useFormItemWrap } from './use-form-item-wrap'
+import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xTimePickerProps = {
   ...xFormItemProps,
@@ -21,47 +20,30 @@ const XFormTimePicker = defineComponent({
   name: 'XFormTimePicker',
   props: xTimePickerProps,
   emits: ['update:value'],
-  setup(rawProps: XTimePickerProps, { emit, slots }) {
-    const context = useFormContext()
-
-    const [fieldProps, formItemProps] = useFormProps<TimePickerProps>(rawProps, context, {
-      fieldType,
-      fieldPropNames: nTimePickerPropNames,
-      fieldDefaultProps: nTimePickerDefaultProps,
-      formItemPropNames: nFormItemPropNames,
-      formItemDefaultProps: nFormItemDefaultProps,
-    })
-
+  setup(rawProps: XTimePickerProps, context) {
+    const formContext = useFormContext()
+    const fieldProps = useMergeDefaultProps({ rawProps, propNames: nTimePickerPropNames, defaultProps: nTimePickerDefaultProps, provideProps: formContext.defaultProps.value.timePicker })
+    const [FormTimePicker, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
     const placeholder = computed(() => genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
 
     function handleUpdateValue(...args: any[]) {
-      emit('update:value', ...args)
+      context.emit('update:value', ...args)
     }
 
-    return () => (
-      <NFormItem {...formItemProps.value}>
-        <XFormItemWrap
-          wrap={rawProps.wrap}
-          wrapClass={rawProps.wrapClass}
-          provideWrapClass={context.formItemWrapClass.value}
-          v-slots={{
-            itemPrefix: slots.itemPrefix,
-            default: () => (
-              <NTimePicker
-                class="w-full"
-                {...fieldProps.value as any}
-                value={rawProps.value}
-                placeholder={placeholder.value}
-                onUpdate:value={handleUpdateValue}
-              >
-                {slots}
-              </NTimePicker>
-            ),
-            itemSuffix: slots.itemSuffix,
-          }}
-        />
-      </NFormItem>
-    )
+    function render() {
+      return (
+        <NTimePicker
+          class="w-full"
+          {...fieldProps.value}
+          value={rawProps.value}
+          placeholder={placeholder.value}
+          onUpdate:value={handleUpdateValue}
+        >
+          {context.slots}
+        </NTimePicker>
+      )
+    }
+    return FormTimePicker
   },
 })
 

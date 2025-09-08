@@ -1,12 +1,12 @@
 import type { InputOtpProps } from 'naive-ui/es/input-otp'
 import type { ExtractPublicPropTypes } from 'vue'
-import { NFormItem, NInputOtp } from 'naive-ui'
+import { NInputOtp } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nInputOTPDefaultProps, nInputOTPPropNames, nInputOTPProps } from './common'
-import { useFormContext } from './use-form-context'
-import { useFormProps } from './use-form-props'
+import { nFormItemProps, nInputOTPDefaultProps, nInputOTPPropNames, nInputOTPProps } from './common'
 import { xFormItemProps } from './props'
-import XFormItemWrap from './x-form-item-wrap'
+import { useFormContext } from './use-form-context'
+import { useFormItemWrap } from './use-form-item-wrap'
+import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xInputOTPProps = {
   ...xFormItemProps,
@@ -20,44 +20,28 @@ const XFormInputOTP = defineComponent({
   name: 'XFormInputOTP',
   props: xInputOTPProps,
   emits: ['update:value'],
-  setup(rawProps: XInputOTPProps, { emit, slots }) {
-    const context = useFormContext()
-
-    const [fieldProps, formItemProps] = useFormProps<InputOtpProps>(rawProps, context, {
-      fieldType,
-      fieldPropNames: nInputOTPPropNames,
-      fieldDefaultProps: nInputOTPDefaultProps,
-      formItemPropNames: nFormItemPropNames,
-      formItemDefaultProps: nFormItemDefaultProps,
-    })
+  setup(rawProps: XInputOTPProps, context) {
+    const formContext = useFormContext()
+    const fieldProps = useMergeDefaultProps({ rawProps, propNames: nInputOTPPropNames, defaultProps: nInputOTPDefaultProps, provideProps: formContext.defaultProps.value.inputOtp })
+    const [FormInputOTP, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
 
     function handleUpdateValue(...args: any[]) {
-      emit('update:value', ...args)
+      context.emit('update:value', ...args)
     }
 
-    return () => (
-      <NFormItem {...formItemProps.value}>
-        <XFormItemWrap
-          wrap={rawProps.wrap}
-          wrapClass={rawProps.wrapClass}
-          provideWrapClass={context.formItemWrapClass.value}
-          v-slots={{
-            itemPrefix: slots.itemPrefix,
-            default: () => (
-              <NInputOtp
-                class="w-full"
-                {...fieldProps.value as any}
-                value={rawProps.value}
-                onUpdate:value={handleUpdateValue}
-              >
-                {slots}
-              </NInputOtp>
-            ),
-            itemSuffix: slots.itemSuffix,
-          }}
-        />
-      </NFormItem>
-    )
+    function render() {
+      return (
+        <NInputOtp
+          class="w-full"
+          {...fieldProps.value}
+          value={rawProps.value}
+          onUpdate:value={handleUpdateValue}
+        >
+          {context.slots}
+        </NInputOtp>
+      )
+    }
+    return FormInputOTP
   },
 })
 

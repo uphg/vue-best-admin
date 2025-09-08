@@ -1,12 +1,11 @@
-import type { ColorPickerProps } from 'naive-ui'
 import type { ExtractPublicPropTypes } from 'vue'
-import { NColorPicker, NFormItem } from 'naive-ui'
+import { NColorPicker } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { nColorPickerDefaultProps, nColorPickerPropNames, nColorPickerProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
-import { useFormContext } from './use-form-context'
-import { useFormProps } from './use-form-props'
+import { nColorPickerDefaultProps, nColorPickerPropNames, nColorPickerProps, nFormItemProps } from './common'
 import { xFormItemProps } from './props'
-import XFormItemWrap from './x-form-item-wrap'
+import { useFormContext } from './use-form-context'
+import { useFormItemWrap } from './use-form-item-wrap'
+import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xColorPickerProps = {
   ...xFormItemProps,
@@ -22,43 +21,28 @@ const XFormColorPicker = defineComponent({
   name: 'XFormColorPicker',
   props: xColorPickerProps,
   emits: ['update:value'],
-  setup(rawProps: XColorPickerProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemWrapClass } = useFormContext()
-    const [fieldProps, formItemProps] = useFormProps<ColorPickerProps>(rawProps, { defaultProps, rules, autoRules, formItemWrapClass }, {
-      fieldType,
-      formItemPropNames: nFormItemPropNames,
-      fieldPropNames: nColorPickerPropNames,
-      formItemDefaultProps: nFormItemDefaultProps,
-      fieldDefaultProps: nColorPickerDefaultProps,
-    })
+  setup(rawProps: XColorPickerProps, context) {
+    const formContext = useFormContext()
+    const fieldProps = useMergeDefaultProps({ rawProps, propNames: nColorPickerPropNames, defaultProps: nColorPickerDefaultProps, provideProps: formContext.defaultProps.value.colorPicker })
+    const [FormColorPicker, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
 
     function handleUpdateValue(...args: any[]) {
-      emit('update:value', ...args)
+      context.emit('update:value', ...args)
     }
 
-    return () => (
-      <NFormItem {...formItemProps.value}>
-        <XFormItemWrap
-          wrap={rawProps.wrap}
-          wrapClass={rawProps.wrapClass}
-          provideWrapClass={formItemWrapClass.value}
-          v-slots={{
-            itemPrefix: slots.itemPrefix,
-            default: () => (
-              <NColorPicker
-                class="w-full"
-                {...fieldProps.value as any}
-                value={rawProps.value}
-                onUpdate:value={handleUpdateValue}
-              >
-                {slots}
-              </NColorPicker>
-            ),
-            itemSuffix: slots.itemSuffix,
-          }}
-        />
-      </NFormItem>
-    )
+    function render() {
+      return (
+        <NColorPicker
+          class="w-full"
+          {...fieldProps.value}
+          value={rawProps.value}
+          onUpdate:value={handleUpdateValue}
+        >
+          {context.slots}
+        </NColorPicker>
+      )
+    }
+    return FormColorPicker
   },
 })
 

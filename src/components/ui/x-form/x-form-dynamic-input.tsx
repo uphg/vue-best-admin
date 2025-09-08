@@ -1,12 +1,11 @@
-import type { DynamicInputProps } from 'naive-ui'
 import type { ExtractPublicPropTypes } from 'vue'
-import { NDynamicInput, NFormItem } from 'naive-ui'
+import { NDynamicInput } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { nDynamicInputDefaultProps, nDynamicInputPropNames, nDynamicInputProps, nFormItemDefaultProps, nFormItemPropNames, nFormItemProps } from './common'
-import { useFormContext } from './use-form-context'
-import { useFormProps } from './use-form-props'
+import { nDynamicInputDefaultProps, nDynamicInputPropNames, nDynamicInputProps, nFormItemProps } from './common'
 import { xFormItemProps } from './props'
-import XFormItemWrap from './x-form-item-wrap'
+import { useFormContext } from './use-form-context'
+import { useFormItemWrap } from './use-form-item-wrap'
+import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xDynamicInputProps = {
   ...xFormItemProps,
@@ -20,44 +19,28 @@ const XFormDynamicInput = defineComponent({
   name: 'XFormDynamicInput',
   props: xDynamicInputProps,
   emits: ['update:value'],
-  setup(rawProps: XDynamicInputProps, { emit, slots }) {
-    const context = useFormContext()
-
-    const [fieldProps, formItemProps] = useFormProps<DynamicInputProps>(rawProps, context, {
-      fieldType,
-      fieldPropNames: nDynamicInputPropNames,
-      fieldDefaultProps: nDynamicInputDefaultProps,
-      formItemPropNames: nFormItemPropNames,
-      formItemDefaultProps: nFormItemDefaultProps,
-    })
+  setup(rawProps: XDynamicInputProps, context) {
+    const formContext = useFormContext()
+    const fieldProps = useMergeDefaultProps({ rawProps, propNames: nDynamicInputPropNames, defaultProps: nDynamicInputDefaultProps, provideProps: formContext.defaultProps.value.dynamicInput })
+    const [FormDynamicInput, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
 
     function handleUpdateValue(...args: any[]) {
-      emit('update:value', ...args)
+      context.emit('update:value', ...args)
     }
 
-    return () => (
-      <NFormItem {...formItemProps.value}>
-        <XFormItemWrap
-          wrap={rawProps.wrap}
-          wrapClass={rawProps.wrapClass}
-          provideWrapClass={context.formItemWrapClass.value}
-          v-slots={{
-            itemPrefix: slots.itemPrefix,
-            default: () => (
-              <NDynamicInput
-                class="w-full"
-                {...fieldProps.value as any}
-                value={rawProps.value}
-                onUpdate:value={handleUpdateValue}
-              >
-                {slots}
-              </NDynamicInput>
-            ),
-            itemSuffix: slots.itemSuffix,
-          }}
-        />
-      </NFormItem>
-    )
+    function render() {
+      return (
+        <NDynamicInput
+          class="w-full"
+          {...fieldProps.value}
+          value={rawProps.value}
+          onUpdate:value={handleUpdateValue}
+        >
+          {context.slots}
+        </NDynamicInput>
+      )
+    }
+    return FormDynamicInput
   },
 })
 

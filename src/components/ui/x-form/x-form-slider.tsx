@@ -1,12 +1,11 @@
-import type { SliderProps } from 'naive-ui'
 import type { ExtractPublicPropTypes } from 'vue'
-import { NFormItem, NSlider } from 'naive-ui'
+import { NSlider } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nSliderDefaultProps, nSliderPropNames, nSliderProps } from './common'
+import { nFormItemProps, nSliderDefaultProps, nSliderPropNames, nSliderProps } from './common'
 import { xFormItemProps } from './props'
 import { useFormContext } from './use-form-context'
-import { useFormProps } from './use-form-props'
-import XFormItemWrap from './x-form-item-wrap'
+import { useFormItemWrap } from './use-form-item-wrap'
+import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xSliderProps = {
   ...xFormItemProps,
@@ -20,44 +19,28 @@ const XFormSlider = defineComponent({
   name: 'XFormSlider',
   props: xSliderProps,
   emits: ['update:value'],
-  setup(rawProps: XSliderProps, { emit, slots }) {
-    const context = useFormContext()
-
-    const [fieldProps, formItemProps] = useFormProps<SliderProps>(rawProps, context, {
-      fieldType,
-      fieldPropNames: nSliderPropNames,
-      fieldDefaultProps: nSliderDefaultProps,
-      formItemPropNames: nFormItemPropNames,
-      formItemDefaultProps: nFormItemDefaultProps,
-    })
+  setup(rawProps: XSliderProps, context) {
+    const formContext = useFormContext()
+    const fieldProps = useMergeDefaultProps({ rawProps, propNames: nSliderPropNames, defaultProps: nSliderDefaultProps, provideProps: formContext.defaultProps.value.slider })
+    const [FormSlider, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
 
     function handleUpdateValue(...args: any[]) {
-      emit('update:value', ...args)
+      context.emit('update:value', ...args)
     }
 
-    return () => (
-      <NFormItem {...formItemProps.value}>
-        <XFormItemWrap
-          wrap={rawProps.wrap}
-          wrapClass={rawProps.wrapClass}
-          provideWrapClass={context.formItemWrapClass.value}
-          v-slots={{
-            itemPrefix: slots.itemPrefix,
-            default: () => (
-              <NSlider
-                class="w-full"
-                {...fieldProps.value as any}
-                value={rawProps.value}
-                onUpdate:value={handleUpdateValue}
-              >
-                {slots}
-              </NSlider>
-            ),
-            itemSuffix: slots.itemSuffix,
-          }}
-        />
-      </NFormItem>
-    )
+    function render() {
+      return (
+        <NSlider
+          class="w-full"
+          {...fieldProps.value}
+          value={rawProps.value}
+          onUpdate:value={handleUpdateValue}
+        >
+          {context.slots}
+        </NSlider>
+      )
+    }
+    return FormSlider
   },
 })
 

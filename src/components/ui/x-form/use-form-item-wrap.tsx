@@ -3,7 +3,7 @@ import type { XFormContext } from './types'
 import type { InputElement } from '@/types/form'
 import { NFormItem } from 'naive-ui'
 import { nFormItemDefaultProps, nFormItemPropNames } from './common'
-import { useFormItemRule } from './use-form-item-rule'
+import { genFormItemRule } from './helpers'
 import { useMergeDefaultProps } from './use-merge-default-props'
 import XFormItemWrap from './x-form-item-wrap'
 
@@ -23,7 +23,9 @@ export function useFormItemWrap<T extends Record<string, any>>(rawProps: T, { sl
     provideProps: defaultProps.value.formItem,
   })
 
-  useFormItemRule(fieldType, { props: formItemProps, rules, autoRules })
+  watchEffect(() => {
+    genFormItemRule(fieldType, { props: formItemProps.value, rules: rules.value, autoRules: autoRules.value })
+  })
 
   return [() => (
     <NFormItem {...formItemProps.value}>

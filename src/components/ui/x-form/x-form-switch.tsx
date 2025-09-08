@@ -1,13 +1,11 @@
-import type { SwitchProps } from 'naive-ui'
 import type { ExtractPublicPropTypes } from 'vue'
-import { NFormItem, NSwitch } from 'naive-ui'
+import { NSwitch } from 'naive-ui'
 import { defineComponent } from 'vue'
-
-import { nFormItemDefaultProps, nFormItemPropNames, nFormItemProps, nSwitchDefaultProps, nSwitchPropNames, nSwitchProps } from './common'
+import { nFormItemProps, nSwitchDefaultProps, nSwitchPropNames, nSwitchProps } from './common'
 import { xFormItemProps } from './props'
 import { useFormContext } from './use-form-context'
-import { useFormProps } from './use-form-props'
-import XFormItemWrap from './x-form-item-wrap'
+import { useFormItemWrap } from './use-form-item-wrap'
+import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xSwitchProps = {
   ...xFormItemProps,
@@ -23,44 +21,29 @@ const XFormSwitch = defineComponent({
   name: 'XFormSwitch',
   props: xSwitchProps,
   emits: ['update:value'],
-  setup(rawProps: XSwitchProps, { emit, slots }) {
-    const { defaultProps, rules, autoRules, formItemWrapClass } = useFormContext()
-    const [fieldProps, formItemProps] = useFormProps<SwitchProps>(rawProps, { defaultProps, rules, autoRules, formItemWrapClass }, {
-      fieldType,
-      formItemPropNames: nFormItemPropNames,
-      fieldPropNames: nSwitchPropNames,
-      formItemDefaultProps: nFormItemDefaultProps,
-      fieldDefaultProps: nSwitchDefaultProps,
-    })
+  setup(rawProps: XSwitchProps, context) {
+    const formContext = useFormContext()
+    const fieldProps = useMergeDefaultProps({ rawProps, propNames: nSwitchPropNames, defaultProps: nSwitchDefaultProps, provideProps: formContext.defaultProps.value.switch })
+    const [FormSwitch, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
 
     function handleUpdateValue(...args: any[]) {
       console.log('XFormSwitch handleUpdateValue', ...args)
-      emit('update:value', ...args)
+      context.emit('update:value', ...args)
     }
 
-    return () => (
-      <NFormItem {...formItemProps.value}>
-        <XFormItemWrap
-          wrap={rawProps.wrap}
-          wrapClass={rawProps.wrapClass}
-          provideWrapClass={formItemWrapClass.value}
-          v-slots={{
-            itemPrefix: slots.itemPrefix,
-            default: () => (
-              <NSwitch
-                class="w-full"
-                {...fieldProps.value as any}
-                value={rawProps.value}
-                onUpdate:value={handleUpdateValue}
-              >
-                {slots}
-              </NSwitch>
-            ),
-            itemSuffix: slots.itemSuffix,
-          }}
-        />
-      </NFormItem>
-    )
+    function render() {
+      return (
+        <NSwitch
+          class="w-full"
+          {...fieldProps.value}
+          value={rawProps.value}
+          onUpdate:value={handleUpdateValue}
+        >
+          {context.slots}
+        </NSwitch>
+      )
+    }
+    return FormSwitch
   },
 })
 
