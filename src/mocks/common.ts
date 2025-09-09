@@ -107,6 +107,22 @@ export const routeDate = [
   },
 
   {
+    path: '/tabs',
+    component: 'Default',
+    mergeSingleChild: true,
+    children: [
+      {
+        path: 'base',
+        component: 'tabs/tabs-page',
+        meta: {
+          title: 'Tabs 标签页',
+          icon: 'tabs',
+        },
+      },
+    ],
+  },
+
+  {
     path: '/request',
     component: 'Default',
     mergeSingleChild: true,

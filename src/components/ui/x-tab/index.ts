@@ -1,0 +1,8 @@
+export { XTabs } from './x-tabs'
+export type { XTabsProps } from './x-tabs'
+export { XTabsBar } from './x-tabs-bar'
+export type { XTabsBarProps } from './x-tabs-bar'
+export { XTabsContent } from './x-tabs-content'
+export type { XTabsContentProps } from './x-tabs-content'
+export { XTabsTrigger } from './x-tabs-trigger'
+export type { XTabsTriggerProps } from './x-tabs-trigger'
