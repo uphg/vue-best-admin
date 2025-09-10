@@ -1,16 +1,16 @@
-import { NCard, NSpace, NButton, NInput, NFormItem, NForm } from 'naive-ui'
-import { XTabs, XTabsBar, XTabsContent, XTabsTrigger } from '@/components/ui/x-tab/index'
+import { NButton, NCard, NForm, NFormItem, NInput, NSpace } from 'naive-ui'
+import { XTabs, XTabsBar, XTabsContent, XTabsTrigger } from '@/components/ui/x-tabs/index'
 
 const TabsDemo = defineComponent(() => {
   const accountForm = ref({
     username: '',
-    email: ''
+    email: '',
   })
-  
+
   const passwordForm = ref({
     currentPassword: '',
     newPassword: '',
-    confirmPassword: ''
+    confirmPassword: '',
   })
 
   // v-model 示例的响应式值
@@ -21,7 +21,7 @@ const TabsDemo = defineComponent(() => {
   return () => (
     <div class="p-6">
       <h1 class="text-2xl font-bold mb-6">Tabs 组件示例</h1>
-      
+
       <NSpace vertical size="large">
         {/* v-model 示例 */}
         <NCard title="v-model:value 双向绑定">

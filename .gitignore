@@ -32,6 +32,7 @@ coverage
 qodo.md
 CLAUDE.local.md
 QWEN.md
+CODEBUDDY.md
 
 *.tsbuildinfo
 
