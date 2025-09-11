@@ -53,6 +53,22 @@ export const routeDate = [
           icon: 'table',
         },
       },
+      {
+        path: 'sort-table',
+        component: 'table/sort-table/sort-table-page',
+        meta: {
+          title: '排序表格',
+          icon: 'table',
+        },
+      },
+      {
+        path: 'sort-table2',
+        component: 'table/sort-table/sort-table2-page',
+        meta: {
+          title: '排序表格2',
+          icon: 'table',
+        },
+      },
     ],
   },
   {

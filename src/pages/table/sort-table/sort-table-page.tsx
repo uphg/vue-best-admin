@@ -1,4 +1,13 @@
-import { NTable } from 'naive-ui'
+import { NButton, NCheckbox, NCheckboxGroup, NPopover, NSpace, NTable } from 'naive-ui'
+import { computed, defineComponent, ref } from 'vue'
+
+interface ColumnFilter {
+  selectedValues: any[]
+  defaultSelected: any[]
+  sortOrder: 'asc' | 'desc' | null
+  isAllSelected: boolean
+  isIndeterminate: boolean
+}
 
 const SortTablePage = defineComponent(() => {
   const data = {
@@ -23,8 +32,213 @@ const SortTablePage = defineComponent(() => {
     ],
   }
 
+  const columnData = computed(() => data.columns.map((item, colIndex) => ({
+    title: item,
+    data: data.rows.map(row => row[colIndex]),
+  })))
+  const filteredAndSortedData = ref(JSON.parse(JSON.stringify(data.rows)) as string[][])
+
+  // 存储每列的过滤状态
+  const columnFilters = ref<Record<string, ColumnFilter>>({})
+
+  function updateFilteredAndSortedData() {
+    let result = JSON.parse(JSON.stringify(data.rows))
+    // 应用过滤
+    Object.entries(columnFilters.value).forEach(([columnIndex, filter]) => {
+      if (filter.selectedValues.length > 0) {
+        const colIndex = Number.parseInt(columnIndex)
+        result = result.filter(row => filter.selectedValues.includes(row[colIndex]))
+      }
+    })
+
+    // 应用排序
+    Object.entries(columnFilters.value).forEach(([columnIndex, filter]) => {
+      if (filter.sortOrder) {
+        const colIndex = Number.parseInt(columnIndex)
+        result.sort((a, b) => {
+          const valA = a[colIndex]
+          const valB = b[colIndex]
+
+          if (typeof valA === 'number' && typeof valB === 'number') {
+            return filter.sortOrder === 'asc' ? valA - valB : valB - valA
+          } else {
+            const strA = String(valA)
+            const strB = String(valB)
+            return filter.sortOrder === 'asc'
+              ? strA.localeCompare(strB, 'zh-CN')
+              : strB.localeCompare(strA, 'zh-CN')
+          }
+        })
+      }
+    })
+
+    filteredAndSortedData.value = result
+    // return result
+  }
+
+  // 处理排序
+  const handleSort = (columnIndex: number, order: 'asc' | 'desc') => {
+    const key = columnIndex.toString()
+    // 如果已经按这个顺序排序，则取消排序
+    if (columnFilters.value[key].sortOrder === order) {
+      columnFilters.value[key].sortOrder = null
+    } else {
+      columnFilters.value[key].sortOrder = order
+    }
+
+    updateFilteredAndSortedData()
+  }
+
+  // 处理多选变化
+  function handleCheckboxChange(columnIndex: number, newValue: any[]) {
+    const key = columnIndex
+    columnFilters.value[key].selectedValues = newValue
+    const defaultSelectedLen = uniq(columnData.value[key].data).length
+    const newValueLen = uniq(newValue).length
+    const isIndet = newValueLen > 0 && newValueLen < defaultSelectedLen
+    columnFilters.value[key].isIndeterminate = isIndet
+    updateFilteredAndSortedData()
+  }
+
+  // 处理全选
+  function handleSelectAll(columnIndex: number) {
+    const newChecked = !columnFilters.value[columnIndex].isAllSelected
+    if (newChecked) {
+      const selectAllColumns = [...columnData.value[columnIndex].data]
+      columnFilters.value[columnIndex].selectedValues = selectAllColumns
+      columnFilters.value[columnIndex].isIndeterminate = false
+    } else {
+      columnFilters.value[columnIndex].selectedValues = []
+      columnFilters.value[columnIndex].isIndeterminate = false
+    }
+
+    columnFilters.value[columnIndex].isAllSelected = newChecked
+    updateFilteredAndSortedData()
+  }
+
+  function initColumnFilters() {
+    columnData.value.forEach((item, index) => {
+      const xxx = uniq(item.data)
+      columnFilters.value[index] = {
+        selectedValues: [...xxx],
+        defaultSelected: [...xxx],
+        sortOrder: null,
+        isAllSelected: true,
+        isIndeterminate: false,
+      }
+    })
+  }
+
+  function uniq(columns: any[]) {
+    return [...new Set(columns)]
+  }
+
+  initColumnFilters()
+
   return () => (
-    <NTable></NTable>
+    <div class="p-6">
+      <NTable bordered striped>
+        <thead>
+          <tr>
+            {data.columns.map((column, columnIndex) => {
+              const filter = columnFilters.value[columnIndex]
+              return (
+                <th key={column}>
+                  <NPopover
+                    trigger="click"
+                    placement="bottom"
+                    width={300}
+                    scrollable
+                  >
+                    {{
+                      trigger: () => (
+                        <div class="flex gap-1 cursor-pointer items-center hover:text-blue-600">
+                          {column}
+                          {filter.sortOrder && (
+                            <span class="text-xs">
+                              {filter.sortOrder === 'asc' ? '↑' : '↓'}
+                            </span>
+                          )}
+                        </div>
+                      ),
+                      default: () => (
+                        <div class="p-2">
+                          {/* 排序操作 */}
+                          <div class="mb-3">
+                            <div class="text-sm font-medium mb-2">排序</div>
+                            <NSpace size="small">
+                              <NButton
+                                size="small"
+                                type={filter.sortOrder === 'asc' ? 'primary' : 'default'}
+                                onClick={() => handleSort(columnIndex, 'asc')}
+                              >
+                                正序
+                              </NButton>
+                              <NButton
+                                size="small"
+                                type={filter.sortOrder === 'desc' ? 'primary' : 'default'}
+                                onClick={() => handleSort(columnIndex, 'desc')}
+                              >
+                                倒序
+                              </NButton>
+                            </NSpace>
+                          </div>
+
+                          {/* 多选过滤 */}
+                          <div class="mb-3">
+                            <div class="text-sm font-medium mb-2">筛选</div>
+                            <div class="max-h-40 overflow-y-auto">
+                              {/* 全选复选框 - 独立于 NCheckboxGroup */}
+                              <div class="py-1 flex items-center">
+                                <NCheckbox
+                                  checked={filter.isAllSelected}
+                                  indeterminate={filter.isIndeterminate}
+                                  onUpdate:checked={checked => handleSelectAll(columnIndex)}
+                                >
+                                  全选
+                                </NCheckbox>
+                              </div>
+
+                              {/* 分隔线 */}
+                              <div class="my-1 border-t border-gray-200"></div>
+                              <NCheckboxGroup
+                                value={filter.selectedValues}
+                                onUpdate:value={newValue => handleCheckboxChange(columnIndex, newValue)}
+                              >
+                                <div class="space-y-1">
+
+                                  {filter.defaultSelected.map(value => (
+                                    <NCheckbox
+                                      key={value}
+                                      value={value}
+                                    >
+                                      {value}
+                                    </NCheckbox>
+                                  ))}
+                                </div>
+                              </NCheckboxGroup>
+                            </div>
+                          </div>
+                        </div>
+                      ),
+                    }}
+                  </NPopover>
+                </th>
+              )
+            })}
+          </tr>
+        </thead>
+        <tbody>
+          {filteredAndSortedData.value.map((row, rowIndex) => (
+            <tr key={rowIndex}>
+              {row.map((cell, cellIndex) => (
+                <td key={cellIndex}>{cell}</td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </NTable>
+    </div>
   )
 })
 
