@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import { useForm } from './use-form'
 import { useFormLite } from './use-form-lite'
 
 describe('form rules generation', () => {

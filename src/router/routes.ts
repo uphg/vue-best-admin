@@ -55,4 +55,16 @@ export const constantRoutes = [
     hidden: true,
     component: () => import('@/pages/error/401'),
   },
+  {
+    path: '/divider',
+    name: 'Divider',
+    hidden: true,
+    component: () => import('@/pages/divider/divider-page'),
+  },
+  {
+    path: '/switch',
+    name: 'Switch',
+    hidden: true,
+    component: () => import('@/pages/switch/switch-page'),
+  },
 ]

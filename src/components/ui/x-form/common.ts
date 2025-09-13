@@ -588,11 +588,11 @@ export const nSwitchProps = {
   loading: boolUndef,
   checkedValue: {
     type: [String, Number, Boolean] as PropType<SwitchProps['checkedValue']>,
-    default: void 0
+    default: void 0,
   },
   uncheckedValue: {
     type: [String, Number, Boolean] as PropType<SwitchProps['uncheckedValue']>,
-    default: void 0
+    default: void 0,
   },
   railStyle: Function as PropType<SwitchProps['railStyle']>,
   onUpdateValue: [Function, Array] as PropType<SwitchProps['onUpdateValue']>,

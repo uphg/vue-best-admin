@@ -1,7 +1,6 @@
 import { render, screen } from '@testing-library/vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { h } from 'vue'
-import { useForm } from './use-form'
 import { useFormLite } from './use-form-lite'
 
 // Mock NaiveUI components inline

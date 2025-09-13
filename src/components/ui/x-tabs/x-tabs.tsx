@@ -1,4 +1,4 @@
-import type { ExtractPropTypes, Ref } from 'vue'
+import type { ExtractPropTypes } from 'vue'
 
 export const xTabsProps = {
   defaultValue: {

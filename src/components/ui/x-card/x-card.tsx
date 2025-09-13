@@ -59,7 +59,7 @@ const XCard = defineComponent<CardProps>({
         shadowMap[props.shadow as keyof typeof shadowMap] || shadowMap.sm,
         props.hoverable ? 'hover:shadow-md transition-shadow duration-200' : '',
       ]
-      
+
       return mergeClass(baseClasses, attrs.class as ClassNameValue)
     })
 
@@ -74,11 +74,11 @@ const XCard = defineComponent<CardProps>({
                 )}
           </div>
         )}
-        
+
         <div class={mergeClass(defaultClass.content, props.contentClass, sizeMap[props.size as keyof typeof sizeMap] || sizeMap.md)}>
           {slots.default?.()}
         </div>
-        
+
         {slots.footer && props.showFooter && (
           <div class={mergeClass(defaultClass.footer, props.footerClass)}>
             {slots.footer()}

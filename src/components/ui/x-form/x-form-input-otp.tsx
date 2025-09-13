@@ -1,4 +1,3 @@
-import type { InputOtpProps } from 'naive-ui/es/input-otp'
 import type { ExtractPublicPropTypes } from 'vue'
 import { NInputOtp } from 'naive-ui'
 import { defineComponent } from 'vue'

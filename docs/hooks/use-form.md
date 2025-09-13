@@ -6,13 +6,13 @@
 
 ## useForm vs useFormLite
 
-| 特性 | useForm | useFormLite |
-| ---- | ------- | ----------- |
-| 字段定义 | 对象格式 `{label, key, as, ...}` | 数组格式 `[label, key, props?]` |
-| 嵌套字段 | `children` 属性 | 嵌套数组语法 |
-| 类型安全 | 强类型 | 强类型 |
-| 功能完整性 | 100% | 100%（内部转换） |
-| 使用场景 | 复杂表单，类型提示更清晰 | 简单表单，代码更简洁 |
+| 特性       | useForm                          | useFormLite                     |
+| ---------- | -------------------------------- | ------------------------------- |
+| 字段定义   | 对象格式 `{label, key, as, ...}` | 数组格式 `[label, key, props?]` |
+| 嵌套字段   | `children` 属性                  | 嵌套数组语法                    |
+| 类型安全   | 强类型                           | 强类型                          |
+| 功能完整性 | 100%                             | 100%（内部转换）                |
+| 使用场景   | 复杂表单，类型提示更清晰         | 简单表单，代码更简洁            |
 
 ## 基本用法
 
@@ -24,17 +24,17 @@ import { useForm, useFormLite } from '@/hooks/use-form'
 
 ### useForm 参数说明
 
-| 参数      | 类型                | 默认值 | 说明             |
-| --------- | ------------------- | ------ | ---------------- |
-| `fields`  | `FieldProps[]`      | -      | 表单字段定义数组 |
-| `options` | `FormProps`         | `{}`   | 表单配置选项     |
+| 参数      | 类型           | 默认值 | 说明             |
+| --------- | -------------- | ------ | ---------------- |
+| `fields`  | `FieldProps[]` | -      | 表单字段定义数组 |
+| `options` | `FormProps`    | `{}`   | 表单配置选项     |
 
 ### useFormLite 参数说明
 
-| 参数         | 类型                | 默认值 | 说明                 |
-| ------------ | ------------------- | ------ | -------------------- |
-| `liteFields` | `LiteFieldProps[]`  | -      | 简化版表单字段定义数组 |
-| `options`    | `FormProps`         | `{}`   | 表单配置选项         |
+| 参数         | 类型               | 默认值 | 说明                   |
+| ------------ | ------------------ | ------ | ---------------------- |
+| `liteFields` | `LiteFieldProps[]` | -      | 简化版表单字段定义数组 |
+| `options`    | `FormProps`        | `{}`   | 表单配置选项           |
 
 ### useForm 类型定义
 
@@ -127,7 +127,7 @@ export default defineComponent({
       { label: '性别', key: 'gender', as: 'select', options: [
         { label: '男', value: 'male' },
         { label: '女', value: 'female' }
-      ]}
+      ] }
     ]
 
     const [Form, form, { validate, resetForm }] = useForm(fields, {
@@ -668,12 +668,12 @@ export default defineComponent({
     }
 
     const fields = [
-      ['性别', 'gender', { 
-        as: 'select', 
+      ['性别', 'gender', {
+        as: 'select',
         options: genderOptions // 直接传递 ref
       }],
-      ['城市', 'city', { 
-        as: 'select', 
+      ['城市', 'city', {
+        as: 'select',
         options: cityOptions // 异步更新的选项
       }]
     ]
@@ -695,14 +695,14 @@ export default defineComponent({
 除了传递 ref，你也可以使用 getter 函数：
 
 ```tsx
-const getOptions = () => {
+function getOptions() {
   // 动态计算选项
   return someCondition ? optionSetA : optionSetB
 }
 
 const fields = [
-  ['动态选项', 'dynamicField', { 
-    as: 'select', 
+  ['动态选项', 'dynamicField', {
+    as: 'select',
     options: getOptions // 传递 getter 函数
   }]
 ]
