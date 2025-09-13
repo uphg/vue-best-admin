@@ -33,4 +33,4 @@ pnpm lint         # Code quality check
 ## Committing
 
 - ALWAYS use semantic commits (fix:, feat:, chore:, refactor:, docs:).
-- Do not include Claude signatures in commit messages
+- Do not generate Claude signatures or Crush signatures in the commit message
