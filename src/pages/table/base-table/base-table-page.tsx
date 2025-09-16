@@ -7,6 +7,7 @@ import IconPlus from '~icons/lucide/plus'
 import IconSearch from '~icons/lucide/search'
 import IconTrash2 from '~icons/lucide/trash-2'
 import IconUpload from '~icons/lucide/upload'
+import { $confirm, $message } from '@/utils/global'
 
 interface User {
   id: number
@@ -108,7 +109,13 @@ const DataTablePage = defineComponent(() => {
   }
 
   const handleDelete = (row: User) => {
-    console.log('删除用户:', row)
+    $confirm.warning({
+      content: '确定要删除该数据？',
+      onConfirm: async () => {
+        await Promise.reject(new Error('删除失败'))
+        $message.success('删除成功')
+      },
+    })
   }
 
   const handleBatchDelete = () => {
