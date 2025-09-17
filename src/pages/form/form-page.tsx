@@ -10,7 +10,7 @@ interface FormData {
 }
 
 const FormPage = defineComponent(() => {
-  const [Form, formData, { resetForm, validate }] = useFormLite([
+  const [Form, { form: formData, resetForm, validate }] = useFormLite([
     ['活动名称', 'name', {}],
     ['活动名称', null, {
       grid: { cols: 2, xGap: 24 },
@@ -57,7 +57,13 @@ const FormPage = defineComponent(() => {
     }],
     ['活动形式', 'desc', { type: 'textarea' }],
     ['动态录入', 'dynamic', { as: 'dynamic-input', min: 2, max: 6, defaultValue: ['', ''] }],
-  ], { autoRules: ['name', 'name1', 'region', 'date', 'date2'] })
+  ], {
+    autoRules: ['name', 'name1', 'region', 'date', 'date2'],
+    buttons: [
+      { text: '提交', onClick: handleSubmit },
+      { text: '取消', onClick: handleReset },
+    ],
+  })
 
   // 处理表单提交
   const handleSubmit = async () => {
