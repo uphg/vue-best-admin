@@ -34,7 +34,7 @@ const FormPage = defineComponent(() => {
     })
   }
   return () => (
-    <div class="p-6">
+    <div class="p-4">
       <div class="mx-auto w-2xl">
         <h2 class="text-2xl font-bold mb-6">活动表单</h2>
         <NForm ref={formRef} model={form.value} labelWidth="80px" rules={rules}>

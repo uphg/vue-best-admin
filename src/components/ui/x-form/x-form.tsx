@@ -1,9 +1,9 @@
-import type { FormInst } from 'naive-ui'
+import type { FormInst, GridProps } from 'naive-ui'
 import type { PropType } from 'vue'
-import { assign, pick } from 'lodash-es'
-import { NForm, formProps as nFormProps } from 'naive-ui'
+import { assign, isObject, pick } from 'lodash-es'
+import { NForm, formProps as nFormProps, NGrid } from 'naive-ui'
 import { computed, defineComponent, provide, ref, toRef } from 'vue'
-import { nFormPropNames } from './common'
+import { nFormPropNames } from './n-form-props'
 import { xFormContextProviderKey } from './provider'
 
 const formProps = {
@@ -13,6 +13,10 @@ const formProps = {
   },
   defaultProps: { type: Object, default: () => ({}) },
   formItemWrapClass: { type: [String, Object, Array], default: '' },
+  grid: {
+    type: [Boolean, Object] as PropType<boolean | GridProps>,
+    default: false,
+  },
   ...nFormProps,
 }
 
@@ -29,17 +33,19 @@ const XForm = defineComponent({
 
     const rules = computed(() => assign({}, props.rules, _rules.value))
 
+    const formProps = computed(() => pick(props, nFormPropNames))
+    const gridProps = computed(() => isObject(props.grid) ? props.grid : {})
+
     // 提供给子组件的上下文
     const formContext = {
       rules: _rules,
       formItemWrapClass: toRef(props, 'formItemWrapClass'),
       autoRules: toRef(props, 'autoRules'),
       defaultProps: toRef(props, 'defaultProps'),
+      grid: toRef(props, 'grid'),
     }
 
     provide(xFormContextProviderKey, formContext)
-
-    const formProps = computed(() => pick(props, nFormPropNames))
 
     function validate(callback?: any, shouldRuleBeApplied?: any) {
       return formRef.value?.validate(callback, shouldRuleBeApplied)
@@ -67,7 +73,7 @@ const XForm = defineComponent({
         rules={rules.value}
         {...formProps.value}
       >
-        {slots.default?.()}
+        {props.grid ? <NGrid {...gridProps.value}>{{ ...slots }}</NGrid> : slots.default?.()}
       </NForm>
     )
   },

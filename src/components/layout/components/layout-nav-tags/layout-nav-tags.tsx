@@ -1,5 +1,4 @@
 import type { NavTagItem } from '@/stores/nav-tags'
-import { NLayoutHeader } from 'naive-ui'
 import { defineComponent, shallowRef, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useNavTagsStore } from '@/stores/nav-tags'
@@ -52,13 +51,13 @@ const LayoutNavTags = defineComponent(() => {
   }
 
   return () => (
-    <NLayoutHeader bordered class="tags h-[var(--nav-tag-height)] w-full">
+    <div class="tags border-b-1 border-b-gray-200 w-full">
       <div
         ref={tagsWrapRef}
-        class="tags-wrapper flex h-[var(--nav-tag-height)] w-full items-center overflow-auto"
+        class="tags-wrapper flex w-full items-center overflow-auto"
         onWheel={onTagsWheel}
       >
-        <div class="px-6 py-1 flex gap-2">
+        <div class="px-4 py-3 flex gap-2">
           {navTagsStore.tags.map((item, index) => (
             <NavTag
               key={item.name}
@@ -72,7 +71,7 @@ const LayoutNavTags = defineComponent(() => {
           ))}
         </div>
       </div>
-    </NLayoutHeader>
+    </div>
   )
 })
 

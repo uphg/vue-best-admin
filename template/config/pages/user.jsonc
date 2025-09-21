@@ -1,0 +1,68 @@
+{
+  "id": "user-management",
+  "name": "用户管理",
+  "type": "table",
+  "path": "/users",
+  "config": {
+    "filter": ["id", "name", "email"],
+    "fields": [
+      { "name": "id", "label": "ID", "type": "text", "hidden": true },
+      { "name": "name", "label": "姓名", "type": "text", "sortable": true },
+      { "name": "email", "label": "邮箱", "type": "text" }
+    ],
+    "api": {
+      "baseURL": "/api",
+      "operations": {
+        "list": {
+          "url": "/api/users",
+          "method": "GET",
+          "params": {
+            "page": "page",
+            "size": "pageSize",
+            "sort": "sortField",
+            "order": "sortOrder"
+          }
+        },
+        "create": {
+          "url": "/api/users",
+          "method": "POST",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "update": {
+          "url": "/api/users/:id",
+          "method": "PUT",
+          "headers": {
+            "Content-Type": "application/json"
+          }
+        },
+        "delete": {
+          "url": "/api/users/:id",
+          "method": "DELETE"
+        },
+        "detail": {
+          "url": "/api/users/:id",
+          "method": "GET"
+        },
+        "batchDelete": {
+          "url": "/api/users/batch",
+          "method": "DELETE",
+          "data": {
+            "ids": "selectedIds"
+          }
+        },
+        "export": {
+          "url": "/api/users/export",
+          "method": "GET",
+          "responseType": "blob"
+        },
+        "import": {
+          "url": "/api/users/import",
+          "method": "GET",
+          "responseType": "blob"
+        }
+      }
+    }
+  }
+}

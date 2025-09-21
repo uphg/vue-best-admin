@@ -1,4 +1,4 @@
-import type { AutoCompleteProps, CascaderProps, CheckboxGroupProps, ColorPickerProps, DatePickerProps, DynamicInputProps, DynamicTagsProps, FormItemProps, InputNumberProps, InputProps, MentionProps, RadioGroupProps, RateProps, SelectProps, SliderProps, SwitchProps, TimePickerProps, TransferProps, TreeSelectProps, UploadProps } from 'naive-ui'
+import type { AutoCompleteProps, CascaderProps, CheckboxGroupProps, ColorPickerProps, DatePickerProps, DynamicInputProps, DynamicTagsProps, FormItemProps, GridProps, InputNumberProps, InputProps, MentionProps, RadioGroupProps, RateProps, SelectProps, SliderProps, SwitchProps, TimePickerProps, TransferProps, TreeSelectProps, UploadProps } from 'naive-ui'
 import type { InputOtpProps } from 'naive-ui/es/input-otp'
 
 // 定义更明确的类型
@@ -7,6 +7,7 @@ export interface XFormContext {
   formItemWrapClass: Ref<any>
   autoRules: Ref<boolean | string[]>
   defaultProps: Ref<FormDefaultProps>
+  grid: Ref<boolean | GridProps>
 }
 
 // 提供默认值类型

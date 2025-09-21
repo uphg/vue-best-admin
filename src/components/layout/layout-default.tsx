@@ -1,4 +1,4 @@
-import { NLayout, NLayoutContent } from 'naive-ui'
+import { NScrollbar } from 'naive-ui'
 import { defineComponent } from 'vue'
 import { RouterView } from 'vue-router'
 import LayoutHeader from './components/layout-header/layout-header'
@@ -6,17 +6,17 @@ import LayoutSidebar from './components/layout-sidebar/layout-sidebar'
 
 const LayoutDefault = defineComponent(() => {
   return () => (
-    <NLayout contentClass="h-100vh flex flex-col" nativeScrollbar={false}>
-      <NLayout hasSider class="flex-1">
+    <div class="bg-white flex flex-col h-100vh">
+      <div class="flex h-full">
         <LayoutSidebar />
-        <NLayout contentClass="flex flex-col">
+        <div class="flex flex-1 flex-col h-full">
           <LayoutHeader />
-          <NLayoutContent class="flex-1" native-scrollbar={false}>
+          <NScrollbar class="flex-1">
             <RouterView />
-          </NLayoutContent>
-        </NLayout>
-      </NLayout>
-    </NLayout>
+          </NScrollbar>
+        </div>
+      </div>
+    </div>
   )
 })
 

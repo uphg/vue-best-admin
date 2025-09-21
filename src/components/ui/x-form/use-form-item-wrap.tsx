@@ -1,9 +1,10 @@
 import type { RenderFunction, SetupContext } from 'vue'
 import type { XFormContext } from './types'
 import type { InputElement } from '@/types/form'
-import { NFormItem } from 'naive-ui'
-import { nFormItemDefaultProps, nFormItemPropNames } from './common'
+import { NFormItem, NFormItemGi } from 'naive-ui'
+import { nFormItemDefaultProps, nFormItemPropNames } from './n-form-props'
 import { genFormItemRule } from './helpers'
+import { nGridItemPropNames } from './form-props'
 import { useMergeDefaultProps } from './use-merge-default-props'
 import XFormItemWrap from './x-form-item-wrap'
 
@@ -15,10 +16,10 @@ interface FormItemWrapOptions {
 
 export function useFormItemWrap<T extends Record<string, any>>(rawProps: T, { slots }: SetupContext<any[], any>, options: FormItemWrapOptions) {
   const { fieldType, render, formContext } = options
-  const { defaultProps, rules, autoRules, formItemWrapClass } = formContext
+  const { defaultProps, rules, autoRules, formItemWrapClass, grid } = formContext
   const formItemProps = useMergeDefaultProps({
     rawProps,
-    propNames: nFormItemPropNames,
+    propNames: grid.value ? nFormItemPropNames.concat(nGridItemPropNames) : nFormItemPropNames,
     defaultProps: nFormItemDefaultProps,
     provideProps: defaultProps.value.formItem,
   })
@@ -27,18 +28,21 @@ export function useFormItemWrap<T extends Record<string, any>>(rawProps: T, { sl
     genFormItemRule(fieldType, { props: formItemProps.value, rules: rules.value, autoRules: autoRules.value })
   })
 
-  return [() => (
-    <NFormItem {...formItemProps.value}>
-      <XFormItemWrap
-        wrap={rawProps.wrap}
-        wrapClass={rawProps.wrapClass}
-        provideWrapClass={formItemWrapClass.value}
-        v-slots={{
-          itemPrefix: slots.itemPrefix,
-          itemSuffix: slots.itemSuffix,
-          default: render,
-        }}
-      />
-    </NFormItem>
-  ), formItemProps] as const
+  return [() => {
+    const FormItem = grid.value ? NFormItemGi : NFormItem
+    return (
+      <FormItem {...formItemProps.value}>
+        <XFormItemWrap
+          wrap={rawProps.wrap}
+          wrapClass={rawProps.wrapClass}
+          provideWrapClass={formItemWrapClass.value}
+          v-slots={{
+            itemPrefix: slots.itemPrefix,
+            itemSuffix: slots.itemSuffix,
+            default: render,
+          }}
+        />
+      </FormItem>
+    )
+  }, formItemProps] as const
 }

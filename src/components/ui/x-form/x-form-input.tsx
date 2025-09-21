@@ -2,9 +2,9 @@ import type { ExtractPublicPropTypes } from 'vue'
 import { omit } from 'lodash-es'
 import { NInput } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { nFormItemProps, nInputDefaultProps, nInputPropNames, nInputProps } from './common'
+import { nFormItemProps, nInputDefaultProps, nInputPropNames, nInputProps } from './n-form-props'
 import { genPlaceholder } from './helpers'
-import { xFormItemProps } from './props'
+import { xFormItemProps } from './form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
 import { useMergeDefaultProps } from './use-merge-default-props'
@@ -20,6 +20,7 @@ const xInputProps = {
 const fieldType = 'input'
 
 const XFormInput = defineComponent({
+  __GRID_ITEM__: true,
   name: 'XFormInput',
   props: xInputProps,
   emits: ['update:value'],

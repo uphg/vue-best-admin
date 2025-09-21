@@ -25,7 +25,7 @@ const SortTablePage = defineComponent(() => {
   }
 
   return () => (
-    <div class="p-6">
+    <div class="p-4">
       <NTable bordered striped>
         <thead>
           <tr>

@@ -94,7 +94,7 @@ const XFormDemo = defineComponent(() => {
   ]
 
   return () => (
-    <div class="p-6">
+    <div class="p-4">
       <div class="mx-auto w-7xl">
         <h2 class="text-2xl font-bold mb-6">XForm 组件演示</h2>
 

@@ -1,15 +1,15 @@
 import type { ExtractPublicPropTypes, PropType } from 'vue'
 import { NCheckbox, NCheckboxGroup } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { nCheckboxGroupDefaultProps, nCheckboxGroupPropNames, nCheckboxGroupProps, nFormItemProps } from './common'
-import { xFormItemProps } from './props'
+import { xFormItemProps } from './form-props'
+import { nCheckboxGroupDefaultProps, nCheckboxGroupPropNames, nCheckboxGroupProps, nFormItemProps } from './n-form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
 import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xCheckboxProps = {
-  ...xFormItemProps,
   options: Array as PropType<Array<{ label: string, value: any, disabled?: boolean }>>,
+  ...xFormItemProps,
   ...nFormItemProps,
   ...nCheckboxGroupProps,
 }
@@ -25,7 +25,7 @@ const XFormCheckbox = defineComponent({
   setup(rawProps: XCheckboxProps, context) {
     const formContext = useFormContext()
     const fieldProps = useMergeDefaultProps({ rawProps, propNames: nCheckboxGroupPropNames, defaultProps: nCheckboxGroupDefaultProps, provideProps: formContext.defaultProps.value.checkbox })
-    const [FormCheckbox, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
+    const [FormCheckbox] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
 
     function handleUpdateValue(...args: any[]) {
       context.emit('update:value', ...args)

@@ -19,7 +19,7 @@ const TabsDemo = defineComponent(() => {
   const statusTab = ref('enabled')
 
   return () => (
-    <div class="p-6">
+    <div class="p-4">
       <h1 class="text-2xl font-bold mb-6">Tabs 组件示例</h1>
 
       <NSpace vertical size="large">

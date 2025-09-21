@@ -7,6 +7,7 @@ import IconPlus from '~icons/lucide/plus'
 import IconSearch from '~icons/lucide/search'
 import IconTrash2 from '~icons/lucide/trash-2'
 import IconUpload from '~icons/lucide/upload'
+import { XForm, XFormInput, XFormSelect } from '@/components/ui/x-form'
 import { $confirm, $message } from '@/utils/global'
 
 interface User {
@@ -108,7 +109,7 @@ const DataTablePage = defineComponent(() => {
     console.log('编辑用户:', row)
   }
 
-  const handleDelete = (row: User) => {
+  const handleDelete = () => {
     $confirm.warning({
       content: '确定要删除该数据？',
       onConfirm: async () => {
@@ -226,7 +227,7 @@ const DataTablePage = defineComponent(() => {
             size: 'small',
             type: 'error',
             quaternary: true,
-            onClick: () => handleDelete(row),
+            onClick: () => handleDelete(),
           }, () => [h(NIcon, null, () => h(IconTrash2))]),
         ])
       },
@@ -246,9 +247,63 @@ const DataTablePage = defineComponent(() => {
   })
 
   return () => (
-    <div class="p-6">
+    <div class="p-4">
       <NSpace vertical size="large">
-        {/* 查询表单区域 */}
+        <NCard size="small">
+          <XForm inline label-placement="left" show-feedback={false} grid={{ xGap: 12 }}>
+            <XFormInput
+              label="关键词"
+              value={searchQuery.value}
+              onUpdate:value={val => searchQuery.value = val}
+              placeholder="搜索姓名或邮箱"
+              clearable
+              v-slots={{
+                prefix: () => h(NIcon, null, () => h(IconSearch)),
+              }}
+              span={6}
+            />
+            <XFormSelect
+              label="角色"
+              value={selectedRole.value}
+              onUpdate:value={val => selectedRole.value = val}
+              placeholder="选择角色"
+              inputClass="w-full"
+              clearable
+              options={[
+                { label: '管理员', value: 'admin' },
+                { label: '编辑者', value: 'editor' },
+                { label: '普通用户', value: 'user' },
+              ]}
+              span={6}
+            />
+            <XFormSelect
+              label="状态"
+              value={selectedStatus.value}
+              onUpdate:value={val => selectedStatus.value = val}
+              placeholder="选择状态"
+              inputClass="w-full"
+              clearable
+              options={[
+                { label: '激活', value: 'active' },
+                { label: '未激活', value: 'inactive' },
+                { label: '待审核', value: 'pending' },
+              ]}
+              span={6}
+            />
+            <div class="ml-2">
+              <NSpace>
+                <NButton type="primary" onClick={handleSearch}>
+                  <NIcon class="mr-1">
+                    <IconSearch />
+                  </NIcon>
+                  查询
+                </NButton>
+                <NButton onClick={handleReset}>重置</NButton>
+              </NSpace>
+            </div>
+          </XForm>
+        </NCard>
+
         <NCard size="small">
           <NForm inline label-placement="left" show-feedback={false}>
             <NGrid x-gap={12}>
@@ -305,7 +360,7 @@ const DataTablePage = defineComponent(() => {
         </NCard>
 
         {/* 表格区域 */}
-        <NCard>
+        <NCard size="small">
           <NSpace vertical>
             {/* 表格操作栏 */}
             <div class="flex justify-between">

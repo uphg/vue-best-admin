@@ -1,5 +1,5 @@
-import { XSwitch } from '@/components/ui/x-switch'
 import { defineComponent, ref } from 'vue'
+import { XSwitch } from '@/components/ui/x-switch'
 
 const SwitchPage = defineComponent({
   name: 'SwitchPage',
@@ -11,11 +11,11 @@ const SwitchPage = defineComponent({
     const value5 = ref(false)
 
     return () => (
-      <div class="p-6">
+      <div class="p-4">
         <h1 class="text-2xl font-bold mb-6">Switch Component Test</h1>
-        
+
         <div class="space-y-6">
-          <div class="border rounded-lg p-4">
+          <div class="p-4 border rounded-lg">
             <h2 class="text-lg font-semibold mb-3">Basic Switch</h2>
             <div class="flex items-center space-x-4">
               <XSwitch v-model:value={value1.value} />
@@ -23,7 +23,7 @@ const SwitchPage = defineComponent({
             </div>
           </div>
 
-          <div class="border rounded-lg p-4">
+          <div class="p-4 border rounded-lg">
             <h2 class="text-lg font-semibold mb-3">Different Sizes</h2>
             <div class="space-y-3">
               <div class="flex items-center space-x-4">
@@ -41,7 +41,7 @@ const SwitchPage = defineComponent({
             </div>
           </div>
 
-          <div class="border rounded-lg p-4">
+          <div class="p-4 border rounded-lg">
             <h2 class="text-lg font-semibold mb-3">Different States</h2>
             <div class="space-y-3">
               <div class="flex items-center space-x-4">
@@ -55,7 +55,7 @@ const SwitchPage = defineComponent({
             </div>
           </div>
 
-          <div class="border rounded-lg p-4">
+          <div class="p-4 border rounded-lg">
             <h2 class="text-lg font-semibold mb-3">Custom Colors</h2>
             <div class="space-y-3">
               <div class="flex items-center space-x-4">

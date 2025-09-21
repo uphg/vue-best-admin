@@ -2,9 +2,9 @@ import type { ExtractPublicPropTypes } from 'vue'
 import { omit } from 'lodash-es'
 import { NSelect } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { nFormItemProps, nSelectDefaultProps, nSelectPropNames, nSelectProps } from './common'
+import { nFormItemProps, nSelectDefaultProps, nSelectPropNames, nSelectProps } from './n-form-props'
 import { genPlaceholder } from './helpers'
-import { xFormItemProps } from './props'
+import { xFormItemProps } from './form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
 import { useMergeDefaultProps } from './use-merge-default-props'
@@ -20,6 +20,7 @@ const xSelectProps = {
 const fieldType = 'select'
 
 const XFormSelect = defineComponent({
+  __GRID_ITEM__: true,
   name: 'XFormSelect',
   props: xSelectProps,
   emits: ['update:value'],
@@ -39,6 +40,7 @@ const XFormSelect = defineComponent({
         <NSelect
           {...fieldProps.value}
           value={rawProps.value}
+          class={rawProps.inputClass}
           placeholder={placeholder.value}
           onUpdate:value={handleUpdateValue}
         >

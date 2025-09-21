@@ -136,8 +136,8 @@ const XSwitch = defineComponent<SwitchProps>({
       >
         <div class={thumbClasses.value}>
           {props.loading && (
-            <div class="absolute inset-0 flex items-center justify-center">
-              <div class="animate-spin border-b-2 border-white rounded-full h-2 w-2"></div>
+            <div class="flex items-center inset-0 justify-center absolute">
+              <div class="border-b-2 border-white rounded-full h-2 w-2 animate-spin"></div>
             </div>
           )}
         </div>

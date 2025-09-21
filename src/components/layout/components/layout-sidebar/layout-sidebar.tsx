@@ -1,7 +1,7 @@
 import type { MenuOption } from 'naive-ui'
 import type { RouteLocationRaw } from 'vue-router'
 import type { MenuItem } from '@/types/menu'
-import { NLayoutContent, NLayoutHeader, NLayoutSider, NMenu } from 'naive-ui'
+import { NMenu, NScrollbar } from 'naive-ui'
 import { Transition } from 'vue'
 import { RouterLink } from 'vue-router'
 import IconLogo from '~icons/local/logo'
@@ -61,39 +61,34 @@ const LayoutSidebar = defineComponent(() => {
   }
 
   return () => (
-    <NLayoutSider
-      v-model:value={selectedKey.value}
-      v-model:expanded-keys={expandedKeys.value}
-      collapsed={sidebar.collapsed}
-      bordered
-      showTrigger
-      collapseMode="width"
-      collapsedWidth={64}
-      width={240}
-      nativeScrollbar={false}
-      contentClass="flex flex-col h-full"
-    >
-      <NLayoutHeader bordered class={['h-15', sidebar.collapsed ? 'w-16' : 'w-60']}>
-        <div class={['flex gap-2 h-15 w-60 items-center transition-spacing duration-300', sidebar.collapsed ? 'px-4' : 'px-3']}>
-          <IconLogo />
-          <Transition name="fade">
-            {sidebar.collapsed ? null : <span class="font-size-4.5">Vue Best</span>}
-          </Transition>
+    <div class={['h-full border-r-1 border-r-gray-200']}>
+      <div class={['h-full flex flex-col transition-width', sidebar.collapsed ? 'w-16' : 'w-60']}>
+        <div class={['h-15 border-b-1 border-b-gray-200', sidebar.collapsed ? 'w-16' : 'w-60']}>
+          <div class={['flex gap-2 h-15 items-center transition-spacing duration-250 relative', sidebar.collapsed ? 'px-4' : 'px-3']}>
+            <IconLogo />
+            <div class="w-20 left-13 absolute">
+              <Transition name="fade">
+                {sidebar.collapsed ? null : <span class="font-size-4.5">Vue Best</span>}
+              </Transition>
+            </div>
+          </div>
         </div>
-      </NLayoutHeader>
-      <NLayoutContent nativeScrollbar={false}>
-        <NMenu
-          class="flex-1"
-          collapsedWidth={64}
-          collapsedIconSize={22}
-          options={sidebar.menus as MenuOption[]}
-          value={selectedKey.value}
-          default-value={selectedKey.value}
-          render-label={renderMenuLabel}
-          render-icon={renderMenuIcon}
-        />
-      </NLayoutContent>
-    </NLayoutSider>
+        <NScrollbar class="flex-1">
+          <NMenu
+            collapsedWidth={64}
+            collapsedIconSize={22}
+            v-model:value={selectedKey.value}
+            v-model:expanded-keys={expandedKeys.value}
+            collapsed={sidebar.collapsed}
+            options={sidebar.menus as MenuOption[]}
+            value={selectedKey.value}
+            default-value={selectedKey.value}
+            render-label={renderMenuLabel}
+            render-icon={renderMenuIcon}
+          />
+        </NScrollbar>
+      </div>
+    </div>
   )
 })
 

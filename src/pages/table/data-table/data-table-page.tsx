@@ -238,7 +238,7 @@ const DataTablePage = defineComponent(() => {
   }, ...allColumns.filter(col => visibleColumnKeys.value.includes(col.key!))])
 
   return () => (
-    <div class="p-6">
+    <div class="p-4">
       <NSpace vertical size="large">
         {/* 查询表单区域 */}
         <NCard size="small">

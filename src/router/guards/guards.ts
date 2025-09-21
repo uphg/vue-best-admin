@@ -5,7 +5,7 @@ import { apiGetRouteData, apiGetUserInfo } from '@/api/user'
 import { useSidebarStore } from '@/stores/sidebar'
 import { useUserStore } from '@/stores/user'
 import { getToken, removeToken } from '@/utils/token'
-import { constantRoutes } from '../routes'
+import { constantRoutes, permissionRoutes } from '../routes'
 import { createAsyncRoutes, createSidebarMenus } from './async-route'
 
 const commonRoutes: (string | symbol)[] = ['Login', '404']
@@ -124,9 +124,11 @@ function isLinkRoute(route: RouteRecordRaw): boolean {
 
 async function fetchUserAuthAndRoutes() {
   const userInfoRes = await apiGetUserInfo()
-  const routeDataRes = await apiGetRouteData()
+  // const routeDataRes = await apiGetRouteData()
+  const routes = permissionRoutes
 
-  const routes = createAsyncRoutes(routeDataRes.data)
+  // const routes = createAsyncRoutes(routeDataRes.data)
+  // const menuData = [...constantRoutes, ...routes] // 使用展开运算符替代 concat
   const menuData = [...constantRoutes, ...routes] // 使用展开运算符替代 concat
 
   const { menus, menusMap } = createSidebarMenus(menuData)

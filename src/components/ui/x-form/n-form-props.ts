@@ -77,6 +77,9 @@ export const nFormItemDefaultProps = {
   requireMarkPlacement: 'right' as const,
   size: 'medium' as const,
   validationStatus: undefined,
+  offset: 0,
+  span: 1,
+  suffix: false,
 }
 
 // === Input ===
