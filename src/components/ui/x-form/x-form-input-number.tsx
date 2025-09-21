@@ -1,11 +1,13 @@
 import type { ExtractPublicPropTypes } from 'vue'
 import { NInputNumber } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { nFormItemProps, nInputNumberDefaultProps, nInputNumberPropNames, nInputNumberProps } from './n-form-props'
-import { genPlaceholder } from './helpers'
+import { xFormItemOptions } from './common'
 import { xFormItemProps } from './form-props'
+import { genPlaceholder } from './helpers'
+import { nFormItemProps, nInputNumberDefaultProps, nInputNumberPropNames, nInputNumberProps } from './n-form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
+import { useFormSlots } from './use-form-slots'
 import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xInputNumberProps = {
@@ -19,6 +21,7 @@ type XInputNumberProps = ExtractPublicPropTypes<typeof xInputNumberProps>
 const fieldType = 'input-number'
 
 const XFormInputNumber = defineComponent({
+  ...xFormItemOptions,
   name: 'XFormInputNumber',
   props: xInputNumberProps,
   emits: ['update:value'],
@@ -26,6 +29,7 @@ const XFormInputNumber = defineComponent({
     const formContext = useFormContext()
     const fieldProps = useMergeDefaultProps({ rawProps, propNames: nInputNumberPropNames, defaultProps: nInputNumberDefaultProps, provideProps: formContext.defaultProps.value.inputNumber })
     const [FormInputNumber, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
+    const inputNumberSlots = useFormSlots(context.slots, fieldType)
     const placeholder = computed(() => genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
 
     function handleUpdateValue(...args: any[]) {
@@ -41,7 +45,7 @@ const XFormInputNumber = defineComponent({
           placeholder={placeholder.value}
           onUpdate:value={handleUpdateValue}
         >
-          {context.slots}
+          {inputNumberSlots.value}
         </NInputNumber>
       )
     }

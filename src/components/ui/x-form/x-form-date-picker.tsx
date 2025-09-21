@@ -1,11 +1,13 @@
 import type { ExtractPublicPropTypes } from 'vue'
 import { NDatePicker } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { nDatePickerDefaultProps, nDatePickerPropNames, nDatePickerProps, nFormItemProps } from './n-form-props'
-import { genPlaceholder } from './helpers'
+import { xFormItemOptions } from './common'
 import { xFormItemProps } from './form-props'
+import { genPlaceholder } from './helpers'
+import { nDatePickerDefaultProps, nDatePickerPropNames, nDatePickerProps, nFormItemProps } from './n-form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
+import { useFormSlots } from './use-form-slots'
 import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xDatePickerProps = {
@@ -19,6 +21,7 @@ type XDatePickerProps = ExtractPublicPropTypes<typeof xDatePickerProps>
 const fieldType = 'date-picker'
 
 const XFormDatePicker = defineComponent({
+  ...xFormItemOptions,
   name: 'XFormDatePicker',
   props: xDatePickerProps,
   emits: ['update:value'],
@@ -26,6 +29,7 @@ const XFormDatePicker = defineComponent({
     const formContext = useFormContext()
     const fieldProps = useMergeDefaultProps({ rawProps, propNames: nDatePickerPropNames, defaultProps: nDatePickerDefaultProps, provideProps: formContext.defaultProps.value.datePicker })
     const [FormDatePicker, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
+    const datePickerSlots = useFormSlots(context.slots, fieldType)
     const placeholder = computed(() => genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
 
     function handleUpdateValue(...args: any[]) {
@@ -41,7 +45,7 @@ const XFormDatePicker = defineComponent({
           placeholder={placeholder.value}
           onUpdate:value={handleUpdateValue}
         >
-          {context.slots}
+          {datePickerSlots.value}
         </NDatePicker>
       )
     }

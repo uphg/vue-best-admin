@@ -1,12 +1,13 @@
 import type { ExtractPublicPropTypes } from 'vue'
-import { omit } from 'lodash-es'
 import { NSelect } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { nFormItemProps, nSelectDefaultProps, nSelectPropNames, nSelectProps } from './n-form-props'
-import { genPlaceholder } from './helpers'
+import { xFormItemOptions } from './common'
 import { xFormItemProps } from './form-props'
+import { genPlaceholder } from './helpers'
+import { nFormItemProps, nSelectDefaultProps, nSelectPropNames, nSelectProps } from './n-form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
+import { useFormSlots } from './use-form-slots'
 import { useMergeDefaultProps } from './use-merge-default-props'
 
 type XSelectProps = ExtractPublicPropTypes<typeof xSelectProps>
@@ -20,7 +21,7 @@ const xSelectProps = {
 const fieldType = 'select'
 
 const XFormSelect = defineComponent({
-  __GRID_ITEM__: true,
+  ...xFormItemOptions,
   name: 'XFormSelect',
   props: xSelectProps,
   emits: ['update:value'],
@@ -28,7 +29,7 @@ const XFormSelect = defineComponent({
     const formContext = useFormContext()
     const fieldProps = useMergeDefaultProps({ rawProps, propNames: nSelectPropNames, defaultProps: nSelectDefaultProps, provideProps: formContext.defaultProps.value.select })
     const [FormSelect, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
-    const selectSlots = computed(() => omit(context.slots, 'itemPrefix', 'itemSuffix'))
+    const selectSlots = useFormSlots(context.slots, fieldType)
     const placeholder = computed(() => genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
 
     function handleUpdateValue(...args: any[]) {

@@ -1,11 +1,13 @@
 import type { ExtractPublicPropTypes } from 'vue'
 import { NTreeSelect } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { nFormItemProps, nTreeSelectDefaultProps, nTreeSelectPropNames, nTreeSelectProps } from './n-form-props'
-import { genPlaceholder } from './helpers'
+import { xFormItemOptions } from './common'
 import { xFormItemProps } from './form-props'
+import { genPlaceholder } from './helpers'
+import { nFormItemProps, nTreeSelectDefaultProps, nTreeSelectPropNames, nTreeSelectProps } from './n-form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
+import { useFormSlots } from './use-form-slots'
 import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xTreeSelectProps = {
@@ -17,6 +19,7 @@ const xTreeSelectProps = {
 const fieldType = 'tree-select'
 
 const XFormTreeSelect = defineComponent({
+  ...xFormItemOptions,
   name: 'XFormTreeSelect',
   props: xTreeSelectProps,
   emits: ['update:value'],
@@ -24,6 +27,7 @@ const XFormTreeSelect = defineComponent({
     const formContext = useFormContext()
     const fieldProps = useMergeDefaultProps({ rawProps, propNames: nTreeSelectPropNames, defaultProps: nTreeSelectDefaultProps, provideProps: formContext.defaultProps.value.treeSelect })
     const [FormTreeSelect, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
+    const treeSelectSlots = useFormSlots(context.slots, fieldType)
     const placeholder = computed(() => genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
 
     function handleUpdateValue(...args: any[]) {
@@ -39,7 +43,7 @@ const XFormTreeSelect = defineComponent({
           placeholder={placeholder.value}
           onUpdate:value={handleUpdateValue}
         >
-          {context.slots}
+          {treeSelectSlots.value}
         </NTreeSelect>
       )
     }

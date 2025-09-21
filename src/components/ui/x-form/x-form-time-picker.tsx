@@ -1,11 +1,13 @@
 import type { ExtractPublicPropTypes } from 'vue'
 import { NTimePicker } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { nFormItemProps, nTimePickerDefaultProps, nTimePickerPropNames, nTimePickerProps } from './n-form-props'
-import { genPlaceholder } from './helpers'
+import { xFormItemOptions } from './common'
 import { xFormItemProps } from './form-props'
+import { genPlaceholder } from './helpers'
+import { nFormItemProps, nTimePickerDefaultProps, nTimePickerPropNames, nTimePickerProps } from './n-form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
+import { useFormSlots } from './use-form-slots'
 import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xTimePickerProps = {
@@ -17,6 +19,7 @@ const xTimePickerProps = {
 const fieldType = 'time-picker'
 
 const XFormTimePicker = defineComponent({
+  ...xFormItemOptions,
   name: 'XFormTimePicker',
   props: xTimePickerProps,
   emits: ['update:value'],
@@ -24,6 +27,7 @@ const XFormTimePicker = defineComponent({
     const formContext = useFormContext()
     const fieldProps = useMergeDefaultProps({ rawProps, propNames: nTimePickerPropNames, defaultProps: nTimePickerDefaultProps, provideProps: formContext.defaultProps.value.timePicker })
     const [FormTimePicker, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
+    const timePickerSlots = useFormSlots(context.slots, fieldType)
     const placeholder = computed(() => genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
 
     function handleUpdateValue(...args: any[]) {
@@ -39,7 +43,7 @@ const XFormTimePicker = defineComponent({
           placeholder={placeholder.value}
           onUpdate:value={handleUpdateValue}
         >
-          {context.slots}
+          {timePickerSlots.value}
         </NTimePicker>
       )
     }

@@ -1,12 +1,13 @@
 import type { ExtractPublicPropTypes } from 'vue'
-import { omit } from 'lodash-es'
 import { NInput } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { nFormItemProps, nInputDefaultProps, nInputPropNames, nInputProps } from './n-form-props'
-import { genPlaceholder } from './helpers'
+import { xFormItemOptions } from './common'
 import { xFormItemProps } from './form-props'
+import { genPlaceholder } from './helpers'
+import { nFormItemProps, nInputDefaultProps, nInputPropNames, nInputProps } from './n-form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
+import { useFormSlots } from './use-form-slots'
 import { useMergeDefaultProps } from './use-merge-default-props'
 
 type XInputProps = ExtractPublicPropTypes<typeof xInputProps>
@@ -20,7 +21,7 @@ const xInputProps = {
 const fieldType = 'input'
 
 const XFormInput = defineComponent({
-  __GRID_ITEM__: true,
+  ...xFormItemOptions,
   name: 'XFormInput',
   props: xInputProps,
   emits: ['update:value'],
@@ -28,7 +29,7 @@ const XFormInput = defineComponent({
     const formContext = useFormContext()
     const fieldProps = useMergeDefaultProps({ rawProps, propNames: nInputPropNames, defaultProps: nInputDefaultProps, provideProps: formContext.defaultProps.value.input })
     const [FormInput, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
-    const inputSlots = computed(() => omit(context.slots, 'itemPrefix', 'itemSuffix'))
+    const inputSlots = useFormSlots(context.slots, fieldType)
     const placeholder = computed(() => genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
 
     function handleUpdateValue(...args: any[]) {

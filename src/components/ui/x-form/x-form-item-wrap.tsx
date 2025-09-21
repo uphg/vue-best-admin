@@ -1,6 +1,8 @@
 import { mergeClass } from '@/utils/merge-class'
+import { xFormItemOptions } from './common'
 
 const XFormItemWrap = defineComponent({
+  ...xFormItemOptions,
   name: 'XFormItemWrap',
   inheritAttrs: false,
   props: {

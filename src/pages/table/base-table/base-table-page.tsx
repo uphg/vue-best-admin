@@ -8,6 +8,7 @@ import IconSearch from '~icons/lucide/search'
 import IconTrash2 from '~icons/lucide/trash-2'
 import IconUpload from '~icons/lucide/upload'
 import { XForm, XFormInput, XFormSelect } from '@/components/ui/x-form'
+import XFormItem from '@/components/ui/x-form/x-form-item'
 import { $confirm, $message } from '@/utils/global'
 
 interface User {
@@ -290,7 +291,7 @@ const DataTablePage = defineComponent(() => {
               ]}
               span={6}
             />
-            <div class="ml-2">
+            <XFormItem span={6}>
               <NSpace>
                 <NButton type="primary" onClick={handleSearch}>
                   <NIcon class="mr-1">
@@ -300,63 +301,8 @@ const DataTablePage = defineComponent(() => {
                 </NButton>
                 <NButton onClick={handleReset}>重置</NButton>
               </NSpace>
-            </div>
+            </XFormItem>
           </XForm>
-        </NCard>
-
-        <NCard size="small">
-          <NForm inline label-placement="left" show-feedback={false}>
-            <NGrid x-gap={12}>
-              <NFormItemGi label="关键词" span={6}>
-                <NInput
-                  v-model:value={searchQuery.value}
-                  placeholder="搜索姓名或邮箱"
-                  clearable
-                  style={{ width: '200px' }}
-                  v-slots={{
-                    prefix: () => h(NIcon, null, () => h(IconSearch)),
-                  }}
-                />
-              </NFormItemGi>
-              <NFormItemGi label="角色" span={6}>
-                <NSelect
-                  v-model:value={selectedRole.value}
-                  placeholder="选择角色"
-                  class="w-full"
-                  clearable
-                  options={[
-                    { label: '管理员', value: 'admin' },
-                    { label: '编辑者', value: 'editor' },
-                    { label: '普通用户', value: 'user' },
-                  ]}
-                />
-              </NFormItemGi>
-              <NFormItemGi label="状态" span={6}>
-                <NSelect
-                  v-model:value={selectedStatus.value}
-                  placeholder="选择状态"
-                  class="w-full"
-                  clearable
-                  options={[
-                    { label: '激活', value: 'active' },
-                    { label: '未激活', value: 'inactive' },
-                    { label: '待审核', value: 'pending' },
-                  ]}
-                />
-              </NFormItemGi>
-              <NFormItemGi span={6}>
-                <NSpace>
-                  <NButton type="primary" onClick={handleSearch}>
-                    <NIcon class="mr-1">
-                      <IconSearch />
-                    </NIcon>
-                    查询
-                  </NButton>
-                  <NButton onClick={handleReset}>重置</NButton>
-                </NSpace>
-              </NFormItemGi>
-            </NGrid>
-          </NForm>
         </NCard>
 
         {/* 表格区域 */}
@@ -404,7 +350,6 @@ const DataTablePage = defineComponent(() => {
               onUpdateCheckedRowKeys={(rowKeys: any[]) => {
                 checkedRowKeys.value = rowKeys as number[]
               }}
-              max-height={400}
               scroll-x={1000}
             />
 

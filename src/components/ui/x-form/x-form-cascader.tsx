@@ -1,11 +1,13 @@
 import type { ExtractPublicPropTypes } from 'vue'
 import { NCascader } from 'naive-ui'
 import { computed, defineComponent } from 'vue'
-import { nCascaderDefaultProps, nCascaderPropNames, nCascaderProps, nFormItemProps } from './n-form-props'
-import { genPlaceholder } from './helpers'
+import { xFormItemOptions } from './common'
 import { xFormItemProps } from './form-props'
+import { genPlaceholder } from './helpers'
+import { nCascaderDefaultProps, nCascaderPropNames, nCascaderProps, nFormItemProps } from './n-form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
+import { useFormSlots } from './use-form-slots'
 import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xCascaderProps = {
@@ -19,6 +21,7 @@ type XCascaderProps = ExtractPublicPropTypes<typeof xCascaderProps>
 const fieldType = 'cascader'
 
 const XFormCascader = defineComponent({
+  ...xFormItemOptions,
   name: 'XFormCascader',
   props: xCascaderProps,
   emits: ['update:value'],
@@ -26,6 +29,7 @@ const XFormCascader = defineComponent({
     const formContext = useFormContext()
     const fieldProps = useMergeDefaultProps({ rawProps, propNames: nCascaderPropNames, defaultProps: nCascaderDefaultProps, provideProps: formContext.defaultProps.value.cascader })
     const [FormCascader, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
+    const cascaderSlots = useFormSlots(context.slots, fieldType)
     const placeholder = computed(() => genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
 
     function handleUpdateValue(...args: any[]) {
@@ -41,7 +45,7 @@ const XFormCascader = defineComponent({
           placeholder={placeholder.value}
           onUpdate:value={handleUpdateValue}
         >
-          {context.slots}
+          {cascaderSlots.value}
         </NCascader>
       )
     }

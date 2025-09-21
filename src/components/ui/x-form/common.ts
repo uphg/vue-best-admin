@@ -1,0 +1,32 @@
+export const xFormItemOptions = {
+  __GRID_ITEM__: true,
+}
+
+export const slotsMap = {
+  'input': 'clearIcon,count,passwordInvisibleIcon,passwordVisibleIcon,prefix,separator,suffix'.split(','),
+  'input-number': 'prefix,suffix'.split(','),
+  'select': 'action,empty,header,option,renderLabel,renderOption,renderTag,tag'.split(','),
+  'auto-complete': 'option,renderLabel,renderOption,prefix,suffix'.split(','),
+  'date': 'calendar,clearIcon,footer,header,icon,prev,next,separator,suffix,timePicker'.split(','),
+  'date-picker': 'calendar,clearIcon,footer,header,icon,prev,next,separator,suffix,timePicker'.split(','),
+  'time': 'clearIcon,footer,icon,separator,suffix'.split(','),
+  'time-picker': 'clearIcon,footer,icon,separator,suffix'.split(','),
+  'cascader': 'action,empty,header,option,renderLabel,renderOption,renderTag,tag'.split(','),
+  'tree-select': 'action,empty,header,option,renderLabel,renderOption,renderTag,tag'.split(','),
+  'color-picker': 'action,actionLabel,actionPreview,actionReset,actionConfirm,empty,footer,header,label,preview,trigger'.split(','),
+  'switch': 'checked,unchecked'.split(','),
+  'slider': 'mark,thumb'.split(','),
+  'rate': ['icon'],
+  'checkbox': ['default'],
+  'checkbox-group': ['default'],
+  'radio': ['default'],
+  'radio-group': ['default'],
+  'radio-button': ['default'],
+  'radio-button-group': ['default'],
+  'transfer': 'empty,header,sourceList,sourceLabel,targetList,targetLabel'.split(','),
+  'upload': 'default,trigger'.split(','),
+  'mention': 'option,renderLabel,renderOption,prefix,suffix'.split(','),
+  'dynamic-input': 'action,createButton,default,removeButton'.split(','),
+  'dynamic-tags': 'default,input,tag'.split(','),
+  'input-otp': ['default'],
+} as const

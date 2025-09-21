@@ -1,10 +1,12 @@
 import type { ExtractPublicPropTypes, PropType } from 'vue'
 import { NCheckbox, NCheckboxGroup } from 'naive-ui'
 import { defineComponent } from 'vue'
+import { xFormItemOptions } from './common'
 import { xFormItemProps } from './form-props'
 import { nCheckboxGroupDefaultProps, nCheckboxGroupPropNames, nCheckboxGroupProps, nFormItemProps } from './n-form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
+import { useFormSlots } from './use-form-slots'
 import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xCheckboxProps = {
@@ -19,6 +21,7 @@ type XCheckboxProps = ExtractPublicPropTypes<typeof xCheckboxProps>
 const fieldType = 'checkbox'
 
 const XFormCheckbox = defineComponent({
+  ...xFormItemOptions,
   name: 'XFormCheckbox',
   props: xCheckboxProps,
   emits: ['update:value'],
@@ -26,6 +29,7 @@ const XFormCheckbox = defineComponent({
     const formContext = useFormContext()
     const fieldProps = useMergeDefaultProps({ rawProps, propNames: nCheckboxGroupPropNames, defaultProps: nCheckboxGroupDefaultProps, provideProps: formContext.defaultProps.value.checkbox })
     const [FormCheckbox] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
+    const checkboxSlots = useFormSlots(context.slots, fieldType)
 
     function handleUpdateValue(...args: any[]) {
       context.emit('update:value', ...args)
@@ -44,7 +48,7 @@ const XFormCheckbox = defineComponent({
               {option.label}
             </NCheckbox>
           ))}
-          {context.slots.default?.()}
+          {checkboxSlots.value}
         </NCheckboxGroup>
       )
     }

@@ -1,10 +1,12 @@
 import type { ExtractPublicPropTypes } from 'vue'
 import { NSwitch } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { nFormItemProps, nSwitchDefaultProps, nSwitchPropNames, nSwitchProps } from './n-form-props'
+import { xFormItemOptions } from './common'
 import { xFormItemProps } from './form-props'
+import { nFormItemProps, nSwitchDefaultProps, nSwitchPropNames, nSwitchProps } from './n-form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
+import { useFormSlots } from './use-form-slots'
 import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xSwitchProps = {
@@ -18,6 +20,7 @@ type XSwitchProps = ExtractPublicPropTypes<typeof xSwitchProps>
 const fieldType = 'switch'
 
 const XFormSwitch = defineComponent({
+  ...xFormItemOptions,
   name: 'XFormSwitch',
   props: xSwitchProps,
   emits: ['update:value'],
@@ -25,6 +28,7 @@ const XFormSwitch = defineComponent({
     const formContext = useFormContext()
     const fieldProps = useMergeDefaultProps({ rawProps, propNames: nSwitchPropNames, defaultProps: nSwitchDefaultProps, provideProps: formContext.defaultProps.value.switch })
     const [FormSwitch, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
+    const switchSlots = useFormSlots(context.slots, fieldType)
 
     function handleUpdateValue(...args: any[]) {
       console.log('XFormSwitch handleUpdateValue', ...args)
@@ -39,7 +43,7 @@ const XFormSwitch = defineComponent({
           value={rawProps.value}
           onUpdate:value={handleUpdateValue}
         >
-          {context.slots}
+          {switchSlots.value}
         </NSwitch>
       )
     }

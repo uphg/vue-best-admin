@@ -1,10 +1,12 @@
 import type { ExtractPublicPropTypes, PropType } from 'vue'
 import { NRadio, NRadioGroup } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { nFormItemProps, nRadioGroupDefaultProps, nRadioGroupPropNames, nRadioGroupProps } from './n-form-props'
+import { xFormItemOptions } from './common'
 import { xFormItemProps } from './form-props'
+import { nFormItemProps, nRadioGroupDefaultProps, nRadioGroupPropNames, nRadioGroupProps } from './n-form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
+import { useFormSlots } from './use-form-slots'
 import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xRadioProps = {
@@ -19,6 +21,7 @@ type XRadioProps = ExtractPublicPropTypes<typeof xRadioProps>
 const fieldType = 'radio'
 
 const XFormRadio = defineComponent({
+  ...xFormItemOptions,
   name: 'XFormRadio',
   props: xRadioProps,
   emits: ['update:value'],
@@ -26,6 +29,7 @@ const XFormRadio = defineComponent({
     const formContext = useFormContext()
     const fieldProps = useMergeDefaultProps({ rawProps, propNames: nRadioGroupPropNames, defaultProps: nRadioGroupDefaultProps, provideProps: formContext.defaultProps.value.radio })
     const [FormRadio, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
+    const radioSlots = useFormSlots(context.slots, fieldType)
 
     function handleUpdateValue(...args: any[]) {
       context.emit('update:value', ...args)
@@ -44,7 +48,7 @@ const XFormRadio = defineComponent({
               {option.label}
             </NRadio>
           ))}
-          {context.slots.default?.()}
+          {radioSlots.value}
         </NRadioGroup>
       )
     }

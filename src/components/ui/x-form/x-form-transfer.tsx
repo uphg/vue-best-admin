@@ -1,10 +1,12 @@
 import type { ExtractPublicPropTypes } from 'vue'
 import { NTransfer } from 'naive-ui'
 import { defineComponent } from 'vue'
-import { nFormItemProps, nTransferDefaultProps, nTransferPropNames, nTransferProps } from './n-form-props'
+import { xFormItemOptions } from './common'
 import { xFormItemProps } from './form-props'
+import { nFormItemProps, nTransferDefaultProps, nTransferPropNames, nTransferProps } from './n-form-props'
 import { useFormContext } from './use-form-context'
 import { useFormItemWrap } from './use-form-item-wrap'
+import { useFormSlots } from './use-form-slots'
 import { useMergeDefaultProps } from './use-merge-default-props'
 
 const xTransferProps = {
@@ -16,6 +18,7 @@ const xTransferProps = {
 const fieldType = 'transfer'
 
 const XFormTransfer = defineComponent({
+  ...xFormItemOptions,
   name: 'XFormTransfer',
   props: xTransferProps,
   emits: ['update:value'],
@@ -23,6 +26,7 @@ const XFormTransfer = defineComponent({
     const formContext = useFormContext()
     const fieldProps = useMergeDefaultProps({ rawProps, propNames: nTransferPropNames, defaultProps: nTransferDefaultProps, provideProps: formContext.defaultProps.value.transfer })
     const [FormTransfer, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
+    const transferSlots = useFormSlots(context.slots, fieldType)
 
     function handleUpdateValue(...args: any[]) {
       context.emit('update:value', ...args)
@@ -36,7 +40,7 @@ const XFormTransfer = defineComponent({
           value={rawProps.value}
           onUpdate:value={handleUpdateValue}
         >
-          {context.slots}
+          {transferSlots.value}
         </NTransfer>
       )
     }
