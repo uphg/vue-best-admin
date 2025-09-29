@@ -14,7 +14,11 @@
     "lint:fix": "eslint --fix",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
-    "docs:preview": "vitepress preview docs"
+    "docs:preview": "vitepress preview docs",
+    "mock:start": "mockfly start",
+    "mock:dev": "mockfly dev",
+    "mock:docs": "mockfly docs",
+    "mock:init": "mockfly init"
   },
   "dependencies": {
     "@vue/shared": "^3.5.21",
@@ -46,6 +50,7 @@
     "jiti": "^2.4.2",
     "jsdom": "^26.1.0",
     "lint-staged": "^16.1.2",
+    "mockfly": "0.1.0-alpha.6",
     "msw": "^2.10.4",
     "naive-ui": "^2.42.0",
     "npm-run-all2": "^8.0.4",
