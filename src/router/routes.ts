@@ -83,7 +83,7 @@ export const permissionRoutes = [
       {
         path: 'base',
         name: 'AboutBase',
-        component: import('@/pages/about/about-page'),
+        component: () => import('@/pages/about/about-page'),
         meta: {
           title: '关于',
           icon: 'user-search',
@@ -100,7 +100,7 @@ export const permissionRoutes = [
       {
         path: 'base',
         name: 'IconBase',
-        component: import('@/pages/icon/icon-page'),
+        component: () => import('@/pages/icon/icon-page'),
         meta: {
           title: '图标',
           icon: 'audio-waveform',
@@ -120,7 +120,7 @@ export const permissionRoutes = [
       {
         path: 'base',
         name: 'TableBase',
-        component: import('@/pages/table/base-table/base-table-page'),
+        component: () => import('@/pages/table/base-table/base-table-page'),
         meta: {
           title: '基础表格',
           icon: 'table',
@@ -129,7 +129,7 @@ export const permissionRoutes = [
       {
         path: 'data-table',
         name: 'TableDataTable',
-        component: import('@/pages/table/data-table/data-table-page'),
+        component: () => import('@/pages/table/data-table/data-table-page'),
         meta: {
           title: '数据表格',
           icon: 'table',
@@ -138,7 +138,7 @@ export const permissionRoutes = [
       {
         path: 'sort-table',
         name: 'TableSortTable',
-        component: import('@/pages/table/sort-table/sort-table-page'),
+        component: () => import('@/pages/table/sort-table/sort-table-page'),
         meta: {
           title: '排序表格',
           icon: 'table',
@@ -147,7 +147,7 @@ export const permissionRoutes = [
       {
         path: 'sort-table2',
         name: 'TableSortTable2',
-        component: import('@/pages/table/sort-table/sort-table2-page'),
+        component: () => import('@/pages/table/sort-table/sort-table2-page'),
         meta: {
           title: '排序表格2',
           icon: 'table',
@@ -167,7 +167,7 @@ export const permissionRoutes = [
       {
         path: 'n-base',
         name: 'FormNBase',
-        component: import('@/pages/form/form-demo-page'),
+        component: () => import('@/pages/form/form-demo-page'),
         meta: {
           title: 'Naive表单示例',
           icon: 'table',
@@ -176,7 +176,7 @@ export const permissionRoutes = [
       {
         path: 'base',
         name: 'FormBase',
-        component: import('@/pages/form/form-page'),
+        component: () => import('@/pages/form/form-page'),
         meta: {
           title: '表单示例',
           icon: 'table',
@@ -185,7 +185,7 @@ export const permissionRoutes = [
       {
         path: 'x-form',
         name: 'FormXForm',
-        component: import('@/pages/form/x-form-demo-page'),
+        component: () => import('@/pages/form/x-form-demo-page'),
         meta: {
           title: 'XForm 组件',
           icon: 'form-input',
@@ -202,7 +202,7 @@ export const permissionRoutes = [
       {
         path: 'base',
         name: 'ModalBase',
-        component: import('@/pages/modal/modal-page'),
+        component: () => import('@/pages/modal/modal-page'),
         meta: {
           title: 'Modal 弹框',
           icon: 'table',
@@ -219,7 +219,7 @@ export const permissionRoutes = [
       {
         path: 'base',
         name: 'TabsBase',
-        component: import('@/pages/tabs/tabs-page'),
+        component: () => import('@/pages/tabs/tabs-page'),
         meta: {
           title: 'Tabs 标签页',
           icon: 'tabs',
@@ -236,7 +236,7 @@ export const permissionRoutes = [
       {
         path: 'base',
         name: 'RequestBase',
-        component: import('@/pages/request/request-page'),
+        component: () => import('@/pages/request/request-page'),
         meta: {
           title: '请求示例',
           icon: 'arrow-up-right',
@@ -257,7 +257,7 @@ export const permissionRoutes = [
       {
         path: 'user',
         name: 'SystemUser',
-        component: import('@/pages/system/user/user-page'),
+        component: () => import('@/pages/system/user/user-page.vue'),
         meta: {
           title: '用户管理',
           icon: 'user',
@@ -266,7 +266,7 @@ export const permissionRoutes = [
       {
         path: 'role',
         name: 'SystemRole',
-        component: import('@/pages/system/role/role-page'),
+        component: () => import('@/pages/system/role/role-page'),
         meta: {
           title: '角色管理',
           icon: 'user-cog',
@@ -275,7 +275,7 @@ export const permissionRoutes = [
       {
         path: 'menu',
         name: 'SystemMenu',
-        component: import('@/pages/system/menu/menu-page'),
+        component: () => import('@/pages/system/menu/menu-page'),
         meta: {
           title: '菜单管理',
           icon: 'layout-list',

@@ -24,6 +24,7 @@
     "@vue/shared": "^3.5.21",
     "@vueuse/core": "^13.5.0",
     "clsx": "^2.1.1",
+    "dayjs": "^1.11.18",
     "lodash-es": "^4.17.21",
     "pinia": "^3.0.3",
     "tailwind-merge": "^3.3.1",

@@ -27,7 +27,7 @@ export type LiteFieldDefinition = LiteFieldProps | LiteFieldGroupProps
 export type FieldInputProps = Omit<FieldProps, 'label' | 'key' | 'children'>
 
 export interface UseFormProps {
-  autoRules?: string[]
+  autoRules?: string[] | boolean
   grid?: GridProps | boolean
   [key: string]: any
 }

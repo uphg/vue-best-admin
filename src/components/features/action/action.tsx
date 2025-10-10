@@ -1,0 +1,41 @@
+import type { PropType } from 'vue'
+import { NButton, NIcon } from 'naive-ui'
+import IconDownload from '~icons/lucide/download'
+import IconEdit from '~icons/lucide/edit'
+import IconEye from '~icons/lucide/eye'
+import IconPlus from '~icons/lucide/plus'
+import IconTrash2 from '~icons/lucide/trash-2'
+import IconUpload from '~icons/lucide/upload'
+
+type ButtonType = 'default' | 'primary' | 'info' | 'success' | 'warning' | 'error'
+
+const actionMap: Record<string, { type: ButtonType, text: string, icon: any }> = {
+  create: { type: 'primary', text: '新增', icon: IconPlus },
+  update: { type: 'primary', text: '修改', icon: IconEdit },
+  delete: { type: 'error', text: '删除', icon: IconTrash2 },
+  import: { type: 'default', text: '导入', icon: IconUpload },
+  export: { type: 'default', text: '导出', icon: IconDownload },
+  preview: { type: 'info', text: '预览', icon: IconEye },
+}
+
+const Action = defineComponent({
+  props: {
+    type: {
+      type: String as PropType<'create' | 'update' | 'delete' | 'import' | 'export' | 'preview'>,
+      required: true,
+    },
+  },
+  setup(props) {
+    const action = actionMap[props.type]
+    return () => (
+      <NButton type={action.type}>
+        <NIcon class="mr-1">
+          <action.icon />
+        </NIcon>
+        {action.text}
+      </NButton>
+    )
+  },
+})
+
+export default Action

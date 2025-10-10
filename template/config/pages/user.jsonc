@@ -7,61 +7,75 @@
     "filter": ["id", "name", "email"],
     "fields": [
       { "name": "id", "label": "ID", "type": "text", "hidden": true },
-      { "name": "name", "label": "姓名", "type": "text", "sortable": true },
-      { "name": "email", "label": "邮箱", "type": "text" }
+      { "name": "name", "label": "姓名", "type": "text" },
+      { "name": "email", "label": "邮箱", "type": "text" },
+      {
+        "name": "role",
+        "label": "角色",
+        "type": "enum", // 状态显示
+        "enums": [
+          ["admin", { "type": "error", "text": "管理员" }],
+          ["editor", { "type": "warning", "text": "编辑者" }],
+          ["any", { "type": "info", "text": "普通用户" }]
+        ]
+      },
+      {
+        "name": "status",
+        "label": "状态",
+        "type": "enum", // 状态显示
+        "enums": [
+          ["active", { "type": "success", "text": "激活" }],
+          ["inactive", { "type": "default", "text": "未激活" }],
+          ["pending", { "type": "warning", "text": "待审核" }]
+        ]
+      },
+      { "name": "createdAt", "label": "创建时间", "type": "text" }
     ],
     "api": {
-      "baseURL": "/api",
-      "operations": {
-        "list": {
-          "url": "/api/users",
-          "method": "GET",
-          "params": {
-            "page": "page",
-            "size": "pageSize",
-            "sort": "sortField",
-            "order": "sortOrder"
-          }
-        },
-        "create": {
-          "url": "/api/users",
-          "method": "POST",
-          "headers": {
-            "Content-Type": "application/json"
-          }
-        },
-        "update": {
-          "url": "/api/users/:id",
-          "method": "PUT",
-          "headers": {
-            "Content-Type": "application/json"
-          }
-        },
-        "delete": {
-          "url": "/api/users/:id",
-          "method": "DELETE"
-        },
-        "detail": {
-          "url": "/api/users/:id",
-          "method": "GET"
-        },
-        "batchDelete": {
-          "url": "/api/users/batch",
-          "method": "DELETE",
-          "data": {
-            "ids": "selectedIds"
-          }
-        },
-        "export": {
-          "url": "/api/users/export",
-          "method": "GET",
-          "responseType": "blob"
-        },
-        "import": {
-          "url": "/api/users/import",
-          "method": "GET",
-          "responseType": "blob"
+      "query": {
+        "url": "/api/users",
+        "method": "POST",
+        "params": {
+          "page": "page",
+          "size": "pageSize",
+          "sort": "sortField",
+          "order": "sortOrder"
         }
+      },
+      "create": {
+        "url": "/api/users",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "update": {
+        "url": "/api/users/:id",
+        "method": "PUT",
+        "headers": {
+          "Content-Type": "application/json"
+        }
+      },
+      "delete": {
+        "url": "/api/users/:id",
+        "method": "DELETE"
+      },
+      "batchDelete": {
+        "url": "/api/users/batch",
+        "method": "DELETE",
+        "data": {
+          "ids": "selectedIds"
+        }
+      },
+      "export": {
+        "url": "/api/users/export",
+        "method": "GET",
+        "responseType": "blob"
+      },
+      "import": {
+        "url": "/api/users/import",
+        "method": "GET",
+        "responseType": "blob"
       }
     }
   }

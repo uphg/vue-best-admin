@@ -258,7 +258,7 @@ export const http = new HTTPClient({
   response: {
     onFulfilled: (response) => {
       // 处理全局响应
-      return response
+      return response?.data
     },
     onRejected: (error) => {
       console.error('Response error:', error)

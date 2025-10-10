@@ -63,7 +63,7 @@ const LayoutSidebar = defineComponent(() => {
   return () => (
     <div class={['h-full border-r-1 border-r-gray-200']}>
       <div class={['h-full flex flex-col transition-width', sidebar.collapsed ? 'w-16' : 'w-60']}>
-        <div class={['h-15 border-b-1 border-b-gray-200', sidebar.collapsed ? 'w-16' : 'w-60']}>
+        <div class={['h-15 border-b-1 border-b-gray-200 overflow-hidden', sidebar.collapsed ? 'w-16' : 'w-60']}>
           <div class={['flex gap-2 h-15 items-center transition-spacing duration-250 relative', sidebar.collapsed ? 'px-4' : 'px-3']}>
             <IconLogo />
             <div class="w-20 left-13 absolute">

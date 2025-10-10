@@ -21,7 +21,7 @@ interface ModalProps {
   confirmLoading?: boolean
   confirmText?: string
   cancelText?: string
-  onConfirm?: (event: MouseEvent) => boolean | Promise<boolean> | void
+  onConfirm?: (event: MouseEvent) => boolean | Promise<boolean> | Promise<void> | void
   onCancel?: (event: MouseEvent) => boolean | Promise<boolean> | void
   onClose?: (event: MouseEvent) => boolean | Promise<boolean> | void
   onAfterEnter?: () => void
@@ -74,28 +74,11 @@ const Modal = defineComponent<ModalProps>({
     }
 
     async function handleConfirm(e: MouseEvent) {
-      let shouldClose = true
-      try {
-        const result = props.onConfirm?.(e)
-        if (result instanceof Promise) {
-          shouldClose = await result
-        } else if (typeof result === 'boolean') {
-          shouldClose = result
-        }
-      } catch (error) {
-        // Promise 被 reject 时阻止关闭
-        shouldClose = false
-        console.error('Confirm handler error:', error)
-      }
-
-      if (shouldClose !== false) {
-        onUpdateVisible(false)
-      }
+      props.onConfirm?.(e)
     }
 
     async function handleCancel(e: MouseEvent) {
       props.onCancel?.(e)
-      onUpdateVisible(false)
     }
 
     async function handleClose(e: MouseEvent) {

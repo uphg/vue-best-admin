@@ -1,8 +1,9 @@
-import type { PagingJustify, TableDefaultColumns, UseTableProps } from './types'
-import { isNil, omit } from 'lodash-es'
+import type { TableDefaultColumns, UseTableProps } from './types'
+import { isArray, isNil, omit } from 'lodash-es'
 import { NDataTable, NPagination } from 'naive-ui'
 import { mergeClass } from '@/utils/merge-class'
-import { pagingJustifyMap } from './common'
+
+const pagingWrapDefaultClass = 'flex justify-end'
 
 const defaultProps = {
   // 自定义 props
@@ -18,10 +19,11 @@ const defaultProps = {
     pageSizes: [10, 20, 50, 100],
     showSizePicker: true,
   },
-  pagingJustify: 'end' as PagingJustify,
+
+  rowKey: (item: any) => item.id,
 }
 
-const customPropsNames = ['pagination', 'dataSource', 'initDataSource', 'hasLoading', 'onBeforeUpdateData', 'onAfterUpdateData', 'pagingWrapClass', 'pagingJustify', 'defaultColumnProps']
+const customPropsNames = ['pagination', 'dataSource', 'initDataSource', 'hasLoading', 'onBeforeUpdateData', 'onAfterUpdateData', 'pagingWrapClass', 'defaultColumnProps']
 
 export function useTable(
   defaultColumns: TableDefaultColumns,
@@ -37,18 +39,22 @@ export function useTable(
   const total = ref(0)
   const sorter = ref()
   const loading = ref(false)
-  const columns = ref(defaultColumns)
+  const columns = isRef(defaultColumns) ? defaultColumns : ref(defaultColumns)
+  const checkedRowKeys = ref([])
 
-  rawProps.initDataSource && refresh()
+  rawProps.initDataSource && reload()
 
-  async function refresh() {
+  async function reload() {
     onBeforeUpdateData()
     const res = await rawProps.dataSource?.({ page: page.value, pageSize: pageSize.value }).catch((e) => {
       onAfterUpdateData()
       return e
     })
-    if (isNil(res)) return
-    data.value = res.data
+    if (isNil(res) || !isArray(res.data)) {
+      loading.value = false
+      return
+    }
+    data.value = res?.data ?? []
     total.value = res.total
     onAfterUpdateData()
     return res
@@ -71,12 +77,12 @@ export function useTable(
 
   function onPageChange(newPage: number) {
     page.value = newPage
-    refresh()
+    reload()
   }
 
   function onPageSizeChange(newPageSize: number) {
     pageSize.value = newPageSize
-    refresh()
+    reload()
   }
 
   const Table = defineComponent({
@@ -85,10 +91,10 @@ export function useTable(
     setup(_, { attrs }) {
       return () => (
         <div {...attrs} class={mergeClass('flex flex-col gap-3', attrs.class as string)}>
-          <NDataTable {...nTableProps} class={rawProps.tableClass} data={data.value} columns={columns.value} loading={loading.value}>
+          <NDataTable {...nTableProps} class={rawProps.tableClass} data={data.value} columns={columns.value} v-model:checkedRowKeys={checkedRowKeys.value} loading={loading.value}>
             {slots}
           </NDataTable>
-          <div class={mergeClass('flex', pagingJustifyMap[rawProps.pagingJustify!], rawProps.pagingWrapClass)}>
+          <div class={mergeClass(pagingWrapDefaultClass, rawProps.pagingWrapClass)}>
             <NPagination {...rawProps.pagination} item-count={total.value} page={page.value} pageSize={pageSize.value} onUpdate:page={onPageChange} onUpdate:pageSize={onPageSizeChange} />
           </div>
         </div>
@@ -96,5 +102,5 @@ export function useTable(
     },
   })
 
-  return [Table, { data, columns, page, pageSize, sorter, refresh }] as const
+  return [Table, { data, columns, page, pageSize, sorter, reload, checkedRowKeys }] as const
 }

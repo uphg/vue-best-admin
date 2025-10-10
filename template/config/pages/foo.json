@@ -1,0 +1,71 @@
+{
+  "id": "foo-form",
+  "name": "foo 表单",
+  "type": "form",
+  "path": "/foo-form",
+  "config": {
+    "fields": [
+      {
+        "key": "id",
+        "label": "ID",
+        "hidden": true
+      },
+      {
+        "key": "name",
+        "label": "姓名"
+      },
+      {
+        "type": "select",
+        "key": "sex",
+        "label": "性别",
+        "options": [
+          {
+            "label": "男",
+            "value": 0
+          },
+          {
+            "label": "女",
+            "value": 1
+          }
+        ]
+      },
+      {
+        "key": "email",
+        "label": "邮箱"
+      },
+      {
+        "type": "date",
+        "key": "date",
+        "label": "活动日期",
+        "placeholder": " 选择日期"
+      },
+      {
+        "label": "活动性质",
+        "type": "checkout",
+        "options": [
+          {
+            "label": "美食/餐厅线上活动",
+            "value": 0
+          },
+          {
+            "label": "地推活动",
+            "value": 1
+          },
+          {
+            "label": "线下主题活动",
+            "value": 2
+          },
+          {
+            "label": "单纯品牌曝光",
+            "value": 3
+          }
+        ]
+      },
+      {
+        "label": "活动形式",
+        "key": "desc",
+        "type": "textarea"
+      }
+    ]
+  }
+}

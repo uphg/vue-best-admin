@@ -20,7 +20,8 @@ export default antfu({
     'unused-imports/no-unused-vars': 'off',
     'no-sparse-arrays': 'off',
     // 'nonblock-statement-body-position': 'error', // 关闭 if 语句结束后强制换行
-    'ts/no-unused-expressions': ['error', { allowShortCircuit: true }],
+    // 'ts/no-unused-expressions': ['error', { allowShortCircuit: true }],
+    'ts/no-unused-expressions': 'off',
     'ts/no-use-before-define': 'off',
     'ts/no-unnecessary-type-constraint': 'off',
     // vue 文件各模块顺序
