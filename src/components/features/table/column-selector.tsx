@@ -1,5 +1,4 @@
-import { NButton, NCheckbox, NCheckboxGroup, NIcon, NPopover } from 'naive-ui'
-import IconColumns from '~icons/lucide/columns'
+import { NCheckbox, NCheckboxGroup, NPopover } from 'naive-ui'
 import ColumnSelectorButton from './column-selector-button'
 
 interface ColumnSelectorItem {
@@ -20,7 +19,7 @@ const ColumnSelector = defineComponent({
     },
   },
   emits: ['update:value'],
-  setup(props, { emit }) {
+  setup(props, { emit, slots }) {
     const isAllColumnsSelected = computed(() => props.value?.length === props.columns.length)
     const isIndeterminate = computed(() => !!(props.value?.length && props.value.length > 0 && props.value.length < props.columns.length))
 
@@ -40,14 +39,7 @@ const ColumnSelector = defineComponent({
     return () => (
       <NPopover trigger="click" placement="bottom-end" showArrow={false} raw>
         {{
-          trigger: () => (
-            <NButton>
-              <NIcon class="mr-1">
-                <IconColumns />
-              </NIcon>
-              列设置
-            </NButton>
-          ),
+          trigger: slots?.default,
           default: () => (
             <div class="rounded bg-white">
               <div>

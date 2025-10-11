@@ -1,7 +1,7 @@
 import { http } from '@/utils/http-lite'
 
 export function apiGetUserList(params: Record<string, any>) {
-  return http.get('/api/users', params)
+  return http.post('/api/users', params)
 }
 
 export function apiCreateUser(data: Record<string, any>) {

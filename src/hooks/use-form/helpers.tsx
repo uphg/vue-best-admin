@@ -3,7 +3,7 @@ import type { FormRules, SelectOption } from 'naive-ui'
 import type { FieldProps, UseFormProps } from './types'
 import { isObject } from '@vueuse/core'
 import { omit, pick } from 'lodash-es'
-import { NAutoComplete, NCascader, NCheckbox, NCheckboxGroup, NColorPicker, NDatePicker, NDynamicInput, NDynamicTags, NFormItem, NFormItemGi, NGrid, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSwitch, NTimePicker, NTransfer, NTreeSelect, NUpload } from 'naive-ui'
+import { NAutoComplete, NButton, NCascader, NCheckbox, NCheckboxGroup, NColorPicker, NDatePicker, NDynamicInput, NDynamicTags, NFormItem, NFormItemGi, NGrid, NInput, NInputNumber, NRadio, NRadioButton, NRadioGroup, NRate, NSelect, NSlider, NSwitch, NTimePicker, NTransfer, NTreeSelect, NUpload } from 'naive-ui'
 import { getDefaultValue, getFieldRuleConfig, setNestedRule } from '@/utils/form'
 import { nFormItemPropNames } from './common'
 
@@ -64,7 +64,7 @@ export function createItemNodeMap(fields: FieldProps[], form: Ref<Record<string,
   const flattenedFields = flattenFields(fields)
   const map = new Map()
 
-  flattenedFields.forEach((field) => {
+  flattenedFields.forEach((field, index) => {
     const { key } = field
     const node = createItemNode(field, form)
     map.set(key, node)
@@ -380,6 +380,15 @@ export function createItemNodeMap(fields: FieldProps[], form: Ref<Record<string,
         )
         break
 
+      case 'button': {
+        const { text, render, ...otherProps } = restProps
+        InputElement = () => (
+          <NButton {...otherProps}>
+            {render ? render() : text}
+          </NButton>
+        )
+        break
+      }
       default:
         InputElement = () => (
           <NInput

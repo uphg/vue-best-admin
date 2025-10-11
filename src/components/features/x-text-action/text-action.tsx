@@ -18,24 +18,35 @@ const actionMap: Record<string, { type: ButtonType, text: string, icon: any }> =
   preview: { type: 'info', text: '预览', icon: IconEye },
 }
 
-const Action = defineComponent({
+const XTextAction = defineComponent({
   props: {
     type: {
-      type: String as PropType<'create' | 'update' | 'delete' | 'import' | 'export' | 'preview'>,
+      type: String as PropType<'create' | 'update' | 'delete' | 'batchDelete' | 'import' | 'export' | 'preview'>,
       required: true,
     },
+    text: String,
+    onClick: Function as PropType<() => void>,
+    disabled: Boolean,
+    count: [String, Number],
   },
-  setup(props) {
+  setup(props, { slots }) {
     const action = actionMap[props.type]
+    const text = props.text ?? action.text
     return () => (
-      <NButton type={action.type}>
-        <NIcon class="mr-1">
-          <action.icon />
-        </NIcon>
-        {action.text}
+      <NButton type={action.type} onClick={props.onClick} disabled={props.disabled} quaternary text>
+        { slots.default
+          ? slots.default()
+          : (
+              <>
+                <NIcon class="mr-1">
+                  <action.icon />
+                </NIcon>
+                {props.type === 'batchDelete' ? `${text}(${props.count})` : text}
+              </>
+            )}
       </NButton>
     )
   },
 })
 
-export default Action
+export default XTextAction

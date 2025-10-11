@@ -10,8 +10,8 @@ export function useUserModal({ refresh }: any) {
   const [Form, { form, resetForm, validate }] = useForm([
     { label: '姓名', key: 'name' },
     { label: '邮箱', key: 'email' },
-    { label: '权限', key: 'role' },
-    { label: '状态', key: 'status' },
+    { label: '角色', key: 'role', as: 'select', options: [{ label: '管理员', value: 'admin' }, { label: '编辑者', value: 'editor' }, { label: '普通用户', value: 'user' }] },
+    { label: '状态', key: 'status', as: 'select', options: [{ label: '激活', value: 'active' }, { label: '未激活', value: 'inactive' }, { label: '待审核', value: 'pending' }] },
   ], { autoRules: ['name', 'email', 'role', 'status'] })
 
   function open(_type: 'create' | 'update' = 'create', values?: Record<string, any>) {

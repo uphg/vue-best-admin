@@ -1,26 +1,25 @@
 {
-  "id": "user-management",
+  "id": "user",
   "name": "用户管理",
   "type": "table",
   "path": "/users",
   "config": {
-    "filter": ["id", "name", "email"],
     "fields": [
-      { "name": "id", "label": "ID", "type": "text", "hidden": true },
-      { "name": "name", "label": "姓名", "type": "text" },
-      { "name": "email", "label": "邮箱", "type": "text" },
+      { "key": "id", "label": "ID", "type": "text", "hidden": true },
+      { "key": "name", "label": "姓名", "type": "text" },
+      { "key": "email", "label": "邮箱", "type": "text" },
       {
-        "name": "role",
+        "key": "role",
         "label": "角色",
         "type": "enum", // 状态显示
         "enums": [
           ["admin", { "type": "error", "text": "管理员" }],
           ["editor", { "type": "warning", "text": "编辑者" }],
-          ["any", { "type": "info", "text": "普通用户" }]
+          ["user", { "type": "info", "text": "普通用户" }]
         ]
       },
       {
-        "name": "status",
+        "key": "status",
         "label": "状态",
         "type": "enum", // 状态显示
         "enums": [
@@ -29,8 +28,10 @@
           ["pending", { "type": "warning", "text": "待审核" }]
         ]
       },
-      { "name": "createdAt", "label": "创建时间", "type": "text" }
+      { "key": "createdAt", "label": "创建时间", "type": "text" }
     ],
+    "filterFileds": ["id", "name", "email"], // 可搜索筛选的字段
+    "writeableFields": ["name", "email", "role", "status"], // 新增/修改弹框中展示的字段
     "api": {
       "query": {
         "url": "/api/users",

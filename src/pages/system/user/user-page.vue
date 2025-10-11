@@ -1,93 +1,72 @@
 <template>
-  <div class="p-4 flex flex-col gap-4">
-    <NCard size="small">
-      <NForm inline label-placement="left" :show-feedback="false">
-        <NGrid :x-gap="12">
-          <NFormItemGi label="姓名" :span="6">
-            <NInput v-model:value="filterForm.name" placeholder="搜索姓名" clearable>
-              <template #prefix>
-                <NIcon>
-                  <IconSearch />
-                </NIcon>
-              </template>
-            </NInput>
-          </NFormItemGi>
-          <NFormItemGi label="角色" :span="6">
-            <NSelect
-              v-model:value="filterForm.role" placeholder="选择角色" class="w-full" clearable :options="[{
-                label: '管理员', value: 'admin' }, { label: '编辑者', value: 'editor' }, { label: '普通用户', value: 'any' },
-              ]"
-            />
-          </NFormItemGi>
-          <NFormItemGi label="状态" :span="6">
-            <NSelect
-              v-model:value="filterForm.status" placeholder="选择状态" class="w-full" clearable :options="[{
-                label: '激活', value: 'active' }, { label: '未激活', value: 'inactive' }, { label: '待审核', value: 'pending' },
-              ]"
-            />
-          </NFormItemGi>
-          <NFormItemGi :span="6">
-            <NFlex class="w-full" justify="end">
-              <NButton type="primary" @click="handleSearch">
-                <NIcon class="mr-1">
-                  <IconSearch />
-                </NIcon>
-                查询
-              </NButton>
-              <NButton @click="handleReset">
-                重置
-              </NButton>
+  <XPage>
+    <XPageHeader />
+    <XPageContent>
+      <NCard>
+        <XForm inline label-placement="left" :show-feedback="false" :grid="{ xGap: 12 }">
+          <XFormInput
+            v-model:value="filterForm.name"
+            label="姓名"
+            placeholder="搜索姓名"
+            clearable
+            span="6"
+          >
+            <template #prefix>
+              <NIcon>
+                <IconSearch />
+              </NIcon>
+            </template>
+          </XFormInput>
+          <XFormSelect
+            v-model:value="filterForm.role"
+            :options="[{ label: '管理员', value: 'admin' }, { label: '编辑者', value: 'editor' }, { label: '普通用户', value: 'any' }]"
+            label="角色"
+            placeholder="选择角色"
+            clearable
+            span="6"
+          />
+          <XFormSelect
+            v-model:value="filterForm.status"
+            :options="[{ label: '激活', value: 'active' }, { label: '未激活', value: 'inactive' }, { label: '待审核', value: 'pending' }]"
+            label="状态"
+            placeholder="选择状态"
+            clearable
+            span="6"
+          />
+          <XFormItem span="6">
+            <NFlex justify="end" class="w-full">
+              <XAction type="search" @click="handleSearch" />
+              <XAction type="reset" @click="handleReset" />
             </NFlex>
-          </NFormItemGi>
-        </NGrid>
-      </NForm>
-    </NCard>
-
-    <div class="flex flex-col gap-4">
+          </XFormItem>
+        </XForm>
+      </NCard>
       <div class="flex justify-between">
         <div class="flex gap-3">
-          <NButton type="primary" @click="handleCreate">
-            <NIcon class="mr-1">
-              <IconPlus />
-            </NIcon>
-            新增
-          </NButton>
-          <NButton @click="handleImport">
-            <NIcon class="mr-1">
-              <IconUpload />
-            </NIcon>
-            导入
-          </NButton>
-          <NButton @click="handleExport">
-            <NIcon class="mr-1">
-              <IconDownload />
-            </NIcon>
-            导出
-          </NButton>
-          <NButton type="error" :disabled="checkedRowKeys.length === 0" @click="handleBatchDelete">
-            <NIcon class="mr-1">
-              <IconTrash2 />
-            </NIcon>
-            批量删除 ({{ checkedRowKeys.length }})
-          </NButton>
+          <XAction type="create" @click="handleCreate" />
+          <XAction type="import" @click="handleImport" />
+          <XAction type="export" @click="handleExport" />
+          <XAction type="batchDelete" :disabled="checkedRowKeys.length === 0" :count="checkedRowKeys.length" @click="handleBatchDelete" />
         </div>
         <ColumnSelector />
       </div>
       <DataTable />
-    </div>
+    </XPageContent>
     <UserModal />
-  </div>
+  </XPage>
 </template>
 
 <script setup lang="tsx">
-import { NButton, NCard, NFlex, NForm, NFormItemGi, NGrid, NIcon, NInput, NSelect, NSpace, NTag } from 'naive-ui'
+import { NCard, NFlex, NIcon, NTag } from 'naive-ui'
 import { ref } from 'vue'
-import IconDownload from '~icons/lucide/download'
-import IconEdit from '~icons/lucide/edit'
-import IconPlus from '~icons/lucide/plus'
 import IconSearch from '~icons/lucide/search'
-import IconTrash2 from '~icons/lucide/trash-2'
-import IconUpload from '~icons/lucide/upload'
+import XAction from '@/components/features/x-action/action'
+import XPageContent from '@/components/features/x-page-content/x-page-content'
+import XPageHeader from '@/components/features/x-page-header/x-page-header'
+import XPage from '@/components/features/x-page/x-page'
+import XTextAction from '@/components/features/x-text-action/text-action'
+import { XForm, XFormInput, XFormSelect } from '@/components/ui/x-form'
+import XFormItem from '@/components/ui/x-form/x-form-item'
 import { useColumnSelector } from '@/hooks/use-column-selector'
 import { useTable } from '@/hooks/use-table/use-table'
 import { $confirm, $dialog, $message } from '@/utils/global'
@@ -97,7 +76,7 @@ import { apiBatchDeleteUser, apiDeleteUser, apiGetUserList } from './user-api'
 const roleMap = new Map([
   ['admin', { type: 'error', text: '管理员' }],
   ['editor', { type: 'warning', text: '编辑者' }],
-  ['any', { type: 'info', text: '普通用户' }],
+  ['user', { type: 'info', text: '普通用户' }],
 ])
 
 const statusMap = new Map([
@@ -137,18 +116,10 @@ const allColumns = ref([
     fixed: 'right',
     render(row: any) {
       return (
-        <NSpace>
-          <NButton size="small" type="primary" quaternary onClick={() => handleEdit(row)}>
-            <NIcon>
-              <IconEdit />
-            </NIcon>
-          </NButton>
-          <NButton size="small" type="error" quaternary onClick={() => handleDelete(row)}>
-            <NIcon>
-              <IconTrash2 />
-            </NIcon>
-          </NButton>
-        </NSpace>
+        <NFlex>
+          <XTextAction type="update" onClick={() => handleEdit(row)} />
+          <XTextAction type="delete" onClick={() => handleDelete(row)} />
+        </NFlex>
       )
     },
   },
@@ -207,10 +178,6 @@ function handleExport() {
     },
   })
 }
-
-// function handleView(row: any) {
-//   $message.info(`查看用户: ${row.name}`)
-// }
 
 function handleEdit(row: any) {
   open('update', row)

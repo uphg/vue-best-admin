@@ -31,7 +31,6 @@ const XFormInput = defineComponent({
     const [FormInput, formItemProps] = useFormItemWrap(rawProps, context, { fieldType, formContext, render })
     const inputSlots = useFormSlots(context.slots, fieldType)
     const placeholder = computed(() => genPlaceholder(fieldType, { label: formItemProps.value.label, placeholder: fieldProps.value.placeholder }))
-
     function handleUpdateValue(...args: any[]) {
       context.emit('update:value', ...args)
     }
@@ -44,7 +43,7 @@ const XFormInput = defineComponent({
           placeholder={placeholder.value}
           onUpdate:value={handleUpdateValue}
         >
-          {inputSlots.value}
+          {{ ...inputSlots.value }}
         </NInput>
       )
     }
