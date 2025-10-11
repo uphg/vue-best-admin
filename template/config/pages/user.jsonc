@@ -35,7 +35,7 @@
     "api": {
       "query": {
         "url": "/api/users",
-        "method": "POST",
+        "method": "GET",
         "params": {
           "page": "page",
           "size": "pageSize",

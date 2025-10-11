@@ -18,15 +18,18 @@
     "mock:start": "mockfly start",
     "mock:dev": "mockfly dev",
     "mock:docs": "mockfly docs",
-    "mock:init": "mockfly init"
+    "mock:init": "mockfly init",
+    "generate-page": "node scripts/generate-page.js"
   },
   "dependencies": {
     "@vue/shared": "^3.5.21",
     "@vueuse/core": "^13.5.0",
     "clsx": "^2.1.1",
+    "commander": "^14.0.1",
     "dayjs": "^1.11.18",
     "lodash-es": "^4.17.21",
     "pinia": "^3.0.3",
+    "strip-json-comments": "^5.0.3",
     "tailwind-merge": "^3.3.1",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1"
@@ -51,6 +54,7 @@
     "jiti": "^2.4.2",
     "jsdom": "^26.1.0",
     "lint-staged": "^16.1.2",
+    "lodash": "^4.17.21",
     "mockfly": "0.1.0-alpha.6",
     "msw": "^2.10.4",
     "naive-ui": "^2.42.0",

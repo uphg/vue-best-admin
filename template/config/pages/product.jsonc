@@ -1,0 +1,26 @@
+{
+  "id": "product-management",
+  "name": "产品管理",
+  "type": "table",
+  "config": {
+    "fields": [
+      { "key": "id", "label": "ID", "type": "text", "hidden": false },
+      { "key": "name", "label": "产品名称", "type": "text", "hidden": false },
+      { "key": "category", "label": "分类", "type": "enum", "hidden": false, "enums": [["electronics", { "type": "info", "text": "电子产品" }], ["clothing", { "type": "success", "text": "服装" }], ["books", { "type": "warning", "text": "图书" }]] },
+      { "key": "price", "label": "价格", "type": "text", "hidden": false },
+      { "key": "stock", "label": "库存", "type": "text", "hidden": false },
+      { "key": "status", "label": "状态", "type": "enum", "hidden": false, "enums": [["active", { "type": "success", "text": "上架" }], ["inactive", { "type": "default", "text": "下架" }], ["draft", { "type": "warning", "text": "草稿" }]] },
+      { "key": "createdAt", "label": "创建时间", "type": "text", "hidden": false },
+      { "key": "updatedAt", "label": "更新时间", "type": "text", "hidden": false }
+    ],
+    "filterFileds": ["name", "category", "status"],
+    "writeableFields": ["name", "category", "price", "stock", "status"],
+    "api": {
+      "query": { "method": "GET", "url": "/api/products" },
+      "create": { "method": "POST", "url": "/api/products" },
+      "update": { "method": "PUT", "url": "/api/products" },
+      "delete": { "method": "DELETE", "url": "/api/products" },
+      "batchDelete": { "method": "DELETE", "url": "/api/products/batch", "data": { "ids": true } }
+    }
+  }
+}
