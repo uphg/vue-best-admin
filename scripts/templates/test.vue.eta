@@ -1,0 +1,10 @@
+<template>
+  <div>
+    <h1><%= it.name %></h1>
+    <p>ID: <%= it.id %></p>
+  </div>
+</template>
+
+<script setup lang="tsx">
+console.log('Generated page for <%= it.name %>')
+</script>

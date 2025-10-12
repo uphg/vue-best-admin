@@ -1,0 +1,8 @@
+import { http } from '@/utils/http-lite'
+
+<% it.apiMethods.forEach(method => { %>
+export function <%= method.name %>(<% if (method.name === 'apiUpdate') { %>id: string, <% } %><% if (method.name === 'apiGetList') { %>params: Record<string, any><% } else if (method.name === 'apiBatchDelete') { %>ids: string[]<% } else if (method.name === 'apiDelete') { %>id: string<% } else { %>data: Record<string, any><% } %>) {
+  return http.<%= method.method %>('<% if (method.name === 'apiUpdate') { %><%= method.url.replace(':id', "' + id + '") %><% } else if (method.name === 'apiDelete') { %><%= method.url.replace(':id', "' + id + '") %><% } else { %><%= method.url %><% } %>'<% if (method.name === 'apiGetList') { %>, params<% } else if (method.name === 'apiBatchDelete') { %>, { params: { ids } }<% } else if (method.name === 'apiCreate' || method.name === 'apiUpdate') { %>, data<% } %>)
+}
+
+<% }) %>

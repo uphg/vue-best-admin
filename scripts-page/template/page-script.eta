@@ -1,0 +1,150 @@
+import { NCard, NFlex, NIcon, NTag } from 'naive-ui'
+import { ref } from 'vue'
+import IconSearch from '~icons/lucide/search'
+import XAction from '@/components/features/x-action/action'
+import XPageContent from '@/components/features/x-page-content/x-page-content'
+import XPageHeader from '@/components/features/x-page-header/x-page-header'
+import XPage from '@/components/features/x-page/x-page'
+import XTextAction from '@/components/features/x-text-action/text-action'
+import { XForm, XFormInput, XFormSelect } from '@/components/ui/x-form'
+import XFormItem from '@/components/ui/x-form/x-form-item'
+import { useColumnSelector } from '@/hooks/use-column-selector'
+import { useTable } from '@/hooks/use-table/use-table'
+import { $confirm, $dialog, $message } from '@/utils/global'
+import { use<%= it.id.charAt(0).toUpperCase() + it.id.slice(1) %>Modal } from './hooks/use-<%= it.id %>-modal'
+<% it.apiMethods.forEach(method => { %>
+import { <%= method.name %> } from './<%= it.id %>-api'
+<% }) %>
+
+<% it.fields.forEach(field => { %>
+<% if (field.type === 'enum' && field.enums) { %>
+<%= field.enumMap %>
+<% } %>
+<% }) %>
+
+const filterForm = ref({
+<% it.filterForm.forEach((field, index) => { %>
+  <%= field.key %>: <% if (field.type === 'enum') { %>null<% } else { %>''<% } %><% if (index < it.filterForm.length - 1) { %>,<% } %>
+<% }) %>
+})
+
+const allColumns = ref([
+  { title: '复选框', type: 'selection', key: 'selection', fixed: 'left', width: 50 },
+<% it.fields.forEach(field => { %>
+<% if (!field.hidden) { %>
+  { title: '<%= field.label %>', key: '<%= field.key %>', width: <% if (field.key === 'id') { %>80<% } else if (field.key === 'actions') { %>150<% } else { %>120<% } %><% if (field.type === 'enum' && field.enums) { %>, render(row: any) {
+        <%= field.enumRender %>
+      }<% } %> },
+<% } %>
+<% }) %>
+  {
+    title: '操作',
+    key: 'actions',
+    width: 150,
+    fixed: 'right',
+    render(row: any) {
+      return (
+        <NFlex>
+          <XTextAction type="update" onClick={() => handleEdit(row)} />
+          <XTextAction type="delete" onClick={() => handleDelete(row)} />
+        </NFlex>
+      )
+    },
+  },
+])
+
+const [ColumnSelector, { columns }] = useColumnSelector(allColumns)
+
+const [DataTable, { reload, checkedRowKeys }] = useTable(columns, { dataSource })
+const [<%= it.id.charAt(0).toUpperCase() + it.id.slice(1) %>Modal, { open }] = use<%= it.id.charAt(0).toUpperCase() + it.id.slice(1) %>Modal({ reload })
+
+async function dataSource({ page, pageSize }) {
+  try {
+    const res = await <%= it.apiMethods.find(m => m.name === 'apiGetList').name %>({ page, pageSize, ...filterForm.value })
+    return { data: res.data || [], total: res.total || 0 }
+  } catch (error) {
+    console.error('获取<%= it.name %>列表失败:', error)
+    return { data: [], total: 0 }
+  }
+}
+
+function handleSearch() {
+  reload()
+}
+
+function handleReset() {
+  Object.assign(filterForm.value, {
+<% it.filterForm.forEach((field, index) => { %>
+    <%= field.key %>: <% if (field.type === 'enum') { %>null<% } else { %>''<% } %><% if (index < it.filterForm.length - 1) { %>,<% } %>
+<% }) %>
+  })
+  reload()
+}
+
+function handleCreate() {
+  open('create')
+}
+
+function handleImport() {
+  $confirm.warning({
+    title: '确认导入',
+    content: '确定要导入<%= it.name %>数据吗？',
+    onConfirm: () => {
+      // TODO: 实现导入功能
+      $message.success('导入成功')
+    },
+  })
+}
+
+function handleExport() {
+  $confirm.warning({
+    title: '确认导出',
+    content: '确定要导出<%= it.name %>数据吗？',
+    onConfirm: () => {
+      // TODO: 实现导出功能
+      $message.success('导出成功')
+    },
+  })
+}
+
+function handleEdit(row: any) {
+  open('update', row)
+}
+
+async function handleDelete(row: any) {
+  $dialog.warning({
+    title: '确认删除',
+    content: `确定删除<%= it.name %> "${row.name || row.id}" 吗？`,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      try {
+        await <%= it.apiMethods.find(m => m.name === 'apiDelete').name %>(row.id)
+        $message.success('删除成功')
+        reload()
+      } catch (error) {
+        $message.error('删除失败')
+      }
+    },
+  })
+}
+
+async function handleBatchDelete() {
+  if (checkedRowKeys.value.length === 0) return
+  $dialog.warning({
+    title: '确认批量删除',
+    content: `确定删除选中的 ${checkedRowKeys.value.length} 个<%= it.name %>吗？`,
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: async () => {
+      try {
+        await <%= it.apiMethods.find(m => m.name === 'apiBatchDelete')?.name || 'apiBatchDelete' %>(checkedRowKeys.value)
+        $message.success('批量删除成功')
+        checkedRowKeys.value = []
+        reload()
+      } catch (error) {
+        $message.error('批量删除失败')
+      }
+    },
+  })
+}

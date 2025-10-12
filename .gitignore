@@ -42,3 +42,5 @@ setup_env.sh
 
 */.vitepress/cache
 */.vitepress/dist
+
+opencodetmp

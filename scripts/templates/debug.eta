@@ -1,0 +1,5 @@
+<%= it.id %>
+<%= it.name %>
+<% it.apiMethods.forEach(method => { %>
+<%= method.name %>
+<% }) %>

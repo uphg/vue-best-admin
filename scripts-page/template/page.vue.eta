@@ -1,0 +1,54 @@
+<template>
+  <XPage>
+    <XPageHeader />
+    <XPageContent>
+      <NCard>
+        <XForm inline label-placement="left" :show-feedback="false" :grid="{ xGap: 12 }">
+<% it.filterForm.forEach(field => { %>
+          <<%= field.component %>
+            v-model:value="filterForm.<%= field.key %>"
+            label="<%= field.label %>"
+            placeholder="搜索<%= field.label %>"
+            clearable
+            span="6"
+<% if (field.component === 'XFormInput') { %>
+          >
+            <template #prefix>
+              <NIcon>
+                <IconSearch />
+              </NIcon>
+            </template>
+          </<%= field.component %>>
+<% } else { %>
+<% if (field.options) { %>
+            :options="<%= field.options %>"
+<% } %>
+          />
+<% } %>
+<% }) %>
+          <XFormItem span="6">
+            <NFlex justify="end" class="w-full">
+              <XAction type="search" @click="handleSearch" />
+              <XAction type="reset" @click="handleReset" />
+            </NFlex>
+          </XFormItem>
+        </XForm>
+      </NCard>
+      <div class="flex justify-between">
+        <div class="flex gap-3">
+          <XAction type="create" @click="handleCreate" />
+          <XAction type="import" @click="handleImport" />
+          <XAction type="export" @click="handleExport" />
+          <XAction type="batchDelete" :disabled="checkedRowKeys.length === 0" :count="checkedRowKeys.length" @click="handleBatchDelete" />
+        </div>
+        <ColumnSelector />
+      </div>
+      <DataTable />
+    </XPageContent>
+    <<%= it.id.charAt(0).toUpperCase() + it.id.slice(1) %>Modal />
+  </XPage>
+</template>
+
+<script setup lang="tsx">
+<%= include('page-script.eta', it) %>
+</script>

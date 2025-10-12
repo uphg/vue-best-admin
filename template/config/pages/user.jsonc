@@ -2,7 +2,6 @@
   "id": "user",
   "name": "用户管理",
   "type": "table",
-  "path": "/users",
   "config": {
     "fields": [
       { "key": "id", "label": "ID", "type": "text", "hidden": true },
@@ -13,9 +12,27 @@
         "label": "角色",
         "type": "enum", // 状态显示
         "enums": [
-          ["admin", { "type": "error", "text": "管理员" }],
-          ["editor", { "type": "warning", "text": "编辑者" }],
-          ["user", { "type": "info", "text": "普通用户" }]
+          [
+            "admin",
+            {
+              "type": "error",
+              "text": "管理员"
+            }
+          ],
+          [
+            "editor",
+            {
+              "type": "warning",
+              "text": "编辑者"
+            }
+          ],
+          [
+            "user",
+            {
+              "type": "info",
+              "text": "普通用户"
+            }
+          ]
         ]
       },
       {
@@ -23,39 +40,49 @@
         "label": "状态",
         "type": "enum", // 状态显示
         "enums": [
-          ["active", { "type": "success", "text": "激活" }],
-          ["inactive", { "type": "default", "text": "未激活" }],
-          ["pending", { "type": "warning", "text": "待审核" }]
+          [
+            "active",
+            {
+              "type": "success",
+              "text": "激活"
+            }
+          ],
+          [
+            "inactive",
+            {
+              "type": "default",
+              "text": "未激活"
+            }
+          ],
+          [
+            "pending",
+            {
+              "type": "warning",
+              "text": "待审核"
+            }
+          ]
         ]
       },
-      { "key": "createdAt", "label": "创建时间", "type": "text" }
+      {
+        "key": "createdAt",
+        "label": "创建时间",
+        "type": "text"
+      }
     ],
     "filterFileds": ["id", "name", "email"], // 可搜索筛选的字段
     "writeableFields": ["name", "email", "role", "status"], // 新增/修改弹框中展示的字段
     "api": {
       "query": {
         "url": "/api/users",
-        "method": "GET",
-        "params": {
-          "page": "page",
-          "size": "pageSize",
-          "sort": "sortField",
-          "order": "sortOrder"
-        }
+        "method": "GET"
       },
       "create": {
         "url": "/api/users",
-        "method": "POST",
-        "headers": {
-          "Content-Type": "application/json"
-        }
+        "method": "POST"
       },
       "update": {
         "url": "/api/users/:id",
-        "method": "PUT",
-        "headers": {
-          "Content-Type": "application/json"
-        }
+        "method": "PUT"
       },
       "delete": {
         "url": "/api/users/:id",
@@ -63,10 +90,7 @@
       },
       "batchDelete": {
         "url": "/api/users/batch",
-        "method": "DELETE",
-        "data": {
-          "ids": "selectedIds"
-        }
+        "method": "DELETE"
       },
       "export": {
         "url": "/api/users/export",

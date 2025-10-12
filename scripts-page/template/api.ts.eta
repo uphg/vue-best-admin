@@ -1,0 +1,6 @@
+import { http } from '@/utils/http-lite'
+
+export function apiGet<%= it.caseName %>List(params: Record<string, any>) {
+  return http.get('/api/<%= it.name %>', params)
+}
+
