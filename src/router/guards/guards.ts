@@ -1,12 +1,12 @@
 import type { RouteLocationNormalized, RouteLocationNormalizedLoaded, Router, RouteRecordRaw } from 'vue-router'
 import type { SidebarStore } from '@/stores/sidebar'
 import type { UserStore } from '@/stores/user'
-import { apiGetRouteData, apiGetUserInfo } from '@/api/user'
+import { apiGetUserInfo } from '@/api/user'
 import { useSidebarStore } from '@/stores/sidebar'
 import { useUserStore } from '@/stores/user'
 import { getToken, removeToken } from '@/utils/token'
 import { constantRoutes, permissionRoutes } from '../routes'
-import { createAsyncRoutes, createSidebarMenus } from './async-route'
+import { createSidebarMenus } from './async-route'
 
 const commonRoutes: (string | symbol)[] = ['Login', '404']
 export const permState = createPermState()

@@ -101,6 +101,7 @@ node scripts/generate-page.js generate --help
 ```
 
 字段属性：
+
 - `key`: 字段键名
 - `label`: 字段显示标签
 - `type`: 字段类型，支持 `text`、`enum`
@@ -168,6 +169,7 @@ node scripts/generate-page.js generate --help
 ```
 
 API 操作类型：
+
 - `query`: 查询列表
 - `create`: 创建记录
 - `update`: 更新记录
@@ -375,6 +377,7 @@ src/pages/
 4. 自定义生成逻辑
 
 模板文件说明：
+
 - `page.vue.eta`: 页面组件模板
 - `page-script.eta`: 页面脚本模板
 - `api.ts.eta`: API 接口模板
