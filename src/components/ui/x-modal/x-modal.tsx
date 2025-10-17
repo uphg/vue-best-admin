@@ -1,4 +1,5 @@
 import type { ClassNameValue } from 'tailwind-merge'
+import type { PropType, RenderFunction } from 'vue'
 import { pick } from 'lodash-es'
 import { NButton, NModal, NScrollbar } from 'naive-ui'
 import IconX from '~icons/lucide/x'
@@ -13,26 +14,50 @@ const defaultClass = {
   footer: 'flex items-center justify-end gap-3 p-4',
 }
 
-interface ModalProps {
-  visible?: boolean
-  title?: string
-  showClose?: boolean
-  showFooter?: boolean
-  confirmLoading?: boolean
-  confirmText?: string
-  cancelText?: string
-  onConfirm?: (event: MouseEvent) => boolean | Promise<boolean> | Promise<void> | void
-  onCancel?: (event: MouseEvent) => boolean | Promise<boolean> | void
-  onClose?: (event: MouseEvent) => boolean | Promise<boolean> | void
-  onAfterEnter?: () => void
-  onAfterLeave?: () => void
-  onEsc?: () => void
-  onMaskClick?: () => void
-  maskClosable?: boolean
-  headerClass?: string
-  contentClass?: string
-  footerClass?: string
-  size?: 'small' | 'medium' | 'large' | 'huge'
+// interface ModalProps {
+//   visible?: boolean
+//   title?: string
+//   showClose?: boolean
+//   showFooter?: boolean
+//   confirmLoading?: boolean
+//   confirmText?: string
+//   cancelText?: string
+//   onConfirm?: (event: MouseEvent) => boolean | Promise<boolean> | Promise<void> | void
+//   onCancel?: (event: MouseEvent) => boolean | Promise<boolean> | void
+//   onClose?: (event: MouseEvent) => boolean | Promise<boolean> | void
+//   onAfterEnter?: () => void
+//   onAfterLeave?: () => void
+//   onEsc?: () => void
+//   onMaskClick?: () => void
+//   maskClosable?: boolean
+//   headerClass?: string
+//   contentClass?: string
+//   footerClass?: string
+//   size?: 'small' | 'medium' | 'large' | 'huge'
+// }
+
+const modalProps = {
+  visible: Boolean as PropType<boolean>,
+  title: String,
+  showClose: { type: Boolean, default: true },
+  showFooter: { type: Boolean, default: true },
+  confirmLoading: Boolean,
+  confirmText: { type: String, default: '确认' },
+  cancelText: { type: String, default: '取消' },
+  onConfirm: Function,
+  onCancel: Function,
+  onClose: Function,
+  onAfterEnter: Function,
+  onAfterLeave: Function,
+  onEsc: Function,
+  onMaskClick: Function,
+  maskClosable: { type: Boolean, default: true },
+  headerClass: [String],
+  contentClass: [String],
+  footerClass: [String],
+  size: { type: String as PropType<'small' | 'medium' | 'large' | 'huge'>, default: 'medium' },
+  header: Function as PropType<RenderFunction>,
+  footer: Function as PropType<RenderFunction>,
 }
 
 const NModalPropNames = ['onAfterEnter', 'onAfterLeave', 'onEsc', 'onMaskClick', 'maskClosable']
@@ -43,28 +68,8 @@ const sizeMap = {
   huge: 'max-w-2xl',
 }
 
-const Modal = defineComponent<ModalProps>({
-  props: {
-    visible: Boolean,
-    title: String,
-    showClose: { type: Boolean, default: true },
-    showFooter: { type: Boolean, default: true },
-    confirmLoading: Boolean,
-    confirmText: { type: String, default: '确认' },
-    cancelText: { type: String, default: '取消' },
-    onConfirm: Function,
-    onCancel: Function,
-    onClose: Function,
-    onAfterEnter: Function,
-    onAfterLeave: Function,
-    onEsc: Function,
-    onMaskClick: Function,
-    maskClosable: { type: Boolean, default: true },
-    headerClass: [String],
-    contentClass: [String],
-    footerClass: [String],
-    size: { type: String, default: 'medium' },
-  },
+const Modal = defineComponent({
+  props: modalProps,
   emits: ['update:visible'],
   inheritAttrs: false,
   setup(props, { emit, slots, attrs }) {
@@ -95,10 +100,10 @@ const Modal = defineComponent<ModalProps>({
         {...pick(props, NModalPropNames) as any}
       >
         <div>
-          {(slots.header || props.title || props.showClose) && (
+          {(props.header || props.title || props.showClose) && (
             <div class={mergeClass(defaultClass.header, props.headerClass)}>
-              {slots.header
-                ? slots.header()
+              {props.header
+                ? props.header()
                 : (
                     <h3 class={defaultClass.title}>{props.title}</h3>
                   )}
@@ -120,10 +125,10 @@ const Modal = defineComponent<ModalProps>({
               </div>
             </NScrollbar>
           </div>
-          {props.showFooter && (slots.footer || props.showFooter) && (
+          {props.showFooter && (props.footer || props.showFooter) && (
             <div class={mergeClass(defaultClass.footer, props.footerClass)}>
-              {slots.footer
-                ? slots.footer()
+              {props.footer
+                ? props.footer()
                 : (
                     <>
                       <NButton onClick={handleCancel}>{props.cancelText}</NButton>
